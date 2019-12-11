@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 public class SSDriveObject extends Object{
-    Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, cameraServo, leftFoundation, rightFoundation, blockSweeper ;
+    Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, cameraServo, leftFoundation, rightFoundation, blockSweeper, capServo;
     CRServo deliveryExtender;
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller;
     LinearOpMode opmode;
@@ -62,6 +62,7 @@ public class SSDriveObject extends Object{
 
         leftFoundation = opmode.hardwareMap.servo.get("leftFoundation");
         blockSweeper = opmode.hardwareMap.servo.get("blockSweeper");
+        capServo = opmode.hardwareMap.servo.get("capServo");
         cameraServo = opmode.hardwareMap.servo.get("cameraServo");
 
         deliveryExtender = opmode.hardwareMap.crservo.get("deliveryExtender");
@@ -91,7 +92,7 @@ public class SSDriveObject extends Object{
         setHookVrt(1);
         opmode.sleep(500);
 
-        driveDistance(0.7, 20);
+        driveDistance(0.7, 23);
     }
 
     public void collectSkyStone(double displacement){
@@ -111,7 +112,7 @@ public class SSDriveObject extends Object{
         driveDistance(1, -24.5);
         setFoundationLeft(true);
         opmode.sleep(1000);
-        driveDistance(1, 26);
+        driveDistance(1, 29);
         setFoundationLeft(false);
         opmode.sleep(1000);
         //park(side, FOUNDATION);
@@ -154,7 +155,7 @@ public class SSDriveObject extends Object{
 
     //drive chassis motor
 
-    public void driveDistance(double powerLimit, double distance) {
+    public void driveDistance(double powerLeft, double powerRight, double distance) {
         final double PERCENT = .1;
         double powerMin = 0.22;
         int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
@@ -164,47 +165,47 @@ public class SSDriveObject extends Object{
         opmode.telemetry.addLine("Encoders reset");
         opmode.telemetry.update();
         setModeAll(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        if (ticks > 0) {
-            while((frontLeft.getCurrentPosition() <= ticks) && opmode.opModeIsActive()) {
-                if (frontLeft.getCurrentPosition() < PERCENT * ticks) {
-                    setDrivePowerAll(Math.max((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
-                    opmode.telemetry.addLine("accelerating");
+        if (powerLeft == powerRight) {
+            if (ticks > 0) {
+                while ((frontLeft.getCurrentPosition() <= ticks) && opmode.opModeIsActive()) {
+                    if (frontLeft.getCurrentPosition() < PERCENT * ticks) {
+                        setDrivePowerAll(Math.max((1 / PERCENT) * powerLeft * frontLeft.getCurrentPosition() / ticks, powerMin));
+                        opmode.telemetry.addLine("accelerating");
+                        telemetryDcMotor();
+                    } else if (frontLeft.getCurrentPosition() < (1 - PERCENT) * ticks) {
+                        setDrivePowerAll(powerLeft);
+                        opmode.telemetry.addLine("cruising");
+                        telemetryDcMotor();
+                    } else {
+                        setDrivePowerAll(Math.max(-(1 / PERCENT) * powerLeft * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
+                        opmode.telemetry.addLine("decelerating");
+                        telemetryDcMotor();
+                    }
                     telemetryDcMotor();
-                } else if (frontLeft.getCurrentPosition() < (1 - PERCENT) * ticks) {
-                    setDrivePowerAll(powerLimit);
-                    opmode.telemetry.addLine("cruising");
-                    telemetryDcMotor();
-                } else {
-                    setDrivePowerAll(Math.max(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
-                    opmode.telemetry.addLine("decelerating");
-                    telemetryDcMotor();
+                    opmode.telemetry.update();
                 }
-                telemetryDcMotor();
-                opmode.telemetry.update();
-            }
-        } else if (ticks < 0) {
-            powerLimit = -powerLimit;
-            powerMin = -powerMin;
-            while((frontLeft.getCurrentPosition() >= ticks) && opmode.opModeIsActive()) {
-                if (frontLeft.getCurrentPosition() > PERCENT * ticks) {
-                    setDrivePowerAll(Math.min((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
-                    opmode.telemetry.addLine("accelerating");
+            } else if (ticks < 0) {
+                powerLeft = -powerLeft;
+                powerMin = -powerMin;
+                while ((frontLeft.getCurrentPosition() >= ticks) && opmode.opModeIsActive()) {
+                    if (frontLeft.getCurrentPosition() > PERCENT * ticks) {
+                        setDrivePowerAll(Math.min((1 / PERCENT) * powerLeft * frontLeft.getCurrentPosition() / ticks, powerMin));
+                        opmode.telemetry.addLine("accelerating");
+                        telemetryDcMotor();
+                    } else if (frontLeft.getCurrentPosition() > (1 - PERCENT) * ticks) {
+                        setDrivePowerAll(powerLeft);
+                        opmode.telemetry.addLine("cruising");
+                        telemetryDcMotor();
+                    } else {
+                        setDrivePowerAll(Math.min(-(1 / PERCENT) * powerLeft * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
+                        opmode.telemetry.addLine("decelerating");
+                        telemetryDcMotor();
+                    }
                     telemetryDcMotor();
-                } else if (frontLeft.getCurrentPosition() > (1 - PERCENT) * ticks) {
-                    setDrivePowerAll(powerLimit);
-                    opmode.telemetry.addLine("cruising");
-                    telemetryDcMotor();
-                } else {
-                    setDrivePowerAll(Math.min(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
-                    opmode.telemetry.addLine("decelerating");
-                    telemetryDcMotor();
+                    opmode.telemetry.update();
                 }
-                telemetryDcMotor();
-                opmode.telemetry.update();
             }
         }
-
         stopDriving();
     }
 

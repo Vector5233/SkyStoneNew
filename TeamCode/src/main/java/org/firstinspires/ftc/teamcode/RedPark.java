@@ -10,6 +10,14 @@ public class RedPark extends LinearOpMode {
 
     public void initialize(){
         drive = new SSDriveObject(this);
+
+        drive.setBlockSweeper(false);
+        drive.setCameraServo(1);
+        drive.setHookVrt(1);
+        drive.setHookHrz(0);
+
+        telemetry.addLine("initialized");
+        telemetry.update();
     }
     public void runOpMode(){
         initialize();
