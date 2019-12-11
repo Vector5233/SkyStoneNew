@@ -140,16 +140,12 @@ public class SkyStoneTeleOp extends OpMode {
         RotationState = rotationIn;
         ExtenderState = extenderIn;
 
-
-
-
-
         deliveryRotation.setPosition(0);
         RotationState = rotationMovingIn;
 
         ExtenderState = extenderIn;
 
-        blockSweeper.setPosition(1);
+        blockSweeper.setPosition(0.95);
 
         hookVrt.setPosition(0.7);
         hookHrz.setPosition(0);

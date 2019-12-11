@@ -55,16 +55,21 @@ public class SSTestAutoOp extends LinearOpMode {
 
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-        drive.setHookHrz(0.5);
-        drive.setHookVrt(0.4);
+        drive.capServo.setPosition(0.8);
 
+        drive.setBlockSweeper(false);
         drive.setCameraServo(1);
+        drive.setHookVrt(1);
+        drive.setHookHrz(0);
 
         initTfod();
 
         if (tfod != null) {
             tfod.activate();
         }
+
+        telemetry.addLine("initialized");
+        telemetry.update();
     }
     public void runOpMode(){
         initialize();
