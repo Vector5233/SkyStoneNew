@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -116,8 +117,8 @@ public class SkyStoneTeleOp extends OpMode {
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
 
-        rightRoller.setDirection(DcMotor.Direction.FORWARD);
-        leftRoller.setDirection(DcMotor.Direction.REVERSE);
+        rightRoller.setDirection(DcMotor.Direction.REVERSE);
+        leftRoller.setDirection(DcMotor.Direction.FORWARD);
 
         rightLift.setDirection(DcMotor.Direction.REVERSE);
         leftLift.setDirection(DcMotor.Direction.REVERSE);
