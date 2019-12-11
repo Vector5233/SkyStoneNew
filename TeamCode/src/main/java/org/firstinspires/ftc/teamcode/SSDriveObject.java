@@ -231,15 +231,18 @@ public class SSDriveObject extends Object{
                 if (frontLeft.getCurrentPosition() < PERCENT * ticks) {
                     setStrafePowerAll(Math.max((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
                     opmode.telemetry.addLine("accelerating");
-                    telemetryDcMotor();
+                    //telemetryDcMotor();
+                    telemetryWheelPower();
                 } else if (frontLeft.getCurrentPosition() < (1 - PERCENT) * ticks) {
                     setStrafePowerAll(powerLimit);
                     opmode.telemetry.addLine("cruising");
-                    telemetryDcMotor();
+                    //telemetryDcMotor();
+                    telemetryWheelPower();
                 } else {
                     setStrafePowerAll(Math.max(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
                     opmode.telemetry.addLine("decelerating");
-                    telemetryDcMotor();
+                    //telemetryDcMotor();
+                    telemetryWheelPower();
                 }
                 opmode.telemetry.addData("frontLeft", frontLeft.getCurrentPosition());
                 opmode.telemetry.update();
@@ -446,6 +449,14 @@ public class SSDriveObject extends Object{
         opmode.telemetry.addData("FB", frontLeft.getCurrentPosition());
         opmode.telemetry.addData("BR", backRight.getCurrentPosition());
         opmode.telemetry.addData("BL", backLeft.getCurrentPosition());
+        opmode.telemetry.update();
+    }
+
+    public void telemetryWheelPower(){
+        opmode.telemetry.addData("FR", frontRight.getPower());
+        opmode.telemetry.addData("FB", frontLeft.getPower());
+        opmode.telemetry.addData("BR", backRight.getPower());
+        opmode.telemetry.addData("BL", backLeft.getPower());
         opmode.telemetry.update();
     }
 
