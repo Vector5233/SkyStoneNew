@@ -129,30 +129,27 @@ public class SSDriveObject extends Object{
             if (side) {
                 opmode.telemetry.addLine("Blue normal");
                 opmode.telemetry.update();
-                opmode.sleep(1000);
                 driveDistance(1, -53);
             } else {
                 opmode.telemetry.addLine("Red normal");
                 opmode.telemetry.update();
-                opmode.sleep(1000);
-                setHookHrz(1);
-                setHookHrz(0);
-                strafeDistance(1, 53);
-
-
+                driveDistance(1,-53);
             }
         } else {
             if (side) {
                 opmode.telemetry.addLine("Blue foundation");
                 opmode.telemetry.update();
-                opmode.sleep(1000);
-                strafeDistance(1, -53);
-//                driveDistance(1, -10);
+
+                turnDegree(.67,90);
+                opmode.sleep(500);
+                driveDistance(1, 53);
             } else {
                 opmode.telemetry.addLine("Red foundation");
                 opmode.telemetry.update();
-                opmode.sleep(1000);
-                strafeDistance(1, 53);
+
+                turnDegree(.67,-90);
+                opmode.sleep(500);
+                driveDistance(1, 53);
             }
 
 
@@ -207,6 +204,38 @@ public class SSDriveObject extends Object{
                     opmode.telemetry.addLine("decelerating");
                     telemetryDcMotor();
                 }
+                telemetryDcMotor();
+                opmode.telemetry.update();
+            }
+        }
+
+        stopDriving();
+    }
+
+    public void strafeDistanceNoAccel(double powerLimit, double distance) {
+        final double PERCENT = .25;
+        final double STRAFECORRECTION = 30.0/37.0;
+        double powerMin = 0.3;
+        int ticks = (int) (distance * TICKS_PER_INCH_STRAFE * STRAFECORRECTION);
+        opmode.telemetry.addData("ticks", ticks);
+        opmode.telemetry.update();
+
+        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        opmode.telemetry.addLine("Encoders reset");
+        opmode.telemetry.update();
+        setModeAll(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        if (ticks > 0) {
+            while((frontLeft.getCurrentPosition() <= ticks) && opmode.opModeIsActive()) {
+                setStrafePowerAll(powerLimit);
+                telemetryDcMotor();
+                opmode.telemetry.update();
+            }
+        } else if (ticks < 0) {
+            powerLimit = -powerLimit;
+            powerMin = -powerMin;
+            while((frontLeft.getCurrentPosition() >= ticks) && opmode.opModeIsActive()) {
+                setStrafePowerAll(powerLimit);
                 telemetryDcMotor();
                 opmode.telemetry.update();
             }

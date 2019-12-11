@@ -65,6 +65,7 @@ public class SkyStoneTeleOp extends OpMode {
     boolean if_pressedGp2A = false;
     boolean if_pressedGp1B = false;
     boolean if_pressedGp2B = false;
+    boolean if_pressedGp2X = false;
 
     boolean if_pressedRB = false;
     boolean if_pressedLB = false;
@@ -352,20 +353,20 @@ public class SkyStoneTeleOp extends OpMode {
 
     public void setCapServoTest() {
         // better code
-        if (gamepad2.b && !if_pressedGp2B) {
+        if (gamepad2.x && !if_pressedGp2X) {
             if (capServo.getPosition() <= 0.1) {
                 capServo.setPosition(0.8);
-                if_pressedGp2B = true;
+                if_pressedGp2X = true;
             }
 
             else if (capServo.getPosition() <= 0.9 && capServo.getPosition() >= 0.7){
                 capServo.setPosition(0);
-                if_pressedGp2B = true;
+                if_pressedGp2X = true;
             }
         }
         else {
-            if (!gamepad2.b) {
-                if_pressedGp2B = false;
+            if (!gamepad2.x) {
+                if_pressedGp2X = false;
             }
         }
     }
