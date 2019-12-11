@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="RedFoundPark", group="TeamCode")
+@Autonomous(name="RedFoundPark", group="Red")
 
 public class RedFoundPark extends LinearOpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller;
@@ -40,14 +40,15 @@ public class RedFoundPark extends LinearOpMode {
 
 
 
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        //change frontLeft into reverse
-        backRight.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
 
-        rightRoller.setDirection(DcMotor.Direction.REVERSE);
-        leftRoller.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        //change frontLeft into reverse
+        backRight.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
+
+        rightRoller.setDirection(DcMotor.Direction.FORWARD);
+        leftRoller.setDirection(DcMotor.Direction.REVERSE);
 
         deliveryExtender.setDirection(CRServo.Direction.FORWARD);
 

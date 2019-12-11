@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="RedPark", group="TeamCode")
+@Autonomous(name="RedPark", group="Red")
 
 public class RedPark extends LinearOpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller;
@@ -38,16 +38,14 @@ public class RedPark extends LinearOpMode {
 
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
 
-
-
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
         //change frontLeft into reverse
-        backRight.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
 
-        rightRoller.setDirection(DcMotor.Direction.REVERSE);
-        leftRoller.setDirection(DcMotor.Direction.FORWARD);
+        rightRoller.setDirection(DcMotor.Direction.FORWARD);
+        leftRoller.setDirection(DcMotor.Direction.REVERSE);
 
         deliveryExtender.setDirection(CRServo.Direction.FORWARD);
 

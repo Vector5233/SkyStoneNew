@@ -184,7 +184,7 @@ public class SSDriveObject extends Object{
     public void driveDistance(double powerLimit, double distance) {
         final double PERCENT = .1;
         double powerMin = 0.22;
-        int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
+        int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT) + frontLeft.getCurrentPosition();
 
 
         setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -195,14 +195,17 @@ public class SSDriveObject extends Object{
                 if (frontLeft.getCurrentPosition() < PERCENT * ticks) {
                     setPowerAll(Math.max((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
                     opmode.telemetry.addLine("accelerating");
+                    opmode.telemetry.update();
                     telemetryDcMotor();
                 } else if (frontLeft.getCurrentPosition() < (1 - PERCENT) * ticks) {
                     setPowerAll(powerLimit);
                     opmode.telemetry.addLine("cruising");
+                    opmode.telemetry.update();
                     telemetryDcMotor();
                 } else {
                     setPowerAll(Math.max(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
                     opmode.telemetry.addLine("decelerating");
+                    opmode.telemetry.update();
                     telemetryDcMotor();
                 }
             }
@@ -213,22 +216,23 @@ public class SSDriveObject extends Object{
                 if (frontLeft.getCurrentPosition() > PERCENT * ticks) {
                     setPowerAll(Math.min((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
                     opmode.telemetry.addLine("accelerating");
+                    opmode.telemetry.update();
                     telemetryDcMotor();
                 } else if (frontLeft.getCurrentPosition() > (1 - PERCENT) * ticks) {
                     setPowerAll(powerLimit);
                     opmode.telemetry.addLine("cruising");
+                    opmode.telemetry.update();
                     telemetryDcMotor();
                 } else {
                     setPowerAll(Math.min(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
                     opmode.telemetry.addLine("decelerating");
+                    opmode.telemetry.update();
                     telemetryDcMotor();
                 }
             }
         }
 
-
         stopDriving();
-
     }
 
     public void setStrafePowerAll(double power) {
@@ -253,14 +257,17 @@ public class SSDriveObject extends Object{
                 if (frontLeft.getCurrentPosition() < PERCENT * ticks) {
                     setStrafePowerAll(Math.max((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
                     opmode.telemetry.addLine("accelerating");
+                    opmode.telemetry.update();
                     telemetryDcMotor();
                 } else if (frontLeft.getCurrentPosition() < (1 - PERCENT) * ticks) {
                     setStrafePowerAll(powerLimit);
                     opmode.telemetry.addLine("cruising");
+                    opmode.telemetry.update();
                     telemetryDcMotor();
                 } else {
                     setStrafePowerAll(Math.max(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
                     opmode.telemetry.addLine("decelerating");
+                    opmode.telemetry.update();
                     telemetryDcMotor();
                 }
             }
@@ -271,19 +278,21 @@ public class SSDriveObject extends Object{
                 if (frontLeft.getCurrentPosition() > PERCENT * ticks) {
                     setStrafePowerAll(Math.min((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
                     opmode.telemetry.addLine("accelerating");
+                    opmode.telemetry.update();
                     telemetryDcMotor();
                 } else if (frontLeft.getCurrentPosition() > (1 - PERCENT) * ticks) {
                     setStrafePowerAll(powerLimit);
                     opmode.telemetry.addLine("cruising");
+                    opmode.telemetry.update();
                     telemetryDcMotor();
                 } else {
                     setStrafePowerAll(Math.min(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
                     opmode.telemetry.addLine("decelerating");
+                    opmode.telemetry.update();
                     telemetryDcMotor();
                 }
             }
         }
-
 
         stopDriving();
 
@@ -555,14 +564,6 @@ public class SSDriveObject extends Object{
                 backRight.setPower(-power);
             }
         }*/
-
-
-    public void setTurnPower(double power) {
-        frontLeft.setPower(power);
-        frontRight.setPower(-power);
-        backLeft.setPower(power);
-        backRight.setPower(-power);
-    }
 
     public void turnDegree(double powerLimit, double degrees) {
         // distance in inches

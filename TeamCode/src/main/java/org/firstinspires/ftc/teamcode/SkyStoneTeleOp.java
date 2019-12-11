@@ -110,13 +110,14 @@ public class SkyStoneTeleOp extends OpMode {
 
         deliveryExtender = hardwareMap.crservo.get("deliveryExtender");
 
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        //change frontLeft into reverse
+        backRight.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
 
-        rightRoller.setDirection(DcMotor.Direction.REVERSE);
-        leftRoller.setDirection(DcMotor.Direction.FORWARD);
+        rightRoller.setDirection(DcMotor.Direction.FORWARD);
+        leftRoller.setDirection(DcMotor.Direction.REVERSE);
 
         rightLift.setDirection(DcMotor.Direction.REVERSE);
         leftLift.setDirection(DcMotor.Direction.REVERSE);

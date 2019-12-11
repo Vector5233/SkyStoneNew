@@ -45,14 +45,15 @@ public class DriveTestAutoOp extends LinearOpMode {
 
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
 
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        //change frontLeft into reverse
-        backRight.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
 
-        rightRoller.setDirection(DcMotor.Direction.REVERSE);
-        leftRoller.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        //change frontLeft into reverse
+        backRight.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
+
+        rightRoller.setDirection(DcMotor.Direction.FORWARD);
+        leftRoller.setDirection(DcMotor.Direction.REVERSE);
 
         deliveryExtender.setDirection(CRServo.Direction.FORWARD);
 
@@ -87,29 +88,9 @@ public class DriveTestAutoOp extends LinearOpMode {
         initialize();
         waitForStart();
 
-       /* drive.strafeDistance(1, 20, 5000);
+        drive.strafeDistance(1, 20);
         sleep(1000);
-        drive.strafeDistance(1, -5, 5000);
-        sleep(50);
-*/
-
-        //drive.driveDistance(1, 40);
-        //drive.strafeDistance(.67, 30);
-
-
-        //drive.turnDegree(.67, 90);
-        //sleep(3000);
-        //drive.driveDistance(0.5, -40);
-        //drive.strafeDistance(.67, -30);
-        //drive.turnDegree(.67, -90);
-        //sleep(3000);
-        drive.turnDegree(.67,180);
-        sleep(3000);
-        drive.turnDegree(.67,-180);
-        sleep(3000);
-        drive.turnDegree(.67,360);
-
-        telemetry.addLine("done");
+        drive.driveDistance(1, 20);
 
     }
 }
