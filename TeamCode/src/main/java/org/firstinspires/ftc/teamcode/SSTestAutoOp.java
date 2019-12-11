@@ -24,18 +24,18 @@ public class SSTestAutoOp extends LinearOpMode {
 
     final double WEBCAM_TO_BLOCKS = 9.5;
 
-    final double CENTER_PIXELS = 400;
-    final double BLOCK_LENGTH = 8;
-    final double ARM_TO_WEBCAM = 9;
+    final double CENTER_PIXELS = 400.0;
+    final double BLOCK_LENGTH = 8.0;
+    final double ARM_TO_WEBCAM = 5.875;
 
     final int TFOD_TIMEOUT = 500;
 
-    double inchPerPixel = 0;
+    double inchPerPixel;
 
-    double SS_leftPixel = 0;
-    double SS_rightPixel = 0;
+    double SS_leftPixel;
+    double SS_rightPixel;
 
-    double displacement = 0;
+    double displacement;
     double secondDisplacement = displacement - 24;
 
     boolean isVirtual = false;
@@ -57,6 +57,8 @@ public class SSTestAutoOp extends LinearOpMode {
 
         drive.setHookHrz(0.5);
         drive.setHookVrt(0.4);
+
+        drive.setCameraServo(0);
 
         initTfod();
 
@@ -148,7 +150,7 @@ public class SSTestAutoOp extends LinearOpMode {
     }
 
     public void getDisplacement(){
-        inchPerPixel = Math.abs(BLOCK_LENGTH/(SS_rightPixel - SS_leftPixel));
+        inchPerPixel = Math.abs(BLOCK_LENGTH/( SS_rightPixel - SS_leftPixel));
         telemetry.addData("inch / pixel", "%.03f", inchPerPixel);
 
         double SS_size = SS_rightPixel - SS_leftPixel;
