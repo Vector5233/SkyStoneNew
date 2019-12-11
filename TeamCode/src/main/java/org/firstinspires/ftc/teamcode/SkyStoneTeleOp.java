@@ -18,7 +18,6 @@ public class SkyStoneTeleOp extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller, rightLift, leftLift;
     Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, leftFoundation, blockSweeper, capServo, cameraServo; //, rightFoundation;
     CRServo deliveryExtender;
-    ModernRoboticsI2cGyro gyro;
 
     final double rollerPower = 1.0;
 
@@ -136,8 +135,6 @@ public class SkyStoneTeleOp extends OpMode {
         rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
-
         GrabberState = grabberClose;
         RotationState = rotationIn;
         ExtenderState = extenderIn;
@@ -161,14 +158,6 @@ public class SkyStoneTeleOp extends OpMode {
         deliveryGrabber.setPosition(0);
 
         capServo.setPosition(0.8);
-
-        gyro.calibrate();
-
-        while (gyro.getIntegratedZValue() != 0) {
-            continue;
-        }
-
-        // set all states here
     }
 
     public void loop() {
@@ -188,7 +177,6 @@ public class SkyStoneTeleOp extends OpMode {
 
         telemetry.addData("blockSweeper", blockSweeper.getPosition());
         telemetry.addData("driveSpeed", driveSpeed);
-        telemetry.addData("gyro", gyro.getIntegratedZValue());
     }
 
     private void setDriveMotors() {

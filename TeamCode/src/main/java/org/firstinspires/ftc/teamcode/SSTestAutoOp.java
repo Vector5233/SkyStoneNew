@@ -32,12 +32,6 @@ public class SSTestAutoOp extends LinearOpMode {
 
     double inchPerPixel = 0;
 
-    double LS_leftPixel = 0;
-    double LS_rightPixel = 0;
-
-    double RS_leftPixel = 0;
-    double RS_rightPixel = 0;
-
     double SS_leftPixel = 0;
     double SS_rightPixel = 0;
 

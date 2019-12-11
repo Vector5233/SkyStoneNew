@@ -22,6 +22,8 @@ public class DriveTestNewAutoOp extends LinearOpMode {
         drive.strafeDistance(1, 20);
         telemetry.addLine("new strafe finished");
         telemetry.update();
+
+
     }
 }
 

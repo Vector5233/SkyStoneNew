@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-
 /* TODO
    To prevent robot from lumping at the endpoint
    1) make function that makes the robot smoothly accelerating stars and stops
@@ -23,7 +21,6 @@ public class SSDriveObject extends Object{
     CRServo deliveryExtender;
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller;
     LinearOpMode opmode;
-    ModernRoboticsI2cGyro gyro;
 
     final double ROBOT_RADIUS = 12.5;
     final double TICKS_PER_INCH_STRAIGHT = (383.6*2) / (4 * 3.14159265358979323846264);
@@ -213,36 +210,6 @@ public class SSDriveObject extends Object{
         stopDriving();
     }
 
-    public void driveDistanceOld(double power, double distance) {
-        int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
-
-        if (power > MAXSPEED) {
-            power = MAXSPEED;
-        }
-
-        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeft.setTargetPosition(ticks);
-        frontRight.setTargetPosition(ticks);
-        backRight.setTargetPosition(ticks);
-        backLeft.setTargetPosition(ticks);
-
-        setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backRight.setPower(power);
-        backLeft.setPower(power);
-
-        while ((frontRight.isBusy() || frontLeft.isBusy()) && opmode.opModeIsActive()){
-            telemetryDcMotor();
-        }
-
-        //telemetryDcMotor();
-
-        stopDriving();
-    }
-
     public void strafeDistance(double powerLimit, double distance) {
         final double PERCENT = .25;
         final double STRAFECORRECTION = 30.0/37.0;
@@ -294,34 +261,6 @@ public class SSDriveObject extends Object{
                 telemetryDcMotor();
                 opmode.telemetry.update();
             }
-        }
-
-        stopDriving();
-    }
-
-    public void strafeDistanceOld (double power, double distance) {
-        int ticks = (int) (distance * TICKS_PER_INCH_STRAFE);
-
-        /*if power > MAXSPEED {
-            power = MAXSPEED
-        }*/
-
-        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeft.setTargetPosition(ticks);
-        frontRight.setTargetPosition(-ticks);
-        backLeft.setTargetPosition(-ticks);
-        backRight.setTargetPosition(ticks);
-
-        setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-
-        while ((frontRight.isBusy() || frontLeft.isBusy()) && opmode.opModeIsActive()) {
-            telemetryDcMotor();
         }
 
         stopDriving();
@@ -510,7 +449,6 @@ public class SSDriveObject extends Object{
     public void getAngleTelemetry (String status){
         opmode.telemetry.addLine(status);
         opmode.telemetry.addData("   encoder: ", frontLeft.getCurrentPosition()/TICKS_PER_DEGREE);
-        opmode.telemetry.addData("   gyro:    ", gyro.getIntegratedZValue());
         opmode.telemetry.update();
     }
 }

@@ -15,13 +15,9 @@ public class DriveTestAutoOp extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.driveDistanceOld(1, 20);
-        telemetry.addLine("drive finished");
-        telemetry.update();
-        sleep(2000);
-        drive.strafeDistanceOld(1, 20);
-        telemetry.addLine("strafe finished");
-        telemetry.update();
+        drive.turnDegree(.67,90);
+        sleep(1000);
+        drive.turnDegree(.67, -90);
     }
 }
 
