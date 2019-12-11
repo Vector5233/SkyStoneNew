@@ -185,7 +185,7 @@ public class SSDriveObject extends Object{
                     opmode.telemetry.addLine("decelerating");
                     telemetryDcMotor();
                 }
-                opmode.telemetry.addData("frontLeft", frontLeft.getCurrentPosition());
+                telemetryDcMotor();
                 opmode.telemetry.update();
             }
         } else if (ticks < 0) {
@@ -205,10 +205,40 @@ public class SSDriveObject extends Object{
                     opmode.telemetry.addLine("decelerating");
                     telemetryDcMotor();
                 }
-                opmode.telemetry.addData("frontLeft", frontLeft.getCurrentPosition());
+                telemetryDcMotor();
                 opmode.telemetry.update();
             }
         }
+
+        stopDriving();
+    }
+
+    public void driveDistanceOld(double power, double distance) {
+        int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
+
+        if (power > MAXSPEED) {
+            power = MAXSPEED;
+        }
+
+        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeft.setTargetPosition(ticks);
+        frontRight.setTargetPosition(ticks);
+        backRight.setTargetPosition(ticks);
+        backLeft.setTargetPosition(ticks);
+
+        setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontLeft.setPower(power);
+        frontRight.setPower(power);
+        backRight.setPower(power);
+        backLeft.setPower(power);
+
+        while ((frontRight.isBusy() || frontLeft.isBusy()) && opmode.opModeIsActive()){
+            telemetryDcMotor();
+        }
+
+        //telemetryDcMotor();
 
         stopDriving();
     }
@@ -241,7 +271,7 @@ public class SSDriveObject extends Object{
                     opmode.telemetry.addLine("decelerating");
                     telemetryDcMotor();
                 }
-                opmode.telemetry.addData("frontLeft", frontLeft.getCurrentPosition());
+                telemetryDcMotor();
                 opmode.telemetry.update();
             }
         } else if (ticks < 0) {
@@ -261,9 +291,37 @@ public class SSDriveObject extends Object{
                     opmode.telemetry.addLine("decelerating");
                     telemetryDcMotor();
                 }
-                opmode.telemetry.addData("frontLeft", frontLeft.getCurrentPosition());
+                telemetryDcMotor();
                 opmode.telemetry.update();
             }
+        }
+
+        stopDriving();
+    }
+
+    public void strafeDistanceOld (double power, double distance) {
+        int ticks = (int) (distance * TICKS_PER_INCH_STRAFE);
+
+        /*if power > MAXSPEED {
+            power = MAXSPEED
+        }*/
+
+        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeft.setTargetPosition(ticks);
+        frontRight.setTargetPosition(-ticks);
+        backLeft.setTargetPosition(-ticks);
+        backRight.setTargetPosition(ticks);
+
+        setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontLeft.setPower(power);
+        frontRight.setPower(power);
+        backLeft.setPower(power);
+        backRight.setPower(power);
+
+        while ((frontRight.isBusy() || frontLeft.isBusy()) && opmode.opModeIsActive()) {
+            telemetryDcMotor();
         }
 
         stopDriving();

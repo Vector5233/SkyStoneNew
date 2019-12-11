@@ -1,12 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
+
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -17,14 +13,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
-@Autonomous(name="SSTestAutoOp", group="TeamCode")
+@Autonomous(name="SSTestAutoOp", group="Test")
 
 public class SSTestAutoOp extends LinearOpMode {
-    DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller;
-    Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, camera, leftFoundation, blockSweeper;
-    CRServo deliveryExtender;
-    LinearOpMode opmode;
-    ModernRoboticsI2cGyro gyro;
     SSDriveObject drive;
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
@@ -61,46 +52,7 @@ public class SSTestAutoOp extends LinearOpMode {
     private TFObjectDetector tfod;
 
     public void initialize(){
-        frontRight = hardwareMap.dcMotor.get("frontRight");
-        frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        backRight = hardwareMap.dcMotor.get("backRight");
-        backLeft = hardwareMap.dcMotor.get("backLeft");
-
-        rightRoller = hardwareMap.dcMotor.get("rightRoller");
-        leftRoller = hardwareMap.dcMotor.get("leftRoller");
-
-        hookHrz = hardwareMap.servo.get("hookHrz");
-        hookVrt = hardwareMap.servo.get("hookVrt");
-
-        deliveryGrabber = hardwareMap.servo.get("deliveryGrabber");
-        deliveryRotation = hardwareMap.servo.get("deliveryRotation");
-
-        leftFoundation = hardwareMap.servo.get("leftFoundation");
-
-        deliveryExtender = hardwareMap.crservo.get("deliveryExtender");
-
-        gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
-
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        //change frontLeft into reverse
-        backRight.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
-
-        rightRoller.setDirection(DcMotor.Direction.FORWARD);
-        leftRoller.setDirection(DcMotor.Direction.REVERSE);
-
-        deliveryExtender.setDirection(CRServo.Direction.FORWARD);
-
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        rightRoller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftRoller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        drive = new SSDriveObject(frontLeft, frontRight, backLeft, backRight, hookHrz, hookVrt, deliveryGrabber, leftFoundation, deliveryExtender, rightRoller, leftRoller, camera, leftFoundation, blockSweeper, gyro, this);
+        drive = new SSDriveObject(this);
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
@@ -122,32 +74,20 @@ public class SSTestAutoOp extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.strafeDistance(1, -24.5, 1000);
+        drive.strafeDistance(1, -24.5);
+
         detectStones();
         telemetry.addData("  SS left", "%.03f", SS_leftPixel);
-        telemetry.addData(
-
-                "  SS right", "%.03f", SS_rightPixel);
+        telemetry.addData("  SS right", "%.03f", SS_rightPixel);
         telemetry.update();
         sleep(1000);
 
         getDisplacement();
+        telemetry.addData("displacement", "%.03f", displacement);
+        telemetry.update();
+        sleep(1000);
 
-        collectSkyStone();
-
-        //drive till fnd
-        //find navi img
-        //cw 90
-        //deliver
-        //ccw 90
-        //drive back til block
-        //collect
-        //drive till fnd
-        //cw 90
-        //deliver
-        //strafe till line
-        //park
-        //init for teleop
+        drive.collectSkyStone();
     }
 
     public void initTfod(){
@@ -230,30 +170,6 @@ public class SSTestAutoOp extends LinearOpMode {
             telemetry.addLine("center");
             displacement = inchPerPixel * (CENTER_PIXELS + SS_rightPixel - 2 * SS_leftPixel) - ARM_TO_WEBCAM + 15;
         }
-
-        telemetry.addData("displacement", "%.03f", displacement);
-        telemetry.update();
-        sleep(1000);
     }
 
-    public void collectSkyStone(){
-        hookVrt.setPosition(0.6);
-        hookHrz.setPosition(1);
-
-        sleep(500);
-        drive.driveDistance(0.5, displacement, 1000);
-        sleep(200);
-
-        drive.setHookVrt(0.4);
-        leftRoller.setPower(1);
-        rightRoller.setPower(1);
-        drive.setHookHrz(0);
-        leftRoller.setPower(0);
-        rightRoller.setPower(0);
-        sleep(500);
-
-        drive.setBlockSweeper(true);
-        sleep(500);
-        drive.setBlockSweeper(false);
-    }
 }

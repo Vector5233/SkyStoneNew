@@ -452,23 +452,6 @@ public class SkyStoneTeleOp extends OpMode {
         }
     }
 
-    /*public void setLayerLift() {
-        // need to measure the height of block and double-check with Jayden
-        if (gamepad2.dpad_up) {
-            leftLift.setPower(1);
-            rightLift.setPower(1);
-
-            if (leftLift.getCurrentPosition() == 1) {
-                //max 767.2
-                leftLift.setPower(0);
-                rightLift.setPower(0);
-            }
-        } else if (gamepad2.dpad_down) {
-            leftLift.setPower(-1);
-            rightLift.setPower(-1);
-        }
-    }*/
-
     public void setDeliveryExtender() {
         switch (ExtenderState) {
             case extenderOut:
