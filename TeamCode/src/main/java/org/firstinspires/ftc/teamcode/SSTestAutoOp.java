@@ -58,7 +58,7 @@ public class SSTestAutoOp extends LinearOpMode {
         drive.setHookHrz(0.5);
         drive.setHookVrt(0.4);
 
-        drive.setCameraServo(0);
+        drive.setCameraServo(1);
 
         initTfod();
 

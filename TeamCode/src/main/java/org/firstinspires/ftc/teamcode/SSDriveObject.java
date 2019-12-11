@@ -140,16 +140,12 @@ public class SSDriveObject extends Object{
                 opmode.telemetry.addLine("Blue foundation");
                 opmode.telemetry.update();
 
-                turnDegree(.67,90);
-                opmode.sleep(500);
-                driveDistance(1, 53);
+                strafeDistanceNoAccel(1,-53);
             } else {
                 opmode.telemetry.addLine("Red foundation");
                 opmode.telemetry.update();
 
-                turnDegree(.67,-90);
-                opmode.sleep(500);
-                driveDistance(1, 53);
+                strafeDistanceNoAccel(1,53);
             }
 
 
