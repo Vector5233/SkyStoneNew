@@ -136,7 +136,7 @@ public class SSDriveObject extends Object{
 
     public void telemetryDcMotor(){
         opmode.telemetry.addData("FR", frontRight.getCurrentPosition());
-        opmode.telemetry.addData("FB", frontLeft.getCurrentPosition());
+        opmode.telemetry.addData("FL", frontLeft.getCurrentPosition());
         opmode.telemetry.addData("BR", backRight.getCurrentPosition());
         opmode.telemetry.addData("BL", backLeft.getCurrentPosition());
         opmode.telemetry.update();
@@ -244,7 +244,8 @@ public class SSDriveObject extends Object{
 
     public void strafeDistance(double powerLimit, double distance) {
         final double PERCENT = .25;
-        final double STRAFECORRECTION = 30/37;
+        final double STRAFECORRECTION = 30.0/37.0;
+        // in java, double should have decimal point.. by Wyatt and Mr. Cagle.
         double powerMin = 0.22;
         int ticks = (int) (distance * TICKS_PER_INCH_STRAFE * STRAFECORRECTION);
 
@@ -257,17 +258,14 @@ public class SSDriveObject extends Object{
                 if (frontLeft.getCurrentPosition() < PERCENT * ticks) {
                     setStrafePowerAll(Math.max((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
                     opmode.telemetry.addLine("accelerating");
-                    opmode.telemetry.update();
                     telemetryDcMotor();
                 } else if (frontLeft.getCurrentPosition() < (1 - PERCENT) * ticks) {
                     setStrafePowerAll(powerLimit);
                     opmode.telemetry.addLine("cruising");
-                    opmode.telemetry.update();
                     telemetryDcMotor();
                 } else {
                     setStrafePowerAll(Math.max(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
                     opmode.telemetry.addLine("decelerating");
-                    opmode.telemetry.update();
                     telemetryDcMotor();
                 }
             }
@@ -278,17 +276,14 @@ public class SSDriveObject extends Object{
                 if (frontLeft.getCurrentPosition() > PERCENT * ticks) {
                     setStrafePowerAll(Math.min((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
                     opmode.telemetry.addLine("accelerating");
-                    opmode.telemetry.update();
                     telemetryDcMotor();
                 } else if (frontLeft.getCurrentPosition() > (1 - PERCENT) * ticks) {
                     setStrafePowerAll(powerLimit);
                     opmode.telemetry.addLine("cruising");
-                    opmode.telemetry.update();
                     telemetryDcMotor();
                 } else {
                     setStrafePowerAll(Math.min(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
                     opmode.telemetry.addLine("decelerating");
-                    opmode.telemetry.update();
                     telemetryDcMotor();
                 }
             }
