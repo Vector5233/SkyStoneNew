@@ -68,7 +68,7 @@ public class SSTestAutoOp extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.strafeDistance(1, -24.5);
+        drive.detectReady();
 
         detectStones();
         telemetry.addData("  SS left", "%.03f", SS_leftPixel);
@@ -81,7 +81,7 @@ public class SSTestAutoOp extends LinearOpMode {
         telemetry.update();
         sleep(1000);
 
-        drive.collectSkyStone();
+        drive.collectSkyStone(displacement);
     }
 
     public void initTfod(){
@@ -140,8 +140,8 @@ public class SSTestAutoOp extends LinearOpMode {
         double S1_size = S1_rightPixel - S1_leftPixel;
         double S2_size = S2_rightPixel - S2_leftPixel;
 
-        SS_leftPixel = Math.max(S1_rightPixel, S2_rightPixel);
-        SS_rightPixel = SS_leftPixel + (S1_size + S2_size)/2;
+        SS_rightPixel = Math.min(S1_leftPixel, S2_leftPixel);
+        SS_leftPixel = SS_rightPixel - (S1_size + S2_size)/2;
 
         telemetry.addLine("Skystone virtually created");
         telemetry.update();
@@ -151,18 +151,20 @@ public class SSTestAutoOp extends LinearOpMode {
         inchPerPixel = Math.abs(BLOCK_LENGTH/(SS_rightPixel - SS_leftPixel));
         telemetry.addData("inch / pixel", "%.03f", inchPerPixel);
 
+        double SS_size = SS_rightPixel - SS_leftPixel;
+
         //displacement = ((5/8)*(SS_rightPixel - SS_leftPixel) + SS_leftPixel - CENTER_PIXELS)*inchPerPixel - ARM_TO_WEBCAM;
         if(250 <= SS_rightPixel && SS_rightPixel <= 500) {
-            telemetry.addLine("right");
-            displacement = inchPerPixel * (SS_rightPixel - CENTER_PIXELS) - ARM_TO_WEBCAM + 13;
+            telemetry.addLine("center");
+            displacement = inchPerPixel * (SS_rightPixel - CENTER_PIXELS) + ARM_TO_WEBCAM - 3;
         }
         else if(600 <= SS_rightPixel && SS_rightPixel <= 800) {
-            telemetry.addLine("left");
-            displacement = inchPerPixel * (SS_leftPixel - CENTER_PIXELS) - ARM_TO_WEBCAM + 5;
+            telemetry.addLine("right");
+            displacement = inchPerPixel * (SS_leftPixel - CENTER_PIXELS) + ARM_TO_WEBCAM + 5;
         }
         else if(isVirtual) {
-            telemetry.addLine("center");
-            displacement = inchPerPixel * (CENTER_PIXELS + SS_rightPixel - 2 * SS_leftPixel) - ARM_TO_WEBCAM + 15;
+            telemetry.addLine("left");
+            displacement = inchPerPixel * (SS_rightPixel + SS_size - CENTER_PIXELS) - 8 + ARM_TO_WEBCAM;
         }
     }
 

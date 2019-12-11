@@ -22,7 +22,7 @@ public class SSDriveObject extends Object{
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller;
     LinearOpMode opmode;
 
-    final double ROBOT_RADIUS = 12.5;
+    final double ROBOT_RADIUS = 13.5;
     final double TICKS_PER_INCH_STRAIGHT = (383.6*2) / (4 * 3.14159265358979323846264);
     final double TICKS_PER_INCH_TURN = TICKS_PER_INCH_STRAIGHT;
     final double TICKS_PER_INCH_STRAFE = (TICKS_PER_INCH_STRAIGHT)*1.15;
@@ -86,14 +86,19 @@ public class SSDriveObject extends Object{
         leftRoller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void collectSkyStone(){
-        setHookVrt(0.9);
-        setHookHrz(1);
-        opmode.sleep(200);
-        setHookVrt(0.4);
-        opmode.sleep(250);
-        strafeDistance(1, 5);
-        opmode.sleep(200);
+    public void detectReady(){
+        setHookHrz(0.5);
+        setHookVrt(1);
+        opmode.sleep(500);
+
+        driveDistance(0.7, 20);
+    }
+
+    public void collectSkyStone(double displacement){
+        strafeDistance(1, displacement);
+        setHookVrt(0);
+        opmode.sleep(500);
+        driveDistance(1, -5);
         setHookHrz(0);
         setRollerMoters(true, 1, 1000);
         //how to check if the block is collected or not (next round)
