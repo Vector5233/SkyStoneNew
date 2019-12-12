@@ -87,12 +87,24 @@ public class SSDriveObject extends Object{
         leftRoller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    public void initialize(){
+        capServo.setPosition(0.8);
+
+        setBlockSweeper(false);
+        setCameraServo(1);
+        setHookVrt(0.8);
+        setHookHrz(0);
+
+        opmode.telemetry.addLine("initialized");
+        opmode.telemetry.update();
+    }
+
     public void detectReady(){
         setHookHrz(0.5);
         setHookVrt(1);
         opmode.sleep(500);
 
-        driveDistance(0.7,.7, 23);
+        driveDistance(0.7,.7, 26);
     }
 
     public void collectSkyStone(double displacement){

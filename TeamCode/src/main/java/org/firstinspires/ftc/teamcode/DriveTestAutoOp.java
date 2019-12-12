@@ -13,13 +13,7 @@ public class DriveTestAutoOp extends LinearOpMode {
 
         drive.capServo.setPosition(0.8);
 
-        drive.setBlockSweeper(false);
-        drive.setCameraServo(1);
-        drive.setHookVrt(1);
-        drive.setHookHrz(0);
-
-        telemetry.addLine("initialized");
-        telemetry.update();
+        drive.initialize();
     }
     public void runOpMode(){
         initialize();
