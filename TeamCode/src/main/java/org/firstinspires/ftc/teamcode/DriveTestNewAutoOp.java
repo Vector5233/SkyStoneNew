@@ -20,6 +20,7 @@ public class DriveTestNewAutoOp extends LinearOpMode {
         waitForStart();
 
         //drive.driveDistance(1, 20);
+        drive.driveDistance(1, 1, 20);
         telemetry.addLine("new drive finished");
         telemetry.update();
         sleep(2000);
