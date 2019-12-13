@@ -42,6 +42,6 @@ public class SSTestAutoOp extends LinearOpMode {
 
         drive.collectSkyStone(drive.RED);
 
-        drive.moveToFoundation(drive.RED);
+        //drive.moveToFoundation(drive.RED);
     }
 }

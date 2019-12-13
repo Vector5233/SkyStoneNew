@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class Blue1SkyFoundPark extends LinearOpMode {
     SSDriveObject drive;
 
-    public void initialize(){
+    public void initialize(){//lll
         drive = new SSDriveObject(this);
 
         drive.initialize();
