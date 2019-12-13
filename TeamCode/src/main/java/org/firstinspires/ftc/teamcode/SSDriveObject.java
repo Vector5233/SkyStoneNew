@@ -123,10 +123,10 @@ public class SSDriveObject extends Object{
     public void moveFoundation (boolean side) {
         driveDistance(1, -24.5);
         setFoundationLeft(true);
-        opmode.sleep(1000);
-        driveDistanceCompensate(1,.7, 32);
+        opmode.sleep(500);
+        driveDistanceCompensate(1,.75, 32.75);
         setFoundationLeft(false);
-        opmode.sleep(1000);
+        opmode.sleep(500);
         //park(side, FOUNDATION);
     }
 
@@ -152,13 +152,15 @@ public class SSDriveObject extends Object{
             if (side) {
                 opmode.telemetry.addLine("Blue foundation");
                 opmode.telemetry.update();
-
+                turnDegree(.4,3);
+                opmode.sleep(250);
                 strafeDistanceNoAccel(1,-53);
             } else {
                 opmode.telemetry.addLine("Red foundation");
                 opmode.telemetry.update();
-
-                strafeDistanceNoAccel(1,53);
+                turnDegree(.67,-90);
+                opmode.sleep(500);
+                driveDistance(1,53);
             }
 
 

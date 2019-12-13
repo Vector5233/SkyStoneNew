@@ -25,6 +25,8 @@ public class SkyStoneTeleOp extends OpMode {
 
     double driveSpeed = 1;
 
+    double rotationPos = 0;
+
     //test required
     final int maxLift = 700;
     final int minLift = 0;
@@ -56,6 +58,9 @@ public class SkyStoneTeleOp extends OpMode {
     boolean ifUnpressedRT = true;
     boolean ifUnpressedLT = true;
 
+    boolean if_pressedRT = false;
+    boolean if_pressedLT = false;
+
     boolean if_pressedDpadDown = false;
     boolean if_pressedDpadHrz = false;
     boolean if_pressedDpadUp = false;
@@ -66,6 +71,7 @@ public class SkyStoneTeleOp extends OpMode {
     boolean if_pressedGp1B = false;
     boolean if_pressedGp2B = false;
     boolean if_pressedGp2X = false;
+
 
     boolean if_pressedRB = false;
     boolean if_pressedLB = false;
@@ -117,11 +123,11 @@ public class SkyStoneTeleOp extends OpMode {
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
 
-        rightRoller.setDirection(DcMotor.Direction.REVERSE);
-        leftRoller.setDirection(DcMotor.Direction.FORWARD);
+        rightRoller.setDirection(DcMotor.Direction.FORWARD);
+        leftRoller.setDirection(DcMotor.Direction.REVERSE);
 
-        rightLift.setDirection(DcMotor.Direction.REVERSE);
-        leftLift.setDirection(DcMotor.Direction.REVERSE);
+        rightLift.setDirection(DcMotor.Direction.FORWARD);
+        leftLift.setDirection(DcMotor.Direction.FORWARD);
 
         deliveryExtender.setDirection(CRServo.Direction.FORWARD);
 
@@ -155,6 +161,7 @@ public class SkyStoneTeleOp extends OpMode {
         deliveryGrabber.setPosition(0);
 
         capServo.setPosition(0.8);
+        cameraServo.setPosition(0.25);
     }
 
     public void loop() {
@@ -168,12 +175,13 @@ public class SkyStoneTeleOp extends OpMode {
         setCapServoTest();
         //setCapServo();
         //setDeliveryGrabber();
-        setDeliveryRotation();
-        setDeliveryExtender();
+        //setDeliveryRotation();
+        //setDeliveryExtender();
         setCameraServo();
 
         telemetry.addData("blockSweeper", blockSweeper.getPosition());
         telemetry.addData("driveSpeed", driveSpeed);
+        telemetry.addData("delivery rotation", deliveryRotation.getPosition());
     }
 
     private void setDriveMotors() {
@@ -249,8 +257,10 @@ public class SkyStoneTeleOp extends OpMode {
 
 
     private void setDeliveryMotors() {
-        final double ROTATIONIN = 0.5;
+        final double ROTATIONHALF = 0.5;
         final double ROTATIONOUT = 1;
+
+
         deliveryExtender.setPower(gamepad2.right_stick_y);
 
 
@@ -263,30 +273,33 @@ public class SkyStoneTeleOp extends OpMode {
         }
 
 
-        if  (gamepad2.right_trigger >= TRIGGERTHRESHOLD && ifUnpressedRT) {
-            if(deliveryRotation.getPosition() < 0.25) {
-                deliveryRotation.setPosition(ROTATIONIN);
-                telemetry.addData("Grabber", deliveryRotation.getPosition());
-                ifUnpressedRT = false;
-            } else if (0.25 < deliveryRotation.getPosition() && deliveryRotation.getPosition() < 0.75) {
-                deliveryRotation.setPosition(ROTATIONOUT);
-                telemetry.addData("Grabber", deliveryRotation.getPosition());
-                ifUnpressedRT = false;
+        if  ((gamepad2.right_trigger >= .95) && !if_pressedRT) {
+            if (rotationPos < 1) {
+                telemetry.addLine("rotation move out");
+                rotationPos += ROTATIONHALF;
+                deliveryRotation.setPosition(rotationPos);
+                if_pressedRT = true;
+                telemetry.update();
             }
-        } else
-            ifUnpressedRT = true;
-
-        if (gamepad2.left_trigger >= TRIGGERTHRESHOLD && ifUnpressedLT) {
-            if (0.75 < deliveryRotation.getPosition()) {
-                deliveryRotation.setPosition(0.5);
-                ifUnpressedLT = false;
-            } else if (0.25 < deliveryRotation.getPosition() && deliveryRotation.getPosition() < 0.75) {
-                deliveryRotation.setPosition(0);
-                ifUnpressedLT = false;
-            }
+            if_pressedRT = true;
         } else {
-            ifUnpressedLT = true;
+            if_pressedRT = false;
         }
+
+        if ((gamepad2.left_trigger >= .95) && !if_pressedLT) {
+            if (rotationPos > 0) {
+                telemetry.addLine("rotation move in");
+                rotationPos -= ROTATIONHALF;
+                deliveryRotation.setPosition(rotationPos);
+                if_pressedLT = true;
+                telemetry.update();
+            }
+            if_pressedLT = true;
+        } else {
+            if_pressedLT = false;
+        }
+
+
 
 
     }
@@ -340,7 +353,7 @@ public class SkyStoneTeleOp extends OpMode {
     }
 
     public void setBlockSweeper() {
-        if (gamepad1.a) {
+        if (gamepad1.right_trigger >= TRIGGERTHRESHOLD) {
             blockSweeper.setPosition(0.725);
         } else {
             blockSweeper.setPosition(1);
@@ -430,12 +443,15 @@ public class SkyStoneTeleOp extends OpMode {
     }*/
 
     public void setCameraServo () {
+        return;
+    }
+    /*
         if (gamepad2.y){
             cameraServo.setPosition(0);
         } else{
             cameraServo.setPosition(1);
         }
-    }
+    }*/
 
     public void setDeliveryExtender() {
         switch (ExtenderState) {
