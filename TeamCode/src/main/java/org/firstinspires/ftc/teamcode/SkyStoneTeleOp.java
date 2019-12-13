@@ -123,11 +123,11 @@ public class SkyStoneTeleOp extends OpMode {
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
 
-        rightRoller.setDirection(DcMotor.Direction.FORWARD);
-        leftRoller.setDirection(DcMotor.Direction.REVERSE);
+        rightRoller.setDirection(DcMotor.Direction.REVERSE);
+        leftRoller.setDirection(DcMotor.Direction.FORWARD);
 
-        rightLift.setDirection(DcMotor.Direction.FORWARD);
-        leftLift.setDirection(DcMotor.Direction.FORWARD);
+        rightLift.setDirection(DcMotor.Direction.REVERSE);
+        leftLift.setDirection(DcMotor.Direction.REVERSE);
 
         deliveryExtender.setDirection(CRServo.Direction.FORWARD);
 
@@ -161,7 +161,7 @@ public class SkyStoneTeleOp extends OpMode {
         deliveryGrabber.setPosition(0);
 
         capServo.setPosition(0.8);
-        cameraServo.setPosition(0.25);
+        cameraServo.setPosition(0);
     }
 
     public void loop() {
@@ -273,7 +273,7 @@ public class SkyStoneTeleOp extends OpMode {
         }
 
 
-        if  ((gamepad2.right_trigger >= .95) && !if_pressedRT) {
+        if  ((gamepad2.right_trigger >= .8) && !if_pressedRT) {
             if (rotationPos < 1) {
                 telemetry.addLine("rotation move out");
                 rotationPos += ROTATIONHALF;
@@ -286,7 +286,7 @@ public class SkyStoneTeleOp extends OpMode {
             if_pressedRT = false;
         }
 
-        if ((gamepad2.left_trigger >= .95) && !if_pressedLT) {
+        if ((gamepad2.left_trigger >= .8) && !if_pressedLT) {
             if (rotationPos > 0) {
                 telemetry.addLine("rotation move in");
                 rotationPos -= ROTATIONHALF;
