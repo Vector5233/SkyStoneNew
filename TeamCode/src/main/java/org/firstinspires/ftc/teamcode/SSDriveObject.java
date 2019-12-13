@@ -88,7 +88,7 @@ public class SSDriveObject extends Object{
     }
 
     public void initialize(){
-        capServo.setPosition(0.8);
+        capServo.setPosition(0.79);
         setFoundationLeft(false);
         setBlockSweeper(false);
         setCameraServo(1);
@@ -131,7 +131,7 @@ public class SSDriveObject extends Object{
         opmode.sleep(500);
         setFoundationLeft(true);
         opmode.sleep(500);
-        driveDistanceCompensate(1,.75, 32.75);
+        driveDistanceCompensate(1,.75, 34);
         setFoundationLeft(false);
         opmode.sleep(500);
         //park(side, FOUNDATION);
@@ -159,7 +159,9 @@ public class SSDriveObject extends Object{
             if (side) {
                 opmode.telemetry.addLine("Blue foundation");
                 opmode.telemetry.update();
-                turnDegree(.4,4);
+                turnDegree(.4,3);
+                opmode.sleep(250);
+                driveDistance(1,-.5);
                 opmode.sleep(250);
                 strafeDistanceNoAccel(1,-55);
             } else {
