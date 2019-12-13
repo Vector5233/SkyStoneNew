@@ -197,12 +197,12 @@ public class SSDriveObject extends Object{
         } else {
             strafeDistanceNoAccel(.75,-22);
         }
-        opmode.sleep(50);
+        opmode.sleep(500);
         setFoundationLeft(true);
-        opmode.sleep(50);
+        opmode.sleep(500);
         driveDistanceCompensate(1,.75, 32.75);
         setFoundationLeft(false);
-        opmode.sleep(50);
+        opmode.sleep(500);
         //park(side, FOUNDATION);
     }
 

@@ -13,6 +13,7 @@ public class RedFoundPark extends LinearOpMode {
 
         drive.initialize();
     }
+
     public void runOpMode(){
         initialize();
         waitForStart();

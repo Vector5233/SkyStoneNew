@@ -27,7 +27,7 @@ public class SSTestAutoOp extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.detectReady();
+        drive.detectReady(drive.RED);
 
         drive.detectStones();
         telemetry.addData("  SS left", "%.03f", drive.SS_leftPixel);
@@ -40,8 +40,8 @@ public class SSTestAutoOp extends LinearOpMode {
         telemetry.update();
         sleep(1000);
 
-        drive.collectSkyStone();
+        drive.collectSkyStone(drive.RED);
 
-        drive.moveToFoundation();
+        drive.moveToFoundation(drive.RED);
     }
 }
