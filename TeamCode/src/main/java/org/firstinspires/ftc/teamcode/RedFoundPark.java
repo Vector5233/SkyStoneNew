@@ -18,6 +18,7 @@ public class RedFoundPark extends LinearOpMode {
         waitForStart();
 
         drive.driveDistance(1, -24.5);
+        sleep(50);
         drive.moveFoundation(drive.RED);
         drive.park(drive.RED, drive.FOUNDATION);
     }
