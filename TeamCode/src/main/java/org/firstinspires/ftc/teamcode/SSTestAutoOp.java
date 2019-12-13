@@ -83,6 +83,8 @@ public class SSTestAutoOp extends LinearOpMode {
         sleep(1000);
 
         drive.collectSkyStone(displacement);
+
+        drive.moveToFoundation();
     }
 
     public void initTfod(){

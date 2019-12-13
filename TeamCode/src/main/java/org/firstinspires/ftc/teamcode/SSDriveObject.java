@@ -104,7 +104,7 @@ public class SSDriveObject extends Object{
         setHookVrt(1);
         opmode.sleep(500);
 
-        driveDistance(0.7, 26);
+        driveDistance(1, 23);
     }
 
     public void collectSkyStone(double displacement){
@@ -116,12 +116,20 @@ public class SSDriveObject extends Object{
         setRollerMoters(true, 1, 1000);
         //how to check if the block is collected or not (next round)
         setBlockSweeper(true);
-        opmode.sleep(750);
+        opmode.sleep(500);
         setBlockSweeper(false);
     }
 
+    public void moveToFoundation(){
+        turnDegree(1,-90);
+        opmode.sleep(50);
+        driveDistance(1,61.5);
+        opmode.sleep(50);
+        turnDegree(1,-90);
+        driveDistance(1,-12.5);
+    }
+
     public void moveFoundation (boolean side) {
-        driveDistance(1, -24.5);
         setFoundationLeft(true);
         opmode.sleep(500);
         driveDistanceCompensate(1,.75, 32.75);
