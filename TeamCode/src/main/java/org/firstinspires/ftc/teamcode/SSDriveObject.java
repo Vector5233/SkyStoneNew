@@ -141,8 +141,8 @@ public class SSDriveObject extends Object{
         setFoundationLeft(false);
         setBlockSweeper(false);
         setCameraServo(1);
-        setHookVrt(0.8);
-        setHookHrz(0);
+        setHookVrt(0.65);
+        setHookHrz(0.15);
 
         opmode.telemetry.addLine("initialized");
         opmode.telemetry.update();
@@ -192,12 +192,12 @@ public class SSDriveObject extends Object{
     }
 
     public void moveFoundation (boolean side) {
-        setFoundationLeft(true);
+        /*setFoundationLeft(true);
         opmode.sleep(400);
         driveDistanceNoAccel(.4,1);
         opmode.sleep(400);
         strafeDistanceNoAccel(.3,20 );
-        /*opmode.sleep(400);
+        *//*opmode.sleep(400);
         strafeDistanceNoAccel(.5,-10);
         opmode.sleep(400);
         turnDegree(.3,-80);
@@ -209,19 +209,39 @@ public class SSDriveObject extends Object{
 
 
 
-        /*if (side) {
+        if (side) {
             strafeDistanceNoAccel(.75, 21);
         } else {
             strafeDistanceNoAccel(.75,-11);
         }
         opmode.sleep(300);
+
         setFoundationLeft(true);
         opmode.sleep(400);
+
         driveDistanceCompensate(.4,.4, 37);
         opmode.sleep(300);
+
         setFoundationLeft(false);
         opmode.sleep(400);
-        //park(side, FOUNDATION);*/
+
+        turnDegree(.4,1.5);
+        opmode.sleep(400);
+
+        driveDistance(1,-1);
+        opmode.sleep(400);
+
+        strafeDistanceNoAccel(1,-39);
+        opmode.sleep(400);
+
+        turnDegree(.67,90);
+        opmode.sleep(400);
+
+        strafeDistanceNoAccel(.8,23);
+        opmode.sleep(400);
+
+        driveDistance(.5,-15);
+        //park(side, FOUNDATION);
     }
 
     public void park (boolean side, boolean state) {
@@ -246,13 +266,9 @@ public class SSDriveObject extends Object{
             if (side) {
                 opmode.telemetry.addLine("Blue foundation");
                 opmode.telemetry.update();
-                turnDegree(.4,1.5);
-                opmode.sleep(250);
-                /*driveDistance(1,-1);
-                opmode.sleep(250);
-                strafeDistanceNoAccel(1,-55);*/
-                opmode.sleep(400);
-                driveDistance(1,40);
+
+                /*opmode.sleep(400);
+                driveDistance(1,40);*/
             } else {
                 opmode.telemetry.addLine("Red foundation");
                 opmode.telemetry.update();
