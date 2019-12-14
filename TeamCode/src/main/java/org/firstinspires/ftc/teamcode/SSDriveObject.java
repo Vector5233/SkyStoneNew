@@ -212,22 +212,59 @@ public class SSDriveObject extends Object{
 
 
         if (side) {
-            strafeDistanceNoAccel(.75, 15);
-        } else {
-            strafeDistanceNoAccel(.75,-11);
+            strafeDistanceNoAccel(1, 14.4);
+            opmode.sleep(400);
+            setFoundationLeft(true);
+            opmode.sleep(400);
+            driveDistance(1, 25.75);
+            opmode.sleep(400);
+            setFoundationLeft(false);
+            opmode.sleep(400);
+            driveDistance(1,-1.1);
+            opmode.sleep(400);
+            strafeDistance(1, -38);
+            opmode.sleep(400);
+            turnDegree(.67,78);
+            opmode.sleep(400);
+            strafeDistance(1,-20);
+            opmode.sleep(400);
+            driveDistance(1,-12);
+
+        } else if (!side) {
+            opmode.telemetry.addLine("red Foundation moving");
+            driveDistance(1, -22);
+            opmode.sleep(250);
+            setFoundationLeft(true);
+            opmode.sleep(500);
+            strafeDistanceNoAccel(1,-5);
+
+            opmode.sleep(400);
+            driveDistance(1, 25.75);
+
+
+            opmode.sleep(400);
+            setFoundationLeft(false);
+            opmode.sleep(400);
+//            driveDistance(1,-1.1);
+//            opmode.sleep(400);
+            strafeDistance(1, 46);
+//            opmode.sleep(400);
+//            turnDegree(.67,-78);
+//            opmode.sleep(400);
+//            strafeDistance(1,20);
+//            opmode.sleep(400);
+//            driveDistance(1,-12);
+
         }
-        opmode.sleep(300);
 
-        setFoundationLeft(true);
-        opmode.sleep(400);
-/*
-        driveDistanceCompensate(.4,.4, 37);
-        opmode.sleep(300);
 
-        setFoundationLeft(false);
-        opmode.sleep(400);
 
-        turnDegree(.4,1.5);
+
+
+
+        //turnDegree(.4, -5);
+
+        /*turnDegree(.4,1.5);
         opmode.sleep(400);
 
         driveDistance(1,-1);
@@ -269,8 +306,8 @@ public class SSDriveObject extends Object{
                 opmode.telemetry.addLine("Blue foundation");
                 opmode.telemetry.update();
 
-                /*opmode.sleep(400);
-                driveDistance(1,40);*/
+                opmode.sleep(400);
+                driveDistance(1,12);
             } else {
                 opmode.telemetry.addLine("Red foundation");
                 opmode.telemetry.update();
@@ -279,8 +316,8 @@ public class SSDriveObject extends Object{
                 driveDistance(1,-1);
                 opmode.sleep(250);
                 driveDistance(1,35);*/
-                opmode.sleep(400);
-                driveDistance(1,40);
+                /*opmode.sleep(400);
+                driveDistance(1,12);*/
             }
 
 
@@ -389,10 +426,10 @@ public class SSDriveObject extends Object{
         int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
 
 
-        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         opmode.telemetry.addLine("Encoders reset");
         opmode.telemetry.update();
-        setModeAll(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (ticks > 0) {
             while ((frontLeft.getCurrentPosition() <= ticks) && opmode.opModeIsActive()) {
@@ -422,10 +459,10 @@ public class SSDriveObject extends Object{
         int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
 
 
-        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         opmode.telemetry.addLine("Encoders reset");
         opmode.telemetry.update();
-        setModeAll(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (ticks > 0) {
             while((frontLeft.getCurrentPosition() <= ticks) && opmode.opModeIsActive()) {
@@ -449,10 +486,10 @@ public class SSDriveObject extends Object{
         int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
 
 
-        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         opmode.telemetry.addLine("Encoders reset");
         opmode.telemetry.update();
-        setModeAll(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (ticks > 0) {
             while((frontLeft.getCurrentPosition() <= ticks) && opmode.opModeIsActive()) {
@@ -505,10 +542,10 @@ public class SSDriveObject extends Object{
         opmode.telemetry.addData("ticks", ticks);
         opmode.telemetry.update();
 
-        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         opmode.telemetry.addLine("Encoders reset");
         opmode.telemetry.update();
-        setModeAll(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (ticks > 0) {
             while((frontLeft.getCurrentPosition() <= ticks) && opmode.opModeIsActive()) {
@@ -537,10 +574,10 @@ public class SSDriveObject extends Object{
         opmode.telemetry.addData("ticks", ticks);
         opmode.telemetry.update();
 
-        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         opmode.telemetry.addLine("Encoders reset");
         opmode.telemetry.update();
-        setModeAll(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (ticks > 0) {
             while((frontLeft.getCurrentPosition() <= ticks) && opmode.opModeIsActive()) {
@@ -594,14 +631,14 @@ public class SSDriveObject extends Object{
 
         int ticks = (int) (TICKS_PER_DEGREE * degrees);
 
-        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         opmode.telemetry.addLine("Encoders reset");
         opmode.telemetry.update();
-        setModeAll(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         getAngleTelemetry("TURN START");
 
-        opmode.sleep(1500);
+
         if (ticks > 0) {
             // positive (CCW) turn => left motor goes in (-) direction
             while ((frontLeft.getCurrentPosition() >= -ticks) && opmode.opModeIsActive()) {
@@ -716,7 +753,7 @@ public class SSDriveObject extends Object{
             //rightFoundation.setPosition(0);
         }
         else {
-            leftFoundation.setPosition(0.7);
+            leftFoundation.setPosition(0.5);
             //rightFoundation.setPosition(0.7);
         }
     }
