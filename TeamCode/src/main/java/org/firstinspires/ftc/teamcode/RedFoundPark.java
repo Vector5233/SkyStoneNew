@@ -21,7 +21,13 @@ public class RedFoundPark extends LinearOpMode {
         drive.driveDistance(1, -24.5);
         sleep(50);
         drive.moveFoundation(drive.RED);
+        telemetry.addLine("FoundationMoved");
+        telemetry.update();
+        sleep(500);
         drive.park(drive.RED, drive.FOUNDATION);
+        telemetry.addLine("Parked");
+        telemetry.update();
+        sleep(500);
     }
 }
 
