@@ -139,10 +139,12 @@ public class SSDriveObject extends Object{
     public void initialize(){
         capServo.setPosition(0.8);
         setFoundationLeft(false);
-        setBlockSweeper(false);
+        setBlockSweeper(true);
         setCameraServo(1);
-        setHookVrt(0.65);
-        setHookHrz(0.15);
+        setHookVrt(.9);
+        setHookHrz(0.11);
+
+
 
         opmode.telemetry.addLine("initialized");
         opmode.telemetry.update();
@@ -210,7 +212,7 @@ public class SSDriveObject extends Object{
 
 
         if (side) {
-            strafeDistanceNoAccel(.75, 21);
+            strafeDistanceNoAccel(.75, 15);
         } else {
             strafeDistanceNoAccel(.75,-11);
         }
@@ -218,7 +220,7 @@ public class SSDriveObject extends Object{
 
         setFoundationLeft(true);
         opmode.sleep(400);
-
+/*
         driveDistanceCompensate(.4,.4, 37);
         opmode.sleep(300);
 
@@ -241,7 +243,7 @@ public class SSDriveObject extends Object{
         opmode.sleep(400);
 
         driveDistance(.5,-15);
-        //park(side, FOUNDATION);
+        //park(side, FOUNDATION);*/
     }
 
     public void park (boolean side, boolean state) {
