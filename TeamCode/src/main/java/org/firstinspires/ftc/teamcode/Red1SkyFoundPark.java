@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="RedFoundPark", group="Red")
+@Autonomous(name="Red1SkyFoundPark", group="Blue")
 
-public class RedFoundPark extends LinearOpMode {
+public class Red1SkyFoundPark extends LinearOpMode {
     SSDriveObject drive;
 
     public void initialize(){
@@ -13,21 +13,17 @@ public class RedFoundPark extends LinearOpMode {
 
         drive.initialize();
     }
-
     public void runOpMode(){
         initialize();
         waitForStart();
 
-        drive.driveDistance(1, -24.5);
-        sleep(50);
+        drive.detectReady(drive.RED);
+        drive.detectStones();
+        drive.getDisplacement();
+        drive.collectSkyStone(drive.RED);
+        drive.moveToFoundation(drive.RED);
         drive.moveFoundation(drive.RED);
-        telemetry.addLine("FoundationMoved");
-        telemetry.update();
-        sleep(500);
-        drive.park(drive.RED, drive.FOUNDATION);
-        telemetry.addLine("Parked");
-        telemetry.update();
-        sleep(500);
+        drive.park(drive.BLUE, drive.FOUNDATION);
     }
 }
 

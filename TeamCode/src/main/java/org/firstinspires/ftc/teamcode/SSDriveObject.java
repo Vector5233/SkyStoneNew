@@ -8,6 +8,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
+
 /* TODO
    To prevent robot from lumping at the endpoint
    1) make function that makes the robot smoothly accelerating stars and stops
@@ -21,6 +29,10 @@ public class SSDriveObject extends Object{
     CRServo deliveryExtender;
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller;
     LinearOpMode opmode;
+
+    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+    private static final String LABEL_FIRST_ELEMENT = "Stone";
+    private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
     final double ROBOT_RADIUS = 13.5;
     final double TICKS_PER_INCH_STRAIGHT = (383.6*2) / (4 * 3.14159265358979323846264);
@@ -36,11 +48,33 @@ public class SSDriveObject extends Object{
     final boolean FOUNDATION = false;
     final boolean NORMAL = true;
 
+    final double WEBCAM_TO_BLOCKS = 9.5;
+
+    final double CENTER_PIXELS = 400.0;
+    final double BLOCK_LENGTH = 8.0;
+    final double ARM_TO_WEBCAM = 5.875;
+
+    final int TFOD_TIMEOUT = 500;
+
     //final double TOLERANCE = ??;
     //final double ROOT2 = 1.414;
     //final int CAMERA_MIDPOINT = ??;
     //final int SAMPLING_FORWARD = ?;
 
+    double inchPerPixel;
+
+    double SS_leftPixel;
+    double SS_rightPixel;
+
+    double displacement;
+    double secondDisplacement = displacement - 24;
+
+    boolean isVirtual = false;
+
+    VuforiaLocalizer vuforia;
+    TFObjectDetector tfod;
+
+    ElapsedTime tfodTimeout;
     ElapsedTime rollerTimeout;
 
     public SSDriveObject(LinearOpMode parent){
@@ -85,10 +119,25 @@ public class SSDriveObject extends Object{
 
         rightRoller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftRoller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //vuforia tfod init
+
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = "AbLVQDn/////AAABma+zV9cCqU+7pLBUXgQ3J6II1u1B8Vg4mrnGfVawPjc1l7C6GWoddOaL6Wqj5kXPBVUh3U3WND38234Tm0h3+LKmmTzzaVPRwOk3J+zBwKlOvv93+u7chctULk8ZYEyf0NuuEfsGwpgJx7xL9hIFBoaB2G1SpbJIt+n94wz6EvfRYSusBEiST/lUqgDISIlaeOLPWEipHh46axomcrGVRRl09pg6pCt2h7rU6us+guN5nKhupTXvM+BTUYW3kCO9YsUjz16jLr7GyFh8wVQbRS3dikSX7kzVsdkLjZnJdyinYaB5oDXfmmXtaC6ZXeD6vKs62vpaydAq9VGAlCtnSyq2J4NLI+LOIOvdtsCwarfS";
+        parameters.cameraName = opmode.hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        initTfod();
+
+        if (tfod != null) {
+            tfod.activate();
+        }
     }
 
     public void initialize(){
-        capServo.setPosition(0.79);
+        capServo.setPosition(0.8);
         setFoundationLeft(false);
         setBlockSweeper(false);
         setCameraServo(1);
@@ -99,25 +148,47 @@ public class SSDriveObject extends Object{
         opmode.telemetry.update();
     }
 
-    public void detectReady(){
-        setHookHrz(0.5);
-        setHookVrt(1);
-        opmode.sleep(500);
+    public void detectReady(boolean side){
+        if(side) {
+            setHookHrz(0.5);
+            setHookVrt(1);
+            opmode.sleep(500);
 
-        driveDistance(0.7, 26);
+            driveDistance(1, 23);
+        } else{
+
+        }
     }
 
-    public void collectSkyStone(double displacement){
-        strafeDistance(1, displacement);
-        setHookVrt(0);
-        opmode.sleep(500);
-        driveDistance(1, -5);
-        setHookHrz(0);
+    public void collectSkyStone(boolean side){
+        if(side) {
+            strafeDistance(1, displacement);
+            setHookVrt(0);
+            opmode.sleep(500);
+            driveDistance(1, -5);
+            setHookHrz(0);
+        } else{
+
+        }
         setRollerMoters(true, 1, 1000);
         //how to check if the block is collected or not (next round)
         setBlockSweeper(true);
-        opmode.sleep(750);
+        opmode.sleep(500);
         setBlockSweeper(false);
+    }
+
+    public void moveToFoundation(boolean side){
+        if (side) {
+            turnDegree(1, -90);
+            opmode.sleep(50);
+            driveDistance(1,61.5);
+            opmode.sleep(50);
+            turnDegree(1,-90);
+            opmode.sleep(50);
+        } else{
+
+        }
+        driveDistance(1,-12.5);
     }
 
     public void moveFoundation (boolean side) {
@@ -198,7 +269,92 @@ public class SSDriveObject extends Object{
         }
     }
 
+    public void initTfod(){
+        int tfodMonitorViewId = opmode.hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", opmode.hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.6;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
+
+    public void detectStones(){
+        tfodTimeout = new ElapsedTime();
+
+        if (opmode.opModeIsActive()) {
+            while (opmode.opModeIsActive()) {
+                if (tfod != null) {
+                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    if (updatedRecognitions != null) {
+                        opmode.telemetry.addData("# Object Detected", updatedRecognitions.size());
+
+                        int i = 0;
+                        boolean skyFlag = false;
+
+                        for (Recognition recognition : updatedRecognitions) {
+                            opmode.telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                            opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
+                            opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
+
+                            if(recognition.getLabel().equals("Skystone")){
+                                SS_leftPixel = recognition.getLeft();
+                                SS_rightPixel = recognition.getRight();
+                                skyFlag = true;
+                                break;
+                            }
+                        }
+                        opmode.telemetry.update();
+                        opmode.sleep(1000);
+
+                        if(!skyFlag) {
+                            isVirtual = true;
+                            createVirtualStone(updatedRecognitions.get(0).getRight(), updatedRecognitions.get(0).getLeft(), updatedRecognitions.get(1).getRight(), updatedRecognitions.get(0).getLeft());
+                        }
+                    }
+                }
+                if (tfodTimeout.milliseconds() >= TFOD_TIMEOUT) {
+                    tfod.shutdown();
+                    opmode.telemetry.addLine("Tfod Terminated");
+                    opmode.telemetry.update();
+                    break;
+                }
+            }
+        }
+    }
+
+    public void createVirtualStone(double S1_rightPixel, double S1_leftPixel, double S2_rightPixel, double S2_leftPixel){
+        double S1_size = S1_rightPixel - S1_leftPixel;
+        double S2_size = S2_rightPixel - S2_leftPixel;
+
+        SS_rightPixel = Math.min(S1_leftPixel, S2_leftPixel);
+        SS_leftPixel = SS_rightPixel - (S1_size + S2_size)/2;
+
+        opmode.telemetry.addLine("Skystone virtually created");
+        opmode.telemetry.update();
+    }
+
+    public void getDisplacement(){
+        inchPerPixel = Math.abs(BLOCK_LENGTH/( SS_rightPixel - SS_leftPixel));
+        opmode.telemetry.addData("inch / pixel", "%.03f", inchPerPixel);
+
+        double SS_size = SS_rightPixel - SS_leftPixel;
+
+        //displacement = ((5/8)*(SS_rightPixel - SS_leftPixel) + SS_leftPixel - CENTER_PIXELS)*inchPerPixel - ARM_TO_WEBCAM;
+        if(250 <= SS_rightPixel && SS_rightPixel <= 500) {
+            opmode.telemetry.addLine("center");
+            displacement = inchPerPixel * (SS_rightPixel - CENTER_PIXELS) + ARM_TO_WEBCAM - 3;
+        }
+        else if(600 <= SS_rightPixel && SS_rightPixel <= 800) {
+            opmode.telemetry.addLine("right");
+            displacement = inchPerPixel * (SS_leftPixel - CENTER_PIXELS) + ARM_TO_WEBCAM + 5;
+        }
+        else if(isVirtual) {
+            opmode.telemetry.addLine("left");
+            displacement = inchPerPixel * (SS_rightPixel + SS_size - CENTER_PIXELS) - 8 + ARM_TO_WEBCAM;
+        }
+    }
+
     //drive chassis motor
+
     public void setDrivePowerLeft(double powerLeft) {
         frontLeft.setPower(powerLeft);
         backLeft.setPower(powerLeft);
