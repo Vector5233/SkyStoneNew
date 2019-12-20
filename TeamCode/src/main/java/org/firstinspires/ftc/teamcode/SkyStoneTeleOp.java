@@ -87,7 +87,7 @@ public class SkyStoneTeleOp extends OpMode {
     ElapsedTime rotationTime = new ElapsedTime();
     final int ROTATIONTIMEOUT = 500;
     ElapsedTime extenderTime = new ElapsedTime();
-    final int EXTENDERTIMEOUT = 500;
+    final int EXTENDERTIMEOUT = 1875;
 
     public void init() {
         frontRight = hardwareMap.dcMotor.get("frontRight");
@@ -443,6 +443,47 @@ public class SkyStoneTeleOp extends OpMode {
         }
 
     }*/
+
+
+
+
+    public void testDeliveryExtender() {
+        switch (ExtenderState) {
+            case extenderIn:
+                if (gamepad2.right_stick_y >= 0.5) {
+                        telemetry.addLine("extenderMovingOut");
+                        ExtenderState=extenderMovingOut;
+                } else {
+                        telemetry.addLine("extenderIn");
+                }
+
+                break;
+            case extenderOut:
+                if (gamepad2.right_stick_y <= -0.5) {
+                        telemetry.addLine("extenderMovingIn");
+                        ExtenderState=extenderMovingIn;
+                } else {
+                        telemetry.addLine("extenderOut");
+                }
+                break;
+            case extenderMovingIn:
+                if (extenderTime.milliseconds() > EXTENDERTIMEOUT){
+                    ExtenderState = extenderIn;
+                    break;
+                }
+                deliveryExtender.setPower(1);
+                break;
+            case extenderMovingOut:
+                if (extenderTime.milliseconds() > EXTENDERTIMEOUT){
+                    ExtenderState = extenderOut;
+                    break;
+                }
+                deliveryExtender.setPower(-1);
+                break;
+            default:
+                telemetry.addLine("testFailed" );
+        }
+    }
 
     public void setCameraServo () {
         return;
