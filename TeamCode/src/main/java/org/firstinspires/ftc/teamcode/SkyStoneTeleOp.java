@@ -149,8 +149,6 @@ public class SkyStoneTeleOp extends OpMode {
         deliveryRotation.setPosition(0);
         RotationState = rotationMovingIn;
 
-        ExtenderState = extenderIn;
-
         blockSweeper.setPosition(0.95);
 
         hookVrt.setPosition(0.7);
@@ -168,7 +166,7 @@ public class SkyStoneTeleOp extends OpMode {
         setDriveMotors();
         setRollerMotors();
         setLiftMotors();
-        setDeliveryMotors();
+//        setDeliveryMotors();
         setFoundationGrabber();
         setHook();
         setBlockSweeper();
@@ -177,6 +175,7 @@ public class SkyStoneTeleOp extends OpMode {
         //setDeliveryGrabber();
         //setDeliveryRotation();
         //setDeliveryExtender();
+        testDeliveryExtender();
         setCameraServo();
 
         telemetry.addData("blockSweeper", blockSweeper.getPosition());
