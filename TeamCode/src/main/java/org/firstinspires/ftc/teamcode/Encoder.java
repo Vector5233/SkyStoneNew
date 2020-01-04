@@ -12,8 +12,12 @@ public class Encoder {
 
     double oldPosition = 0;
 
+    double totalDisplacement = 0;
+
     public Encoder(DcMotor myMotor) {
         odometer = myMotor;
+        odometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        odometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     double ticksToInches(int ticks) {
@@ -25,6 +29,7 @@ public class Encoder {
     }
 
     void reset() {
+        totalDisplacement += getDisplacement();
         odometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }

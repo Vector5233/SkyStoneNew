@@ -5,6 +5,10 @@ public class EncoderArray {
     Encoder left, right,center;
     double r1=1;
     double r2=1;
+    double X = 0;
+    double Y = 0;
+    double angle = 0;
+
 
     public EncoderArray(Encoder myLeft, Encoder myRight, Encoder myCenter, double myR1, double myR2){
         left = myLeft;
@@ -29,18 +33,25 @@ public class EncoderArray {
         center.reset();
     }
 
-    double getDisplacemetX() {
-        return 1;
+    double getX() {
+        return X;
     }
-    double getDisplacemetY() {
-        return 1;
+    double getY() {
+        return Y;
     }
     double getTurnAngle(){
-        return  1;
+        return angle;
 
     }
 
-    void updateAll(){}
+    void updateAll(){
+        X=X+getDx()*Math.cos(getDAngle())+getDy()*Math.sin(getDAngle());
+        Y=Y+getDy()*Math.cos(getDAngle())-getDx()*Math.sin(getDAngle());
+        angle=angle+getDAngle();
+        left.update();
+        right.update();
+        center.update();
+    }
 
     double getDx(){
         return getCenter()+r2/r1*getD2();
@@ -55,4 +66,3 @@ public class EncoderArray {
         return (getRight()-getLeft())/2;
     }
 }
-
