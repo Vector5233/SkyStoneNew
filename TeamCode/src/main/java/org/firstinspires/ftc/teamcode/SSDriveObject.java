@@ -781,4 +781,18 @@ public class SSDriveObject extends Object{
         opmode.telemetry.addData("   encoder: ", frontLeft.getCurrentPosition()/TICKS_PER_DEGREE);
         opmode.telemetry.update();
     }
+
+    //new
+
+    public void collectAndMoveOut() {
+
+        setRollerMoters(true, 1, 5000);
+        driveDistance(1,1);
+        opmode.sleep(1000);
+
+        //strafeDistance(-0.7,);
+
+
+    }
 }
+
