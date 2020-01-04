@@ -29,6 +29,7 @@ public class SSDriveObject extends Object{
     CRServo deliveryExtender;
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller;
     LinearOpMode opmode;
+    Encoder left;
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -53,6 +54,7 @@ public class SSDriveObject extends Object{
     final double CENTER_PIXELS = 400.0;
     final double BLOCK_LENGTH = 8.0;
     final double ARM_TO_WEBCAM = 5.875;
+    final double CENTER_TO_WEBCAM = 3.5;
 
     final int TFOD_TIMEOUT = 500;
 
@@ -150,16 +152,14 @@ public class SSDriveObject extends Object{
         opmode.telemetry.update();
     }
 
-    public void detectReady(boolean side){
-        if(side) {
-            setHookHrz(0.5);
-            setHookVrt(1);
-            opmode.sleep(500);
+    public void detectReady(){
+
+//            setHookHrz(0.5);
+//            setHookVrt(1);
+//            opmode.sleep(500);
 
             driveDistance(1, 23);
-        } else{
 
-        }
     }
 
     public void collectSkyStone(boolean side){
@@ -404,15 +404,15 @@ public class SSDriveObject extends Object{
         //displacement = ((5/8)*(SS_rightPixel - SS_leftPixel) + SS_leftPixel - CENTER_PIXELS)*inchPerPixel - ARM_TO_WEBCAM;
         if(250 <= SS_rightPixel && SS_rightPixel <= 500) {
             opmode.telemetry.addLine("center");
-            displacement = inchPerPixel * (SS_rightPixel - CENTER_PIXELS) + ARM_TO_WEBCAM - 3;
+            displacement = inchPerPixel * (SS_rightPixel - CENTER_PIXELS) - CENTER_TO_WEBCAM/*+ ARM_TO_WEBCAM - 3*/;
         }
         else if(600 <= SS_rightPixel && SS_rightPixel <= 800) {
             opmode.telemetry.addLine("right");
-            displacement = inchPerPixel * (SS_leftPixel - CENTER_PIXELS) + ARM_TO_WEBCAM + 5;
+            displacement = inchPerPixel * (SS_leftPixel - CENTER_PIXELS) - CENTER_TO_WEBCAM/*+ ARM_TO_WEBCAM + 5*/;
         }
         else if(isVirtual) {
             opmode.telemetry.addLine("left");
-            displacement = inchPerPixel * (SS_rightPixel + SS_size - CENTER_PIXELS) - 8 + ARM_TO_WEBCAM;
+            displacement = inchPerPixel * (SS_rightPixel + SS_size - CENTER_PIXELS) - CENTER_TO_WEBCAM/*- 8 + ARM_TO_WEBCAM*/;
         }
     }
 
@@ -477,6 +477,7 @@ public class SSDriveObject extends Object{
                 setDrivePowerAll(power);
                 opmode.telemetry.addLine("cruising");
                 telemetryDcMotor();
+
             }
         } else if (ticks < 0) {
             power = -power;
@@ -825,5 +826,9 @@ public class SSDriveObject extends Object{
         opmode.telemetry.addLine(status);
         opmode.telemetry.addData("   encoder: ", frontLeft.getCurrentPosition()/TICKS_PER_DEGREE);
         opmode.telemetry.update();
+    }
+    public void telemetryEncoder (){
+        opmode.telemetry.addData("x",left.getDisplacement());
+
     }
 }
