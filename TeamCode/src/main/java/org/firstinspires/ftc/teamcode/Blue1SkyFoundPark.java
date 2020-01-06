@@ -17,7 +17,7 @@ public class Blue1SkyFoundPark extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.detectReady();
+        drive.detectReady(drive.BLUE);
         drive.detectStones();
         drive.getDisplacement();
         drive.collectSkyStone(drive.BLUE);

@@ -16,7 +16,7 @@ import java.util.Timer;
 
 public class SkyStoneTeleOp extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller, rightLift, leftLift, odometer;
-    Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, leftFoundation, blockSweeper, capServo, cameraServo; //, rightFoundation;
+    Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, leftFoundation, rightFoundation, blockSweeper, capServo, cameraServo;
     CRServo deliveryExtender;
 
     final double rollerPower = 1.0;
@@ -111,6 +111,7 @@ public class SkyStoneTeleOp extends OpMode {
         deliveryRotation = hardwareMap.servo.get("deliveryRotation");
 
         leftFoundation = hardwareMap.servo.get("leftFoundation");
+        rightFoundation = hardwareMap.servo.get("rightFoundation");
 
         blockSweeper = hardwareMap.servo.get("blockSweeper");
 
@@ -158,6 +159,7 @@ public class SkyStoneTeleOp extends OpMode {
         hookHrz.setPosition(0);
 
         leftFoundation.setPosition(0.1);
+        rightFoundation.setPosition(0.7);
 
         deliveryGrabber.setPosition(0);
 
@@ -171,16 +173,16 @@ public class SkyStoneTeleOp extends OpMode {
         setDriveMotors();
         setRollerMotors();
         setLiftMotors();
-//        setDeliveryMotors();
+        setDeliveryMotors();
         setFoundationGrabber();
         setHook();
         setBlockSweeper();
-        setCapServoTest();
-        testDeliveryExtender();
-        //setCapServo();
-        //setDeliveryGrabber();
-        //setDeliveryRotation();
-        //setDeliveryExtender();
+        setCapServo();
+//        testDeliveryExtender();
+//        setCapServo();
+//        setDeliveryGrabber();
+//        setDeliveryRotation();
+//        setDeliveryExtender();
 
         setCameraServo();
 
@@ -229,10 +231,10 @@ public class SkyStoneTeleOp extends OpMode {
     }
 
     private void setRollerMotors() {
-        if (gamepad1.right_bumper == true) {
+        if (gamepad1.right_bumper) {
             rightRoller.setPower(rollerPower);
             leftRoller.setPower(rollerPower);
-        } else if (gamepad1.left_bumper == true) {
+        } else if (gamepad1.left_bumper) {
             rightRoller.setPower(-rollerPower);
             leftRoller.setPower(-rollerPower);
         } else {
@@ -346,15 +348,17 @@ public class SkyStoneTeleOp extends OpMode {
 
     public void setFoundationGrabber() {
         if (gamepad1.b && !if_pressedGp1B) {
-            if (leftFoundation.getPosition() >= 0.5) {
+            if (leftFoundation.getPosition() == 0.5 && rightFoundation.getPosition() == 0) {
                 leftFoundation.setPosition(0);
 
                 driveSpeed = SLOWSPEED;
 
                 if_pressedGp1B = true;
-            } else if (leftFoundation.getPosition() <= 0.5) {
+            } else if (leftFoundation.getPosition() == 0 && rightFoundation.getPosition() == 0.5) {
                 leftFoundation.setPosition(0.5);
                 if_pressedGp1B = true;
+
+                driveSpeed = FASTSPEED;
 
             }
         } else {
@@ -372,11 +376,11 @@ public class SkyStoneTeleOp extends OpMode {
         }
     }
 
-    public void setCapServoTest() {
+    public void setCapServo() {
         // better code
         if (gamepad2.x && !if_pressedGp2X) {
             if (capServo.getPosition() <= 0.1) {
-                capServo.setPosition(0.8);
+                capServo.setPosition(0.78);
                 if_pressedGp2X = true;
             } else if (capServo.getPosition() <= 0.9 && capServo.getPosition() >= 0.7) {
                 capServo.setPosition(0);

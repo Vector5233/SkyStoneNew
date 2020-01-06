@@ -17,6 +17,6 @@ public class EncoderDrivingTest extends LinearOpMode {
     public void runOpMode() {
         drive.driveDistance(1,20);
         stop();
-        drive.telemetryEncoder();
+//        drive.telemetryEncoder();
     }
 }

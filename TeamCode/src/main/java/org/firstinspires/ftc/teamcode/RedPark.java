@@ -17,7 +17,7 @@ public class RedPark extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.setFoundationLeft(true);
+//        drive.setFoundationLeft(true);
     }
 }
 

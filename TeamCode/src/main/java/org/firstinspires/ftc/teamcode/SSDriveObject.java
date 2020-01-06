@@ -98,6 +98,8 @@ public class SSDriveObject extends Object{
         deliveryRotation = opmode.hardwareMap.servo.get("deliveryRotation");
 
         leftFoundation = opmode.hardwareMap.servo.get("leftFoundation");
+        rightFoundation = opmode.hardwareMap.servo.get("rightFoundation");
+
         blockSweeper = opmode.hardwareMap.servo.get("blockSweeper");
         capServo = opmode.hardwareMap.servo.get("capServo");
         cameraServo = opmode.hardwareMap.servo.get("cameraServo");
@@ -141,7 +143,7 @@ public class SSDriveObject extends Object{
 
     public void initialize(){
         capServo.setPosition(0.8);
-        setFoundationLeft(false);
+        setFoundation(false);
         setBlockSweeper(true);
         setCameraServo(1);
         setHookVrt(.9);
@@ -153,7 +155,7 @@ public class SSDriveObject extends Object{
         opmode.telemetry.update();
     }
 
-    public void detectReady(){
+    public void detectReady(boolean side){
 
 //            setHookHrz(0.5);
 //            setHookVrt(1);
@@ -203,7 +205,7 @@ public class SSDriveObject extends Object{
     }
 
     public void moveFoundation (boolean side) {
-        /*setFoundationLeft(true);
+        /*setFoundation(true);
         opmode.sleep(400);
         driveDistanceNoAccel(.4,1);
         opmode.sleep(400);
@@ -223,11 +225,11 @@ public class SSDriveObject extends Object{
         if (side) {
             strafeDistanceNoAccel(1, 18);
             opmode.sleep(400);
-            setFoundationLeft(true);
+            setFoundation(true);
             opmode.sleep(400);
             driveDistance(1, 26.75);
             opmode.sleep(400);
-            setFoundationLeft(false);
+            setFoundation(false);
             opmode.sleep(400);
             driveDistance(1,-1);
             opmode.sleep(400);
@@ -243,7 +245,7 @@ public class SSDriveObject extends Object{
             opmode.telemetry.addLine("red Foundation moving");
             driveDistance(1, -22);
             opmode.sleep(250);
-            setFoundationLeft(true);
+            setFoundation(true);
             opmode.sleep(500);
             strafeDistanceNoAccel(1,-5.5);
 
@@ -254,7 +256,7 @@ public class SSDriveObject extends Object{
             turnDegree(.67,-7.5);
 
             opmode.sleep(400);
-            setFoundationLeft(false);
+            setFoundation(false);
             opmode.sleep(400);
 //            driveDistance(1,-1.1);
 //            opmode.sleep(400);
@@ -794,18 +796,20 @@ public class SSDriveObject extends Object{
         }
     }*/
 
-    public void setFoundationLeft (boolean launch) {
+    public void setFoundation (boolean launch) {
         //launch true = grabber down
         //launch false = grabber up
         if (!launch) {
             leftFoundation.setPosition(0);
-            //rightFoundation.setPosition(0);
+            rightFoundation.setPosition(.5);
         }
         else {
             leftFoundation.setPosition(0.5);
-            //rightFoundation.setPosition(0.7);
+            rightFoundation.setPosition(0);
         }
     }
+
+    
 
     public void setBlockSweeper (boolean kick) {
         //kick true = blockSweeper up
