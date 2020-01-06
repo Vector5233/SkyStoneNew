@@ -17,8 +17,8 @@ public class BlueFoundPark extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.driveDistance(1, -21);
-        sleep(50);
+        drive.driveDistance(1, -17.5);
+        sleep(400);
         drive.moveFoundation(drive.BLUE);
         telemetry.addLine("FoundationMoved");
         telemetry.update();
