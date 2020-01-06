@@ -15,8 +15,8 @@ import java.util.Timer;
 @TeleOp(name="SkyStoneTeleOp", group="TeamCode")
 
 public class SkyStoneTeleOp extends OpMode {
-    DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller, rightLift, leftLift;
-    Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, leftFoundation, blockSweeper, capServo, cameraServo; //, rightFoundation;
+    DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller, rightLift, leftLift, odometer;
+    Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, leftFoundation, rightFoundation, blockSweeper, capServo, cameraServo;
     CRServo deliveryExtender;
 
     final double rollerPower = 1.0;
@@ -111,6 +111,7 @@ public class SkyStoneTeleOp extends OpMode {
         deliveryRotation = hardwareMap.servo.get("deliveryRotation");
 
         leftFoundation = hardwareMap.servo.get("leftFoundation");
+        rightFoundation = hardwareMap.servo.get("rightFoundation");
 
         blockSweeper = hardwareMap.servo.get("blockSweeper");
 
@@ -171,17 +172,17 @@ public class SkyStoneTeleOp extends OpMode {
         setDriveMotors();
         setRollerMotors();
         setLiftMotors();
-//        setDeliveryMotors();
+        setDeliveryMotors();
         setFoundationGrabber();
         setHook();
         setBlockSweeper();
-        setCapServoTest();
-        testDeliveryExtender();
-        //setCapServo();
-        //setDeliveryGrabber();
-        //setDeliveryRotation();
-        //setDeliveryExtender();
-        testDeliveryExtender();
+        setCapServo();
+//        testDeliveryExtender();
+//        setCapServo();
+//        setDeliveryGrabber();
+//        setDeliveryRotation();
+//        setDeliveryExtender();
+        
         setCameraServo();
 
         telemetry.addData("blockSweeper", blockSweeper.getPosition());
@@ -374,11 +375,11 @@ public class SkyStoneTeleOp extends OpMode {
         }
     }
 
-    public void setCapServoTest() {
+    public void setCapServo() {
         // better code
         if (gamepad2.x && !if_pressedGp2X) {
             if (capServo.getPosition() <= 0.1) {
-                capServo.setPosition(0.8);
+                capServo.setPosition(0.78);
                 if_pressedGp2X = true;
             } else if (capServo.getPosition() <= 0.9 && capServo.getPosition() >= 0.7) {
                 capServo.setPosition(0);
@@ -641,6 +642,8 @@ public class SkyStoneTeleOp extends OpMode {
         telemetry.addData("FL", frontLeft.getCurrentPosition());
         telemetry.addData("BR", backRight.getCurrentPosition());
         telemetry.addData("BL", backLeft.getCurrentPosition());
+        telemetry.addData("OD", odometer.getCurrentPosition());
+
         telemetry.update();
     }
 }
