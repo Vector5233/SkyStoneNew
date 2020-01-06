@@ -23,7 +23,9 @@ public class BluePark extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.setFoundationLeft(true);
+//        drive.setFoundationLeft(true);
+        drive.driveDistance(1,20);
+        drive.driveDistance(1,-10);
     }
 }
 

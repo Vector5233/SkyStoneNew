@@ -179,6 +179,8 @@ public class SSDriveObject extends Object{
         }
         setRollerMotors(true, 1);
         //how to check if the block is collected or not (next round)
+        driveDistance(1,6);
+        opmode.sleep(400);
         setBlockSweeper(true);
         opmode.sleep(500);
         setBlockSweeper(false);
@@ -339,6 +341,14 @@ public class SSDriveObject extends Object{
         }
     }
 
+    public void skystonePark(boolean side) {
+        if (side) {
+            driveDistance(1,20);
+        } else {
+
+        }
+    }
+
     public void deliverSkystone (boolean side) {
         if (side) {
             strafeDistanceNoAccel(1,25);
@@ -352,8 +362,6 @@ public class SSDriveObject extends Object{
             setDeliveryGrabber(false);
             opmode.sleep(250);
             setDeliveryExtender(-1,2500);
-
-
         } else {
 
         }
@@ -534,15 +542,15 @@ public class SSDriveObject extends Object{
                 if (frontLeft.getCurrentPosition() < PERCENT * ticks) {
                     setDrivePowerAll(Math.max((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
                     opmode.telemetry.addLine("accelerating");
-                    telemetryDcMotor();
+
                 } else if (frontLeft.getCurrentPosition() < (1 - PERCENT) * ticks) {
                     setDrivePowerAll(powerLimit);
                     opmode.telemetry.addLine("cruising");
-                    telemetryDcMotor();
+
                 } else {
                     setDrivePowerAll(Math.max(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
                     opmode.telemetry.addLine("decelerating");
-                    telemetryDcMotor();
+
                 }
                 telemetryDcMotor();
                 opmode.telemetry.update();
@@ -554,15 +562,15 @@ public class SSDriveObject extends Object{
                 if (frontLeft.getCurrentPosition() > PERCENT * ticks) {
                     setDrivePowerAll(Math.min((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
                     opmode.telemetry.addLine("accelerating");
-                    telemetryDcMotor();
+
                 } else if (frontLeft.getCurrentPosition() > (1 - PERCENT) * ticks) {
                     setDrivePowerAll(powerLimit);
                     opmode.telemetry.addLine("cruising");
-                    telemetryDcMotor();
+
                 } else {
                     setDrivePowerAll(Math.min(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
                     opmode.telemetry.addLine("decelerating");
-                    telemetryDcMotor();
+
                 }
                 telemetryDcMotor();
                 opmode.telemetry.update();
@@ -571,6 +579,7 @@ public class SSDriveObject extends Object{
         stopDriving();
         opmode.telemetry.addLine("done driving");
     }
+
 
     public void strafeDistanceNoAccel(double powerLimit, double distance) {
         final double PERCENT = .25;
@@ -645,15 +654,15 @@ public class SSDriveObject extends Object{
                 if (frontLeft.getCurrentPosition() > PERCENT * ticks) {
                     setStrafePowerAll(Math.min((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
                     opmode.telemetry.addLine("accelerating");
-                    telemetryDcMotor();
+
                 } else if (frontLeft.getCurrentPosition() > (1 - PERCENT) * ticks) {
                     setStrafePowerAll(powerLimit);
                     opmode.telemetry.addLine("cruising");
-                    telemetryDcMotor();
+
                 } else {
                     setStrafePowerAll(Math.min(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
                     opmode.telemetry.addLine("decelerating");
-                    telemetryDcMotor();
+
                 }
                 telemetryDcMotor();
                 opmode.telemetry.update();
@@ -839,7 +848,7 @@ public class SSDriveObject extends Object{
 
     public void telemetryDcMotor(){
         opmode.telemetry.addData("FR", frontRight.getCurrentPosition());
-        opmode.telemetry.addData("FB", frontLeft.getCurrentPosition());
+        opmode.telemetry.addData("FL", frontLeft.getCurrentPosition());
         opmode.telemetry.addData("BR", backRight.getCurrentPosition());
         opmode.telemetry.addData("BL", backLeft.getCurrentPosition());
         opmode.telemetry.update();
