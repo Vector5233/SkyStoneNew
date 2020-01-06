@@ -181,7 +181,7 @@ public class SkyStoneTeleOp extends OpMode {
         //setDeliveryGrabber();
         //setDeliveryRotation();
         //setDeliveryExtender();
-        testDeliveryExtender();
+
         setCameraServo();
 
         telemetry.addData("blockSweeper", blockSweeper.getPosition());

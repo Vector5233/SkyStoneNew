@@ -174,7 +174,7 @@ public class SSDriveObject extends Object{
             driveDistance(1,displacement - ROBOT_CENTER_TO_COLLECTOR);
             strafeDistanceNoAccel(1,-10);
             
-        } else{
+        } else {
 
         }
         setRollerMotors(true, 1);
