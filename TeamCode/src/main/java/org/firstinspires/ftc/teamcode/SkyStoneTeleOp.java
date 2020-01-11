@@ -123,7 +123,7 @@ public class SkyStoneTeleOp extends OpMode {
 
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        //change frontLeft into reverse
+
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
 
@@ -159,7 +159,7 @@ public class SkyStoneTeleOp extends OpMode {
         hookHrz.setPosition(0);
 
         leftFoundation.setPosition(0.1);
-        rightFoundation.setPosition(0.7);
+        rightFoundation.setPosition(0.8);
 
         deliveryGrabber.setPosition(0);
 
@@ -208,7 +208,7 @@ public class SkyStoneTeleOp extends OpMode {
 
         if (gamepad1.dpad_up /*&& (driveSpeed < SPEEDCEILING)*/) {
             if (!if_pressedDpadUp) {
-                if (leftFoundation.getPosition() < 0.5) {
+                if (leftFoundation.getPosition() == .5) {
 
                     driveSpeed = SLOWSPEED;
                     if_pressedDpadUp = true;
@@ -226,8 +226,6 @@ public class SkyStoneTeleOp extends OpMode {
         frontLeft.setPower((gamepad1.right_stick_x - gamepad1.right_stick_y + gamepad1.left_stick_x) * driveSpeed);
         backRight.setPower((gamepad1.right_stick_x - gamepad1.right_stick_y - gamepad1.left_stick_x) * driveSpeed);
         backLeft.setPower((-gamepad1.right_stick_x - gamepad1.right_stick_y + gamepad1.left_stick_x) * driveSpeed);
-
-
     }
 
     private void setRollerMotors() {
@@ -286,7 +284,7 @@ public class SkyStoneTeleOp extends OpMode {
         }
 
 
-        if ((gamepad2.right_trigger >= .8) && !if_pressedRT) {
+        if ((gamepad2.right_trigger >= .5) && !if_pressedRT) {
             if (rotationPos < 1) {
                 telemetry.addLine("rotation move out");
                 rotationPos += ROTATIONHALF;
@@ -299,7 +297,8 @@ public class SkyStoneTeleOp extends OpMode {
             if_pressedRT = false;
         }
 
-        if ((gamepad2.left_trigger >= .8) && !if_pressedLT) {
+        if ((gamepad2.left_trigger
+                >= .5) && !if_pressedLT) {
             if (rotationPos > 0) {
                 telemetry.addLine("rotation move in");
                 rotationPos -= ROTATIONHALF;
@@ -348,19 +347,22 @@ public class SkyStoneTeleOp extends OpMode {
 
     public void setFoundationGrabber() {
         if (gamepad1.b && !if_pressedGp1B) {
-            if (leftFoundation.getPosition() == 0.5 && rightFoundation.getPosition() == 0) {
-                leftFoundation.setPosition(0);
+            if (leftFoundation.getPosition() != .5 /*&& rightFoundation.getPosition() == 0*/) {
+                leftFoundation.setPosition(.5);
+                rightFoundation.setPosition(.25);
 
                 driveSpeed = SLOWSPEED;
 
                 if_pressedGp1B = true;
-            } else if (leftFoundation.getPosition() == 0 && rightFoundation.getPosition() == 0.5) {
-                leftFoundation.setPosition(0.5);
+            } else /*if (leftFoundation.getPosition() != 5 && rightFoundation.getPosition() == 0.5)*/ {
+                leftFoundation.setPosition(0);
+                rightFoundation.setPosition(.8);
                 if_pressedGp1B = true;
 
                 driveSpeed = FASTSPEED;
 
             }
+
         } else {
             if (!gamepad1.b) {
                 if_pressedGp1B = false;

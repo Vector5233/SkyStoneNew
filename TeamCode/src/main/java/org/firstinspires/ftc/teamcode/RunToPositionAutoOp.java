@@ -2,30 +2,23 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name="BluePark", group="Blue")
+@Autonomous(name="RunToPositionAutoOp", group="Blue")
 
-public class BluePark extends LinearOpMode {
+public class RunToPositionAutoOp extends LinearOpMode {
     SSDriveObject drive;
 
     public void initialize(){
         drive = new SSDriveObject(this);
 
-        drive.setBlockSweeper(false);
-        drive.setCameraServo(1);
-        drive.setHookVrt(1);
-        drive.setHookHrz(0);
-
         telemetry.addLine("initialized");
         telemetry.update();
     }
     public void runOpMode(){
-        initialize();
-        waitForStart();
-
-
-        drive.turnDegree(.67,93);
-
+        drive.frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        drive.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        drive.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }
 

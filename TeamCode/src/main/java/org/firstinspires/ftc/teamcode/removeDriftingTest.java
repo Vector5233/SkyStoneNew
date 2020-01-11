@@ -3,9 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="RedPark", group="Red")
 
-public class RedPark extends LinearOpMode {
+public class removeDriftingTest extends LinearOpMode {
     SSDriveObject drive;
 
     public void initialize(){
@@ -16,8 +15,10 @@ public class RedPark extends LinearOpMode {
     public void runOpMode() {
         initialize();
         waitForStart();
-
-        drive.setFoundation(true);
+        sleep(5000);
+        drive.strafeDistance(1,20);
+        stop();
     }
 }
+
 

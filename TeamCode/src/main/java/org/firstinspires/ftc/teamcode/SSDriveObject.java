@@ -38,7 +38,7 @@ public class SSDriveObject extends Object{
     final double ROBOT_RADIUS = 13.5;
     final double TICKS_PER_INCH_STRAIGHT = (383.6*2) / (4 * 3.14159265358979323846264);
     final double TICKS_PER_INCH_TURN = TICKS_PER_INCH_STRAIGHT;
-    final double TICKS_PER_INCH_STRAFE = (TICKS_PER_INCH_STRAIGHT)*1.15;
+    final double TICKS_PER_INCH_STRAFE = (TICKS_PER_INCH_STRAIGHT)*1.15*(20.0/17.0);
     final double TICKS_PER_DEGREE = (3.14159 / 180) *  ROBOT_RADIUS * TICKS_PER_INCH_TURN;
     final double TOLERANCE = 2;  // in degrees
     final double MAXSPEED = 0.65;
@@ -46,8 +46,8 @@ public class SSDriveObject extends Object{
     final boolean BLUE = true;
     final boolean RED = false;
 
-    final boolean FOUNDATION = false;
-    final boolean NORMAL = true;
+    final boolean BRIDGE = false;
+    final boolean WALL = true;
 
     final double WEBCAM_TO_BLOCKS = 9.5;
 
@@ -65,6 +65,11 @@ public class SSDriveObject extends Object{
     //final int SAMPLING_FORWARD = ?;
 
     double inchPerPixel;
+
+    double FRpower = .94;
+    double FLpower = .94;
+    double BRpower = 1;
+    double BLpower = 1;
 
     double SS_leftPixel;
     double SS_rightPixel;
@@ -108,7 +113,7 @@ public class SSDriveObject extends Object{
 
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        //change frontLeft into reverse
+
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
 
@@ -220,59 +225,39 @@ public class SSDriveObject extends Object{
         opmode.sleep(400);
         driveDistance(1,-30);*/
 
-
-
-        if (side) {
-            strafeDistanceNoAccel(1, 18);
+        if (side == BLUE) {
+            driveDistance(.6, -27);
+            opmode.sleep(400);
+            strafeDistanceNoAccel(.6,4);
             opmode.sleep(400);
             setFoundation(true);
             opmode.sleep(400);
-            driveDistance(1, 26.75);
+            driveDistance(.6, 15);
+            opmode.sleep(400);
+            turnDegree(.3,130);
             opmode.sleep(400);
             setFoundation(false);
             opmode.sleep(400);
-            driveDistance(1,-1);
+            driveDistance(1,-7);
             opmode.sleep(400);
-            strafeDistance(1, -38);
-            opmode.sleep(400);
-            turnDegree(.67,78);
-            opmode.sleep(400);
-            strafeDistance(1,-27);
-            opmode.sleep(400);
-            driveDistance(1,-10);
 
-        } else if (!side) {
+        } else if (side == RED) {
             opmode.telemetry.addLine("red Foundation moving");
-            driveDistance(1, -22);
-            opmode.sleep(250);
+            driveDistance(.6, -27);
+            opmode.sleep(400);
+            strafeDistanceNoAccel(.6,-1);
+            opmode.sleep(400);
             setFoundation(true);
-            opmode.sleep(500);
-            strafeDistanceNoAccel(1,-5.5);
-
             opmode.sleep(400);
-            driveDistance(1, 25.75);
-
+            driveDistance(.6, 6);
             opmode.sleep(400);
-            turnDegree(.67,-7.5);
-
+            turnDegree(.3,-150);
             opmode.sleep(400);
             setFoundation(false);
             opmode.sleep(400);
-//            driveDistance(1,-1.1);
-//            opmode.sleep(400);
-            strafeDistance(1, 40);
+            driveDistance(1,-9);
             opmode.sleep(400);
-            driveDistance(1,-12);
-            opmode.sleep(400);
-            turnDegree(.67,7);
-            opmode.sleep(400);
-            strafeDistance(1,13);
-//            opmode.sleep(400);
-//            turnDegree(.67,-78);
-//            opmode.sleep(400);
-//            strafeDistance(1,20);
-//            opmode.sleep(400);
-//            driveDistance(1,-12);
+
 
         }
 
@@ -314,19 +299,32 @@ public class SSDriveObject extends Object{
             if (side) {
                 opmode.telemetry.addLine("Blue normal");
                 opmode.telemetry.update();
-                driveDistance(1, -53);
+                driveDistance(.6,10);
+                opmode.sleep(400);
+                strafeDistanceNoAccel(.6,18);
+                opmode.sleep(400);
+                driveDistance(.6,28);
+                opmode.sleep(400);
             } else {
                 opmode.telemetry.addLine("Red normal");
                 opmode.telemetry.update();
-                driveDistance(1,-53);
+                driveDistance(.6,10);
+                opmode.sleep(400);
+                strafeDistanceNoAccel(.6,-25);
+                opmode.sleep(400);
+                driveDistance(.6,28);
+                opmode.sleep(400);
             }
         } else {
             if (side) {
                 opmode.telemetry.addLine("Blue foundation");
                 opmode.telemetry.update();
-
+                driveDistance(.6,10);
                 opmode.sleep(400);
-                driveDistance(1,13);
+                strafeDistanceNoAccel(.6,-11);
+                opmode.sleep(400);
+                driveDistance(.6,28);
+                opmode.sleep(400);
             } else {
                 opmode.telemetry.addLine("Red foundation");
                 opmode.telemetry.update();
@@ -337,6 +335,9 @@ public class SSDriveObject extends Object{
                 driveDistance(1,35);*/
                 /*opmode.sleep(400);
                 driveDistance(1,12);*/
+
+                driveDistance(.6,38);
+                opmode.sleep(400);
             }
 
 
@@ -533,7 +534,6 @@ public class SSDriveObject extends Object{
         double powerMin = 0.22;
         int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
 
-
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         opmode.telemetry.addLine("Encoders reset");
         opmode.telemetry.update();
@@ -555,6 +555,7 @@ public class SSDriveObject extends Object{
 
                 }
                 telemetryDcMotor();
+                opmode.telemetry.addData("distance", (double) ticks / TICKS_PER_INCH_STRAIGHT);
                 opmode.telemetry.update();
             }
         } else if (ticks < 0) {
@@ -575,11 +576,14 @@ public class SSDriveObject extends Object{
 
                 }
                 telemetryDcMotor();
+                opmode.telemetry.addData("distance", (double) ticks / TICKS_PER_INCH_STRAIGHT);
                 opmode.telemetry.update();
             }
         }
         stopDriving();
+        opmode.telemetry.addData("distance", (double) ticks / TICKS_PER_INCH_STRAIGHT);
         opmode.telemetry.addLine("done driving");
+        opmode.telemetry.update();
     }
 
 
@@ -600,6 +604,7 @@ public class SSDriveObject extends Object{
             while((frontLeft.getCurrentPosition() <= ticks) && opmode.opModeIsActive()) {
                 setStrafePowerAll(powerLimit);
                 telemetryDcMotor();
+                opmode.telemetry.addData("distance", (double) ticks / TICKS_PER_INCH_STRAFE);
                 opmode.telemetry.update();
             }
         } else if (ticks < 0) {
@@ -608,6 +613,7 @@ public class SSDriveObject extends Object{
             while((frontLeft.getCurrentPosition() >= ticks) && opmode.opModeIsActive()) {
                 setStrafePowerAll(powerLimit);
                 telemetryDcMotor();
+                opmode.telemetry.addData("distance", (double) ticks / TICKS_PER_INCH_STRAFE);
                 opmode.telemetry.update();
             }
         }
@@ -619,6 +625,7 @@ public class SSDriveObject extends Object{
         final double PERCENT = .25;
         final double STRAFECORRECTION = 30.0/37.0;
         double powerMin = 0.22;
+
         int ticks = (int) (distance * TICKS_PER_INCH_STRAFE * STRAFECORRECTION);
         opmode.telemetry.addData("ticks", ticks);
         opmode.telemetry.update();
@@ -647,6 +654,7 @@ public class SSDriveObject extends Object{
                     telemetryWheelPower();
                 }
                 telemetryDcMotor();
+                opmode.telemetry.addData("distance", (double) ticks / TICKS_PER_INCH_STRAFE);
                 opmode.telemetry.update();
             }
         } else if (ticks < 0) {
@@ -667,6 +675,7 @@ public class SSDriveObject extends Object{
 
                 }
                 telemetryDcMotor();
+                opmode.telemetry.addData("distance", (double) ticks / TICKS_PER_INCH_STRAFE);
                 opmode.telemetry.update();
             }
         }
@@ -729,12 +738,20 @@ public class SSDriveObject extends Object{
         backRight.setPower(power);
         backLeft.setPower(power);
     }
+    public void setSelectPowerAll(double FRpower, double FLpower, double BRpower, double BLpower){
+        frontRight.setPower(FRpower);
+        frontLeft.setPower(FLpower);
+        backRight.setPower(BRpower);
+        backLeft.setPower(BLpower);
+
+    }
+
 
     public void setStrafePowerAll(double power) {
-        frontLeft.setPower(power);
-        frontRight.setPower(-power);
-        backLeft.setPower(-power);
-        backRight.setPower(power);
+        frontLeft.setPower(FLpower*power);
+        frontRight.setPower(-FRpower*power);
+        backLeft.setPower(-BLpower*power);
+        backRight.setPower(BRpower*power);
     }
 
     public void setTurnPowerAll(double power) {
@@ -785,27 +802,26 @@ public class SSDriveObject extends Object{
         cameraServo.setPosition(position);
     }
 
-    /*public void setFoundationRight (boolean launch) {
+    public void setFoundationLeft (boolean launch) {
         //launch true = grabber down
         //launch false = grabber up
         if (launch) {
-            rightFoundation.setPosition(0);
+            leftFoundation.setPosition(.5);
         }
         else if (!launch) {
-            rightFoundation.setPosition(0.7);
+            leftFoundation.setPosition(0);
         }
-    }*/
+    }
 
     public void setFoundation (boolean launch) {
         //launch true = grabber down
         //launch false = grabber up
-        if (!launch) {
+        if (launch) {
+            leftFoundation.setPosition(.5);
+            rightFoundation.setPosition(.25);
+        } else {
             leftFoundation.setPosition(0);
-            rightFoundation.setPosition(.5);
-        }
-        else {
-            leftFoundation.setPosition(0.5);
-            rightFoundation.setPosition(0);
+            rightFoundation.setPosition(.8);
         }
     }
 
@@ -816,9 +832,9 @@ public class SSDriveObject extends Object{
         //kick false = blockSweeper down
 
         if (kick) {
-            blockSweeper.setPosition(0.95);
+            blockSweeper.setPosition(0.5);
 
-        } else if (!kick) {
+        } else {
             blockSweeper.setPosition(0.25);
 
         }
