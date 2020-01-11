@@ -61,6 +61,9 @@ public class SSDriveObject extends Object{
     final double ROBOT_CENTER_TO_COLLECTOR = 10;
 
     final int TFOD_TIMEOUT = 500;
+    final int LEFT = 0;
+    final int CENTER = 1;
+    final int RIGHT = 2;
 
     //final double TOLERANCE = ??;
     //final double ROOT2 = 1.414;
@@ -152,7 +155,8 @@ public class SSDriveObject extends Object{
     public void initialize(){
         capServo.setPosition(0.8);
         setFoundation(false);
-        setBlockSweeper(true);
+        setBlockSweeper(false);
+        setDeliveryGrabber(false);
         setCameraServo(.4);
 
 
@@ -162,56 +166,222 @@ public class SSDriveObject extends Object{
         opmode.telemetry.update();
     }
 
-    public void detectReady(boolean side){
+    public void goToDetectPosition() {
+        driveDistance(.6, 22);
+        opmode.sleep(400);
+        turnDegree(.67,-93);
+
+    }
+
+    public int detectReady(){
 
 //            setHookHrz(0.5);
 //            setHookVrt(1);
 //            opmode.sleep(500);
-        driveDistance(.6, 23);
-        opmode.sleep(400);
-        turnDegree(.67,-93);
-        opmode.sleep(400);
+        opmode.sleep(1600);
         if (tfod != null) {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (!updatedRecognitions.isEmpty()) {
                 opmode.telemetry.addData("# Object Detected", updatedRecognitions.size());
+                switch (updatedRecognitions.size()) {
+                    case 1:
+                        return CENTER;
+                    case 2:
+                        for (Recognition recognition : updatedRecognitions) {
+//                            opmode.telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                            opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
+                            opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
+                            opmode.telemetry.update();
+                            opmode.sleep(500);
+                            if(recognition.getLabel().equals("Skystone")){
+                                if ((recognition.getLeft()+recognition.getRight())/2.0 < 300) {
+                                    return CENTER;
+                                }  else {
+                                    return RIGHT;
+                                }
+                            }
+                        }
+                        return LEFT;
+                    default:
+                        return CENTER;
+
+                }
             } else {
                 opmode.telemetry.addLine("0 objects detected");
+                return CENTER;
             }
         } else {
             opmode.telemetry.addLine("tfod fail");
+            return CENTER;
         }
-
-
-
-
 
 
     }
 
-    public void collectSkyStone(boolean side){
-        if(side) {
-            /*strafeDistance(1, displacement);
-            setHookVrt(0);
-            opmode.sleep(500);
-            driveDistance(1, -5);
-            setHookHrz(0);*/
-            turnDegree(.67,-90);
-            driveDistance(1,displacement - ROBOT_CENTER_TO_COLLECTOR);
-            strafeDistanceNoAccel(1,-10);
+    public void testCollectionAndDelivery(){
+        setRollerMotors(false, 1);
+        //how to check if the block is collected or not (next round)
+        driveDistance(.3,6);
+        opmode.sleep(700);
+//        setBlockSweeper(true);
+//        opmode.sleep(1000);
+//        setBlockSweeper(false);
+//        opmode.idle();
+        setRollerMotors(true,0.0);
+        opmode.idle();
+        driveDistance(1,20);
+        opmode.idle();
+        setRollerMotors(true,1);
+        opmode.idle();
+        driveDistance(1,-10);
+//        setDeliveryGrabber(true);
+//        opmode.sleep(500);
+
+    }
+
+    public void collectSkyStone(boolean side, int skystone){
+        if(side == RED) {
+            switch (skystone) {
+                case LEFT:
+                    driveDistance(.6,-26);
+                    opmode.sleep(500);
+                    turnDegree(.67,45);
+                    setRollerMotors(false, 1);
+                    opmode.sleep(200);
+                    driveDistance(.6,25);
+                    opmode.sleep(700);
+                    setRollerMotors(false,0.0);
+                    driveDistance(.6,-25);
+                    opmode.sleep(400);
+                    turnDegree(.67,-50);
+                    opmode.sleep(400);
+                    driveDistanceNoAccel(1,82);
+                    setRollerMotors(true,1);
+                    opmode.idle();
+                    driveDistance(1,-15);
+                    opmode.sleep(700);
+                    setRollerMotors(true,0.0);
+
+                    break;
+                case CENTER:
+                    driveDistance(.6,-18);
+                    opmode.sleep(500);
+                    turnDegree(.67,45);
+                    setRollerMotors(false, 1);
+                    opmode.sleep(200);
+                    driveDistance(.6,25);
+                    opmode.sleep(700);
+                    setRollerMotors(false,0.0);
+                    driveDistance(.6,-25);
+                    opmode.sleep(400);
+                    turnDegree(.67,-50);
+                    opmode.sleep(400);
+                    driveDistanceNoAccel(1,74);
+                    setRollerMotors(true,1);
+                    opmode.idle();
+                    driveDistance(1,-15);
+                    opmode.sleep(700);
+                    setRollerMotors(true,0.0);
+                    break;
+                case RIGHT:
+                    driveDistance(.6,-7.5);
+                    opmode.sleep(500);
+                    turnDegree(.67,45);
+                    setRollerMotors(false, 1);
+                    opmode.sleep(200);
+                    driveDistance(.6,25);
+                    opmode.sleep(700);
+                    setRollerMotors(false,0.0);
+                    driveDistance(.6,-25);
+                    opmode.sleep(400);
+                    turnDegree(.67,-50);
+                    opmode.sleep(400);
+                    driveDistanceNoAccel(1,66);
+                    setRollerMotors(true,1);
+                    opmode.idle();
+                    driveDistance(1,-15);
+                    opmode.sleep(700);
+                    setRollerMotors(true,0.0);
+                    break;
+            }
+//            setRollerMotors(false, 1);
+//            how to check if the block is collected or not (next round)
+//            driveDistance(.3,6);
+//            opmode.sleep(700);
             
         } else {
+            switch (skystone) {
+                case LEFT:
+                    driveDistance(.6,-20);
+                    opmode.sleep(500);
+                    turnDegree(.67,45);
+                    setRollerMotors(false, 1);
+                    opmode.sleep(200);
+                    driveDistance(.6,25);
+                    opmode.sleep(700);
+                    setRollerMotors(false,0.0);
+                    driveDistance(.6,-25);
+                    opmode.sleep(400);
+                    turnDegree(.67,-50);
+                    opmode.sleep(400);
+//                    driveDistanceNoAccel(1,82);
+//                    setRollerMotors(true,1);
+//                    opmode.idle();
+//                    driveDistance(1,-15);
+//                    opmode.sleep(700);
+//                    setRollerMotors(true,0.0);
 
+                    break;
+                case CENTER:
+                    driveDistance(.6,-18);
+                    opmode.sleep(500);
+                    turnDegree(.67,45);
+                    setRollerMotors(false, 1);
+                    opmode.sleep(200);
+                    driveDistance(.6,25);
+                    opmode.sleep(700);
+                    setRollerMotors(false,0.0);
+                    driveDistance(.6,-25);
+                    opmode.sleep(400);
+                    turnDegree(.67,-50);
+                    opmode.sleep(400);
+                    driveDistanceNoAccel(1,74);
+                    setRollerMotors(true,1);
+                    opmode.idle();
+                    driveDistance(1,-15);
+                    opmode.sleep(700);
+                    setRollerMotors(true,0.0);
+                    break;
+                case RIGHT:
+                    driveDistance(.6,-7.5);
+                    opmode.sleep(500);
+                    turnDegree(.67,45);
+                    setRollerMotors(false, 1);
+                    opmode.sleep(200);
+                    driveDistance(.6,25);
+                    opmode.sleep(700);
+                    setRollerMotors(false,0.0);
+                    driveDistance(.6,-25);
+                    opmode.sleep(400);
+                    turnDegree(.67,-50);
+                    opmode.sleep(400);
+                    driveDistanceNoAccel(1,66);
+                    setRollerMotors(true,1);
+                    opmode.idle();
+                    driveDistance(1,-15);
+                    opmode.sleep(700);
+                    setRollerMotors(true,0.0);
+                    break;
+            }
         }
-        setRollerMotors(true, 1);
-        //how to check if the block is collected or not (next round)
-        driveDistance(1,6);
-        opmode.sleep(400);
-        setBlockSweeper(true);
-        opmode.sleep(500);
-        setBlockSweeper(false);
-        opmode.idle();
-        setRollerMotors(true,0.0);
+//        setRollerMotors(true, 1);
+//        driveDistance(1,6);
+//        opmode.sleep(400);
+//        setBlockSweeper(true);
+//        opmode.sleep(500);
+//        setBlockSweeper(false);
+//        opmode.idle();
+//        setRollerMotors(true,0.0);
     }
 
     public void moveToFoundation(boolean side){
@@ -851,10 +1021,10 @@ public class SSDriveObject extends Object{
         //kick false = blockSweeper down
 
         if (kick) {
-            blockSweeper.setPosition(0.5);
+            blockSweeper.setPosition(0.725);
 
         } else {
-            blockSweeper.setPosition(0.25);
+            blockSweeper.setPosition(1);
 
         }
     }
