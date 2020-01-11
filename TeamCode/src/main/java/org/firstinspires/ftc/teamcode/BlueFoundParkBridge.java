@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="RedFoundParkWall", group="Red")
+@Autonomous(name="BlueFoundParkBridge", group="Blue")
 
-public class RedFoundParkWall extends LinearOpMode {
+public class BlueFoundParkBridge extends LinearOpMode {
     SSDriveObject drive;
 
     public void initialize(){
@@ -13,17 +13,17 @@ public class RedFoundParkWall extends LinearOpMode {
 
         drive.initialize();
     }
-
     public void runOpMode(){
         initialize();
         waitForStart();
 
 
-        drive.moveFoundation(drive.RED);
+
+        drive.moveFoundation(drive.BLUE);
         telemetry.addLine("FoundationMoved");
         telemetry.update();
         sleep(500);
-        drive.park(drive.RED, drive.WALL);
+        drive.park(drive.BLUE, drive.BRIDGE);
         telemetry.addLine("Parked");
         telemetry.update();
         sleep(500);

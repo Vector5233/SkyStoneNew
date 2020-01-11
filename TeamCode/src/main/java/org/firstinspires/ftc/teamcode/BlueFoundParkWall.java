@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="BlueFoundPark", group="Blue")
+@Autonomous(name="BlueFoundParkWall", group="Blue")
 
 public class BlueFoundParkWall extends LinearOpMode {
     SSDriveObject drive;

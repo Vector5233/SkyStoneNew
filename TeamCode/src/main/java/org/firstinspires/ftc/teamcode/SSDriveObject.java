@@ -49,6 +49,9 @@ public class SSDriveObject extends Object{
     final boolean BRIDGE = false;
     final boolean WALL = true;
 
+    final boolean FOUNDATION = false;
+    final boolean NORMAL = true;
+
     final double WEBCAM_TO_BLOCKS = 9.5;
 
     final double CENTER_PIXELS = 400.0;
@@ -150,9 +153,8 @@ public class SSDriveObject extends Object{
         capServo.setPosition(0.8);
         setFoundation(false);
         setBlockSweeper(true);
-        setCameraServo(1);
-        setHookVrt(.9);
-        setHookHrz(0.11);
+        setCameraServo(.4);
+
 
 
 
@@ -165,8 +167,25 @@ public class SSDriveObject extends Object{
 //            setHookHrz(0.5);
 //            setHookVrt(1);
 //            opmode.sleep(500);
+        driveDistance(.6, 23);
+        opmode.sleep(400);
+        turnDegree(.67,-93);
+        opmode.sleep(400);
+        if (tfod != null) {
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (!updatedRecognitions.isEmpty()) {
+                opmode.telemetry.addData("# Object Detected", updatedRecognitions.size());
+            } else {
+                opmode.telemetry.addLine("0 objects detected");
+            }
+        } else {
+            opmode.telemetry.addLine("tfod fail");
+        }
 
-            driveDistance(1, 23);
+
+
+
+
 
     }
 
@@ -245,11 +264,11 @@ public class SSDriveObject extends Object{
             opmode.telemetry.addLine("red Foundation moving");
             driveDistance(.6, -27);
             opmode.sleep(400);
-            strafeDistanceNoAccel(.6,-1);
+            strafeDistanceNoAccel(.6,-2);
             opmode.sleep(400);
             setFoundation(true);
             opmode.sleep(400);
-            driveDistance(.6, 6);
+            driveDistance(.6, 7);
             opmode.sleep(400);
             turnDegree(.3,-150);
             opmode.sleep(400);
@@ -292,21 +311,21 @@ public class SSDriveObject extends Object{
         //true = blue
         //false = red
         //State
-        //true = normal
-        //false = foundation
+        //true = wall
+        //false = bridge
 
         if(state) {
             if (side) {
-                opmode.telemetry.addLine("Blue normal");
+                opmode.telemetry.addLine("Blue wall");
                 opmode.telemetry.update();
                 driveDistance(.6,10);
                 opmode.sleep(400);
-                strafeDistanceNoAccel(.6,18);
+                strafeDistanceNoAccel(.6,16);
                 opmode.sleep(400);
                 driveDistance(.6,28);
                 opmode.sleep(400);
             } else {
-                opmode.telemetry.addLine("Red normal");
+                opmode.telemetry.addLine("Red wall");
                 opmode.telemetry.update();
                 driveDistance(.6,10);
                 opmode.sleep(400);
@@ -317,16 +336,16 @@ public class SSDriveObject extends Object{
             }
         } else {
             if (side) {
-                opmode.telemetry.addLine("Blue foundation");
+                opmode.telemetry.addLine("Blue bridge");
                 opmode.telemetry.update();
                 driveDistance(.6,10);
                 opmode.sleep(400);
-                strafeDistanceNoAccel(.6,-11);
+                strafeDistanceNoAccel(.6,-10);
                 opmode.sleep(400);
                 driveDistance(.6,28);
                 opmode.sleep(400);
             } else {
-                opmode.telemetry.addLine("Red foundation");
+                opmode.telemetry.addLine("Red bridge");
                 opmode.telemetry.update();
                 /*turnDegree(.4,-1.5);
                 opmode.sleep(250);
