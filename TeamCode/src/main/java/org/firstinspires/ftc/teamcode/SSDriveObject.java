@@ -166,45 +166,80 @@ public class SSDriveObject extends Object{
         opmode.telemetry.update();
     }
 
-    public void goToDetectPosition() {
-        driveDistance(.6, 22);
-        opmode.sleep(400);
-        turnDegree(.67,-93);
+    public void goToDetectPosition(boolean side) {
+
+        if (side == BLUE) {
+            //might need to change driveDistance, add a strafe
+            driveDistance(.6, 22);
+            opmode.sleep(400);
+            strafeDistanceNoAccel(.3,-4.5);
+            opmode.sleep(400);
+            turnDegree(.67,-97);
+
+
+        } else {
+            driveDistance(.6, 22);
+            opmode.sleep(400);
+            turnDegree(.67,-97);
+        }
 
     }
 
-    public int detectReady(){
 
-//            setHookHrz(0.5);
-//            setHookVrt(1);
-//            opmode.sleep(500);
+
+    public int detectReady(boolean side){
+
         opmode.sleep(1600);
         if (tfod != null) {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (!updatedRecognitions.isEmpty()) {
                 opmode.telemetry.addData("# Object Detected", updatedRecognitions.size());
-                switch (updatedRecognitions.size()) {
-                    case 1:
-                        return CENTER;
-                    case 2:
-                        for (Recognition recognition : updatedRecognitions) {
-//                            opmode.telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                            opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
-                            opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
-                            opmode.telemetry.update();
-                            opmode.sleep(500);
-                            if(recognition.getLabel().equals("Skystone")){
-                                if ((recognition.getLeft()+recognition.getRight())/2.0 < 300) {
-                                    return CENTER;
-                                }  else {
-                                    return RIGHT;
+                if (side == RED) {
+                    switch (updatedRecognitions.size()) {
+                        case 1:
+                            return CENTER;
+                        case 2:
+                            for (Recognition recognition : updatedRecognitions) {
+                                opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
+                                opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
+                                opmode.telemetry.update();
+                                opmode.sleep(500);
+                                if (recognition.getLabel().equals("Skystone")) {
+                                    if ((recognition.getLeft() + recognition.getRight()) / 2.0 < 300) {
+                                        return CENTER;
+                                    } else {
+                                        return RIGHT;
+                                    }
                                 }
                             }
-                        }
-                        return LEFT;
-                    default:
-                        return CENTER;
+                            return LEFT;
+                        default:
+                            return CENTER;
 
+                    }
+                } else {
+                    switch (updatedRecognitions.size()) {
+                        case 1:
+                            return CENTER;
+                        case 2:
+                            for (Recognition recognition : updatedRecognitions) {
+                                opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
+                                opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
+                                opmode.telemetry.update();
+                                opmode.sleep(500);
+                                if (recognition.getLabel().equals("Skystone")) {
+                                    if ((recognition.getLeft() + recognition.getRight()) / 2.0 > 700) {
+                                        return RIGHT;
+                                    } else {
+                                        return CENTER;
+                                    }
+                                }
+                            }
+                            return LEFT;
+                        default:
+                            return CENTER;
+
+                    }
                 }
             } else {
                 opmode.telemetry.addLine("0 objects detected");
@@ -243,8 +278,10 @@ public class SSDriveObject extends Object{
         if(side == RED) {
             switch (skystone) {
                 case LEFT:
-                    driveDistance(.6,-26);
-                    opmode.sleep(500);
+                    driveDistance(.6,-24);
+                    opmode.sleep(400);
+                    strafeDistanceNoAccel(.3,-5);
+                    opmode.sleep(400);
                     turnDegree(.67,45);
                     setRollerMotors(false, 1);
                     opmode.sleep(200);
@@ -253,7 +290,7 @@ public class SSDriveObject extends Object{
                     setRollerMotors(false,0.0);
                     driveDistance(.6,-25);
                     opmode.sleep(400);
-                    turnDegree(.67,-50);
+                    turnDegree(.67,-45);
                     opmode.sleep(400);
                     driveDistanceNoAccel(1,82);
                     setRollerMotors(true,1);
@@ -264,8 +301,10 @@ public class SSDriveObject extends Object{
 
                     break;
                 case CENTER:
-                    driveDistance(.6,-18);
+                    driveDistance(.6,-16);
                     opmode.sleep(500);
+                    strafeDistanceNoAccel(.3,-5);
+                    opmode.sleep(400);
                     turnDegree(.67,45);
                     setRollerMotors(false, 1);
                     opmode.sleep(200);
@@ -274,7 +313,7 @@ public class SSDriveObject extends Object{
                     setRollerMotors(false,0.0);
                     driveDistance(.6,-25);
                     opmode.sleep(400);
-                    turnDegree(.67,-50);
+                    turnDegree(.67,-45);
                     opmode.sleep(400);
                     driveDistanceNoAccel(1,74);
                     setRollerMotors(true,1);
@@ -286,6 +325,8 @@ public class SSDriveObject extends Object{
                 case RIGHT:
                     driveDistance(.6,-7.5);
                     opmode.sleep(500);
+                    strafeDistanceNoAccel(.3,-5);
+                    opmode.sleep(400);
                     turnDegree(.67,45);
                     setRollerMotors(false, 1);
                     opmode.sleep(200);
@@ -294,7 +335,7 @@ public class SSDriveObject extends Object{
                     setRollerMotors(false,0.0);
                     driveDistance(.6,-25);
                     opmode.sleep(400);
-                    turnDegree(.67,-50);
+                    turnDegree(.67,-45);
                     opmode.sleep(400);
                     driveDistanceNoAccel(1,66);
                     setRollerMotors(true,1);
@@ -316,13 +357,13 @@ public class SSDriveObject extends Object{
                     opmode.sleep(500);
                     turnDegree(.67,45);
                     setRollerMotors(false, 1);
-                    opmode.sleep(200);
+                    opmode.idle();
                     driveDistance(.6,25);
                     opmode.sleep(700);
                     setRollerMotors(false,0.0);
                     driveDistance(.6,-25);
                     opmode.sleep(400);
-                    turnDegree(.67,-50);
+                    turnDegree(.67,155);
                     opmode.sleep(400);
 //                    driveDistanceNoAccel(1,82);
 //                    setRollerMotors(true,1);
@@ -421,13 +462,15 @@ public class SSDriveObject extends Object{
             opmode.sleep(400);
             setFoundation(true);
             opmode.sleep(400);
-            driveDistance(.6, 15);
+            driveDistance(.6, 18);
             opmode.sleep(400);
-            turnDegree(.3,130);
+            turnDegree(.3,145);
             opmode.sleep(400);
             setFoundation(false);
             opmode.sleep(400);
-            driveDistance(1,-7);
+            driveDistance(.7,-11);
+            opmode.sleep(400);
+            turnDegree(.67,2);
             opmode.sleep(400);
 
         } else if (side == RED) {
@@ -440,13 +483,12 @@ public class SSDriveObject extends Object{
             opmode.sleep(400);
             driveDistance(.6, 7);
             opmode.sleep(400);
-            turnDegree(.3,-150);
+            turnDegree(.3,-155);
             opmode.sleep(400);
             setFoundation(false);
             opmode.sleep(400);
-            driveDistance(1,-9);
+            driveDistance(.7,-11);
             opmode.sleep(400);
-
 
         }
 

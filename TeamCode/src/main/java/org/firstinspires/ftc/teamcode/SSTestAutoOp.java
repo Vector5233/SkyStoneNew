@@ -27,7 +27,7 @@ public class SSTestAutoOp extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.detectReady();
+        drive.detectReady(drive.RED);
 
         drive.detectStones();
         telemetry.addData("  SS left", "%.03f", drive.SS_leftPixel);

@@ -15,11 +15,12 @@ import java.util.Timer;
 @TeleOp(name="SkyStoneTeleOp", group="TeamCode")
 
 public class SkyStoneTeleOp extends OpMode {
-    DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller, rightLift, leftLift, odometer;
+    DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller, rightLift, leftLift;
     Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, leftFoundation, rightFoundation, blockSweeper, capServo, cameraServo;
     CRServo deliveryExtender;
+    Encoder odometer;
 
-    final double rollerPower = 1.0;
+    final double rollerPower = .8;
 
     final double TRIGGERTHRESHOLD = 0.5;
 
@@ -166,7 +167,7 @@ public class SkyStoneTeleOp extends OpMode {
         capServo.setPosition(0.8);
         cameraServo.setPosition(0);
 
-        odometer = backLeft;
+        odometer = (Encoder)frontLeft;
     }
 
     public void loop() {
@@ -185,10 +186,11 @@ public class SkyStoneTeleOp extends OpMode {
 //        setDeliveryExtender();
 
         setCameraServo();
-
-        telemetry.addData("blockSweeper", blockSweeper.getPosition());
+//        telemetry.addData("delivery rotation", deliveryRotation.getPosition());
+//        telemetry.addData("blockSweeper", blockSweeper.getPosition());
         telemetry.addData("driveSpeed", driveSpeed);
-        telemetry.addData("delivery rotation", deliveryRotation.getPosition());
+        telemetry.addData("odometer displacement", odometer.getDisplacement());
+
         telemetryDcMotor();
     }
 
@@ -645,7 +647,6 @@ public class SkyStoneTeleOp extends OpMode {
         telemetry.addData("FL", frontLeft.getCurrentPosition());
         telemetry.addData("BR", backRight.getCurrentPosition());
         telemetry.addData("BL", backLeft.getCurrentPosition());
-        telemetry.addData("OD", odometer.getCurrentPosition());
 
         telemetry.update();
     }

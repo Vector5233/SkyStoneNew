@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class Encoder {
     DcMotor odometer;
 
-    final double TICKS_PER_INCH = (383.6 * 2) / (2.4 * 3.14159265358979323846264);
+    final double TICKS_PER_INCH = (8192) / (2 * 3.14159265358979323846264*1.1811);
     // need to be tested.
 
     double oldPosition = 0;
@@ -24,22 +24,22 @@ public class Encoder {
         return ticks / TICKS_PER_INCH;
     }
 
-    double getDisplacement() {
+    double getPosition() {
         return ticksToInches(odometer.getCurrentPosition());
     }
 
     void reset() {
-        totalDisplacement += getDisplacement();
+        totalDisplacement += getPosition();
         odometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     void update() {
-        oldPosition = getDisplacement();
+        oldPosition = getPosition();
     }
 
-    double getDx (){
-        return getDisplacement()-oldPosition;
+    double getDisplacement (){
+        return getPosition()-oldPosition;
     }
 
 

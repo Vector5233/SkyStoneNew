@@ -17,12 +17,12 @@ public class Blue1SkyFoundPark extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.goToDetectPosition();
-        /*sleep(2000);
-        int skystone = drive.detectReady();
+        drive.goToDetectPosition(drive.BLUE);
+        sleep(2000);
+        int skystone = drive.detectReady(drive.BLUE);
         telemetry.addLine(skystoneString(skystone));
-        telemetry.update();*/
-        drive.collectSkyStone(drive.BLUE,drive.LEFT);
+        telemetry.update();
+//        drive.collectSkyStone(drive.BLUE,drive.LEFT);
 
 //
 
