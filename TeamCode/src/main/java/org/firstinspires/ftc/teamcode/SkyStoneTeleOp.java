@@ -16,9 +16,11 @@ import java.util.Timer;
 
 public class SkyStoneTeleOp extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller, rightLift, leftLift;
-    Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, leftFoundation, rightFoundation, blockSweeper, capServo, cameraServo;
+    Servo deliveryGrabber, deliveryRotation, leftFoundation, rightFoundation, blockSweeper, capServo, cameraServo;
     CRServo deliveryExtender;
-    Encoder odometer;
+    ModernRoboticsI2cGyro gyro;
+    Encoder myLeft, myRight, myCenter;
+    EncoderArray myArray;
 
     final double rollerPower = .8;
 
@@ -58,6 +60,10 @@ public class SkyStoneTeleOp extends OpMode {
     // motor speeds
     final double SLOWSPEED = .3;
     final double FASTSPEED = 1;
+
+    final double r1 = 0;
+    final double r2 = 0;
+    final double r3 = 0;
     //ifUnpressed should be changed to if_pressed in the rest of the code
     boolean ifUnpressedRT = true;
     boolean ifUnpressedLT = true;
@@ -79,6 +85,8 @@ public class SkyStoneTeleOp extends OpMode {
 
     boolean if_pressedRB = false;
     boolean if_pressedLB = false;
+
+    double[] radii = {0,0,0};
 
     String DriveState = null;
     String GrabberState = null;
@@ -105,8 +113,7 @@ public class SkyStoneTeleOp extends OpMode {
         rightLift = hardwareMap.dcMotor.get("rightLift");
         leftLift = hardwareMap.dcMotor.get("leftLift");
 
-        hookHrz = hardwareMap.servo.get("hookHrz");
-        hookVrt = hardwareMap.servo.get("hookVrt");
+
 
         deliveryGrabber = hardwareMap.servo.get("deliveryGrabber");
         deliveryRotation = hardwareMap.servo.get("deliveryRotation");
@@ -117,6 +124,8 @@ public class SkyStoneTeleOp extends OpMode {
         blockSweeper = hardwareMap.servo.get("blockSweeper");
 
         capServo = hardwareMap.servo.get("capServo");
+
+        gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
 
         cameraServo = hardwareMap.servo.get("cameraServo");
 
@@ -156,8 +165,7 @@ public class SkyStoneTeleOp extends OpMode {
 
         blockSweeper.setPosition(0.95);
 
-        hookVrt.setPosition(0.7);
-        hookHrz.setPosition(0);
+
 
         leftFoundation.setPosition(0.1);
         rightFoundation.setPosition(0.8);
@@ -167,7 +175,20 @@ public class SkyStoneTeleOp extends OpMode {
         capServo.setPosition(0.8);
         cameraServo.setPosition(0);
 
-        odometer = (Encoder)frontLeft;
+        myLeft = new Encoder(frontLeft);
+        myRight = new Encoder(frontRight);
+        myCenter = new Encoder(backRight);
+
+        myArray = new EncoderArray(myLeft, myRight, myCenter, r1, r2, r3);
+
+        gyro.calibrate();
+
+        while (gyro.isCalibrating()) {
+            telemetry.addLine("gyro calibrating");
+            telemetry.update();
+        }
+        telemetry.addLine("gyro calibrated");
+        telemetry.update();
     }
 
     public void loop() {
@@ -176,22 +197,48 @@ public class SkyStoneTeleOp extends OpMode {
         setLiftMotors();
         setDeliveryMotors();
         setFoundationGrabber();
-        setHook();
         setBlockSweeper();
         setCapServo();
-//        testDeliveryExtender();
-//        setCapServo();
-//        setDeliveryGrabber();
-//        setDeliveryRotation();
-//        setDeliveryExtender();
-
+        resetEncoder();
         setCameraServo();
-//        telemetry.addData("delivery rotation", deliveryRotation.getPosition());
-//        telemetry.addData("blockSweeper", blockSweeper.getPosition());
+        calibrateEncoderArray();
         telemetry.addData("driveSpeed", driveSpeed);
-        telemetry.addData("odometer displacement", odometer.getDisplacement());
+        telemetry.addData("r1: ", radii[0]);
+        telemetry.addData("r2: ", radii[1]);
+        telemetry.addData("r3: ", radii[2]);
+        telemetry.addData("myLeft displacement", myArray.getLeftPosition());
+        telemetry.addData("myRight displacement", myArray.getRightPosition());
+        telemetry.addData("myCenter displacement", myArray.getCenterPosition());
+        telemetry.addData("gyro: ", gyro.getIntegratedZValue());
+        myArray.updateAll();
+        telemetry.update();
+    }
 
-        telemetryDcMotor();
+    private void resetEncoder() {
+        if (gamepad1.y /*&& (driveSpeed > SPEEDFLOOR)*/) {
+            if (!if_pressedGp1Y) {
+                myArray.resetAll();
+                gyro.calibrate();
+                telemetry.addLine("Encoders reset");
+                if_pressedGp1Y = true;
+            }
+        } else {
+            if_pressedGp1Y = false;
+        }
+    }
+
+    private void calibrateEncoderArray() {
+        if (gamepad1.x) {
+            if (!if_pressedGp1X) {
+                myArray.calibrate((double)gyro.getIntegratedZValue());
+                radii = myArray.calibrate((double)gyro.getIntegratedZValue());
+                telemetry.addLine("Encoders calibrated");
+
+                if_pressedGp1X = true;
+            }
+        } else {
+            if_pressedGp1X = false;
+        }
     }
 
     private void setDriveMotors() {
@@ -317,7 +364,7 @@ public class SkyStoneTeleOp extends OpMode {
     }
 
 
-    public void setHook() {
+    /*private void setHook() {
         if (!if_pressedGp1X && gamepad1.x) {
             if (hookHrz.getPosition() >= 0.5 && hookHrz.getPosition() <= 1) {
                 hookHrz.setPosition(0);
@@ -345,9 +392,9 @@ public class SkyStoneTeleOp extends OpMode {
                 if_pressedGp1Y = false;
             }
         }
-    }
+    }*/
 
-    public void setFoundationGrabber() {
+    private void setFoundationGrabber() {
         if (gamepad1.b && !if_pressedGp1B) {
             if (leftFoundation.getPosition() != .5 /*&& rightFoundation.getPosition() == 0*/) {
                 leftFoundation.setPosition(.5);
@@ -372,7 +419,7 @@ public class SkyStoneTeleOp extends OpMode {
         }
     }
 
-    public void setBlockSweeper() {
+    private void setBlockSweeper() {
         if (gamepad1.right_trigger >= TRIGGERTHRESHOLD) {
             blockSweeper.setPosition(0.725);
         } else {
@@ -380,7 +427,7 @@ public class SkyStoneTeleOp extends OpMode {
         }
     }
 
-    public void setCapServo() {
+    private void setCapServo() {
         // better code
         if (gamepad2.x && !if_pressedGp2X) {
             if (capServo.getPosition() <= 0.1) {
@@ -397,7 +444,7 @@ public class SkyStoneTeleOp extends OpMode {
         }
     }
 
-   /* public void setCapServo() {
+   /* private void setCapServo() {
         if (gamepad2.a) {
             capServo.setPosition(0);
         } else {
@@ -407,7 +454,7 @@ public class SkyStoneTeleOp extends OpMode {
 
     */
 
-    /*public void setDeliveryGrabber() {
+    /*private void setDeliveryGrabber() {
         telemetry.addData("grabber state", GrabberState);
         telemetry.update();
 
@@ -460,7 +507,7 @@ public class SkyStoneTeleOp extends OpMode {
     }*/
 
 
-    public void testDeliveryExtender() {
+    private void testDeliveryExtender() {
         switch (ExtenderState) {
             case extenderIn:
                 if (gamepad2.right_stick_y >= 0.5) {
@@ -502,7 +549,7 @@ public class SkyStoneTeleOp extends OpMode {
         telemetry.addData("ExtenderState: ", ExtenderState);
     }
 
-    public void setCameraServo() {
+    private void setCameraServo() {
         return;
     }
     /*
@@ -513,7 +560,7 @@ public class SkyStoneTeleOp extends OpMode {
         }
     }*/
 
-    public void setDeliveryExtender() {
+    private void setDeliveryExtender() {
         switch (ExtenderState) {
             case extenderOut:
                 // There is no way to code the position of continuous servo...
@@ -558,7 +605,7 @@ public class SkyStoneTeleOp extends OpMode {
         }
     }
 
-    public void setDeliveryRotation() {
+    private void setDeliveryRotation() {
         switch (RotationState) {
             case rotationIn:
                 if (ExtenderState == extenderOut) {

@@ -10,9 +10,9 @@ public class Encoder {
     final double TICKS_PER_INCH = (8192) / (2 * 3.14159265358979323846264*1.1811);
     // need to be tested.
 
-    double oldPosition = 0;
+    double oldPosition = 0; // position since last update
 
-    double totalDisplacement = 0;
+    double totalDisplacement = 0;  // total displacement since creation of encoder
 
     public Encoder(DcMotor myMotor) {
         odometer = myMotor;
@@ -25,6 +25,9 @@ public class Encoder {
     }
 
     double getPosition() {
+        /** return position since last reset
+         *
+         */
         return ticksToInches(odometer.getCurrentPosition());
     }
 
@@ -39,6 +42,9 @@ public class Encoder {
     }
 
     double getDisplacement (){
+        /** return change in position since last update
+         *
+         */
         return getPosition()-oldPosition;
     }
 
