@@ -20,7 +20,11 @@ public class SkyStoneTeleOp extends OpMode {
     CRServo deliveryExtender;
     ModernRoboticsI2cGyro gyro;
     Encoder myLeft, myRight, myCenter;
-    EncoderArray myArray;
+    EncoderArray encoderArray;
+    final double r1 = 5.3655;
+    final double r2 = 5.850125;
+    final double r3 = 3.2215;
+
 
     final double rollerPower = .8;
 
@@ -61,9 +65,7 @@ public class SkyStoneTeleOp extends OpMode {
     final double SLOWSPEED = .3;
     final double FASTSPEED = 1;
 
-    final double r1 = 0;
-    final double r2 = 0;
-    final double r3 = 0;
+
     //ifUnpressed should be changed to if_pressed in the rest of the code
     boolean ifUnpressedRT = true;
     boolean ifUnpressedLT = true;
@@ -86,7 +88,8 @@ public class SkyStoneTeleOp extends OpMode {
     boolean if_pressedRB = false;
     boolean if_pressedLB = false;
 
-    double[] radii = {0,0,0};
+    double[] radii = new double[3];
+
 
     String DriveState = null;
     String GrabberState = null;
@@ -125,7 +128,7 @@ public class SkyStoneTeleOp extends OpMode {
 
         capServo = hardwareMap.servo.get("capServo");
 
-        gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
+//        gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
 
         cameraServo = hardwareMap.servo.get("cameraServo");
 
@@ -167,6 +170,7 @@ public class SkyStoneTeleOp extends OpMode {
 
 
 
+
         leftFoundation.setPosition(0.1);
         rightFoundation.setPosition(0.8);
 
@@ -179,16 +183,16 @@ public class SkyStoneTeleOp extends OpMode {
         myRight = new Encoder(frontRight);
         myCenter = new Encoder(backRight);
 
-        myArray = new EncoderArray(myLeft, myRight, myCenter, r1, r2, r3);
+        encoderArray = new EncoderArray(myLeft, myRight, myCenter, r1, r2, r3);
 
-        gyro.calibrate();
+        /*gyro.calibrate();
 
         while (gyro.isCalibrating()) {
             telemetry.addLine("gyro calibrating");
             telemetry.update();
         }
         telemetry.addLine("gyro calibrated");
-        telemetry.update();
+        telemetry.update();*/
     }
 
     public void loop() {
@@ -202,22 +206,25 @@ public class SkyStoneTeleOp extends OpMode {
         resetEncoder();
         setCameraServo();
         calibrateEncoderArray();
+        encoderArray.updateAll();
         telemetry.addData("driveSpeed", driveSpeed);
-        telemetry.addData("r1: ", radii[0]);
-        telemetry.addData("r2: ", radii[1]);
-        telemetry.addData("r3: ", radii[2]);
-        telemetry.addData("myLeft displacement", myArray.getLeftPosition());
-        telemetry.addData("myRight displacement", myArray.getRightPosition());
-        telemetry.addData("myCenter displacement", myArray.getCenterPosition());
-        telemetry.addData("gyro: ", gyro.getIntegratedZValue());
-        myArray.updateAll();
+        /*telemetry.addData("r1", radii[0]);
+        telemetry.addData("r2", radii[1]);
+        telemetry.addData("r3", radii[2]);*/
+        telemetry.addData("deltaX", encoderArray.getDeltaX());
+        telemetry.addData("deltaY", encoderArray.getDeltaY());
+        telemetry.addData("deltaTheta(degrees)", encoderArray.getDeltaTheta()*180/Math.PI);
+        telemetry.addData("X", encoderArray.X);
+        telemetry.addData("Y", encoderArray.Y);
+        telemetry.addData("theta", encoderArray.theta*180/Math.PI);
+//        telemetry.addData("gyro", gyro.getIntegratedZValue());
         telemetry.update();
     }
 
     private void resetEncoder() {
-        if (gamepad1.y /*&& (driveSpeed > SPEEDFLOOR)*/) {
+        if (gamepad1.y) {
             if (!if_pressedGp1Y) {
-                myArray.resetAll();
+                encoderArray.resetAll();
                 gyro.calibrate();
                 telemetry.addLine("Encoders reset");
                 if_pressedGp1Y = true;
@@ -230,8 +237,8 @@ public class SkyStoneTeleOp extends OpMode {
     private void calibrateEncoderArray() {
         if (gamepad1.x) {
             if (!if_pressedGp1X) {
-                myArray.calibrate((double)gyro.getIntegratedZValue());
-                radii = myArray.calibrate((double)gyro.getIntegratedZValue());
+                encoderArray.calibrate((double)gyro.getIntegratedZValue());
+                radii = encoderArray.calibrate((double)gyro.getIntegratedZValue());
                 telemetry.addLine("Encoders calibrated");
 
                 if_pressedGp1X = true;
@@ -243,10 +250,7 @@ public class SkyStoneTeleOp extends OpMode {
 
     private void setDriveMotors() {
 
-        //final double SPEEDFLOOR = .15;
-        //final double SPEEDCEILING = .95;
-
-        if (gamepad1.dpad_down /*&& (driveSpeed > SPEEDFLOOR)*/) {
+        if (gamepad1.dpad_down) {
             if (!if_pressedDpadDown) {
                 driveSpeed = SLOWSPEED;
                 if_pressedDpadDown = true;
@@ -255,7 +259,7 @@ public class SkyStoneTeleOp extends OpMode {
             if_pressedDpadDown = false;
         }
 
-        if (gamepad1.dpad_up /*&& (driveSpeed < SPEEDCEILING)*/) {
+        if (gamepad1.dpad_up) {
             if (!if_pressedDpadUp) {
                 if (leftFoundation.getPosition() == .5) {
 

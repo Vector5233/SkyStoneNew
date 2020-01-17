@@ -13,8 +13,7 @@ public class BluePark extends LinearOpMode {
 
         drive.setBlockSweeper(false);
         drive.setCameraServo(1);
-        drive.setHookVrt(1);
-        drive.setHookHrz(0);
+
 
         telemetry.addLine("initialized");
         telemetry.update();
