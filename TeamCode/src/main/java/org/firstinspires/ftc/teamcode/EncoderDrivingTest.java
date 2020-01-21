@@ -20,14 +20,14 @@ public class EncoderDrivingTest extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.driveDistance(.3,30);
+        drive.driveDistance(1,30);
         telemetry.addLine("final deltaY read");
         telemetry.update();
-        sleep(1000);
+        sleep(500);
         drive.encoderArray.updateAll();
         drive.encoderArray.resetAll();
         getPositionTelemetry();
-        sleep(2000);
+        sleep(4000);
         stop();
     }
     

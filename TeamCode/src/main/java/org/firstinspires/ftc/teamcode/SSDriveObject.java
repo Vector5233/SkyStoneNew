@@ -11,6 +11,7 @@ import com.vuforia.ar.pl.DebugLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -43,8 +44,7 @@ public class SSDriveObject extends Object{
     final double TICKS_PER_INCH_TURN = TICKS_PER_INCH_STRAIGHT;
     final double TICKS_PER_INCH_STRAFE = (TICKS_PER_INCH_STRAIGHT)*1.15*(20.0/17.0);
     final double TICKS_PER_DEGREE = (3.14159 / 180) *  ROBOT_RADIUS * TICKS_PER_INCH_TURN;
-    final double TOLERANCE = 2;  // in degrees
-    final double MAXSPEED = 0.65;
+
 
     final boolean BLUE = true;
     final boolean RED = false;
@@ -66,6 +66,13 @@ public class SSDriveObject extends Object{
     final double r1 = 5.37;
     final double r2 = 5.85;
     final double r3 = 3.22;
+
+    final double TOLERANCE = 2;  // in degrees
+    final double ACCEL_DIST = 10;
+    final double DECEL_DIST = 15;
+
+    final boolean FORWARD = true;
+    final boolean BACKWARD = false;
 
     final double PERCENT = .45;
     double powerMin = 0.22;
@@ -782,13 +789,36 @@ public class SSDriveObject extends Object{
 
     }
 
-    public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
+    /*public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
         if (deltaY < PERCENT * distance) {
             return Math.max((1 / PERCENT) * powerLimit * deltaY / distance, powerMin);
         } else {
-            return Math.max(-(1 / PERCENT) * powerLimit * (deltaY - distance) / distance, powerMin);
+            return Math.max(-(1 / PERCENT) * powerLimit * (deltaY - distance) / distance, 0);
+        }
+    }*/
+    
+    public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
+        //distance = true means moving forward
+        //distance = false means moving backward
+        if (distance > 0) {
+            if (deltaY < ACCEL_DIST) {
+                return deltaY * (powerLimit-powerMin)/ACCEL_DIST + powerMin;
+            } else if (distance >= ACCEL_DIST && distance < (distance - DECEL_DIST)){
+                return  powerLimit;
+            } else {
+                return (deltaY - distance) * (powerMin-powerLimit)/DECEL_DIST + powerMin;
+            }
+        } else {
+            if (Math.abs(deltaY) < ACCEL_DIST) {
+                return deltaY * (powerLimit - powerMin) / -ACCEL_DIST + powerMin;
+            } else if (Math.abs(distance) >= ACCEL_DIST && Math.abs(distance) < (Math.abs(distance) - DECEL_DIST)) {
+                return powerLimit;
+            } else {
+                return (deltaY-distance) * (powerMin-powerLimit)/-DECEL_DIST + powerMin;
+            }
         }
     }
+
     public double calculatePowerStrafe(double powerLimit, double distance, double deltaX) {
         if (deltaX < PERCENT * distance) {
             return Math.max((1 / PERCENT) * powerLimit * deltaX / distance, powerMin);
@@ -797,17 +827,29 @@ public class SSDriveObject extends Object{
         }
     }
 
-//    public double calculatePower(doubel)
+    public double calculatePowerTurn(double powerLimit, double distance, double deltaTheta) {
+        if (deltaTheta < PERCENT * distance) {
+            return Math.max((1 / PERCENT) * powerLimit * deltaTheta / distance, powerMin);
+        } else {
+            return Math.max(-(1 / PERCENT) * powerLimit * (deltaTheta - distance) / distance, powerMin);
+        }
+    }
+
 
     public void driveDistance(double powerLimit, double distance) {
         double deltaY = 0;
+        boolean direction;
 
         encoderArray.updateAll();
         encoderArray.resetAll();
 
         if (distance > 0) {
-            while((deltaY <= distance) && opmode.opModeIsActive()) {
+            direction = FORWARD;
+            while(opmode.opModeIsActive()) {
                 deltaY = encoderArray.getDeltaY();
+                if (deltaY >= distance) {
+                    break;
+                }
                 if (deltaY < PERCENT * distance) {
                     setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
 //                    opmode.telemetry.addLine("accelerating");
@@ -817,10 +859,11 @@ public class SSDriveObject extends Object{
 //                    opmode.telemetry.addLine("cruising");
 
                 } else /*if (deltaY <= distance && deltaY >= (1 - PERCENT) * distance)*/{
-                    setDrivePowerAll(/*calculatePowerStraight(powerLimit, distance, deltaY)*/powerMin);
+                    setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
 //                    opmode.telemetry.addLine("decelerating");
 
                 }
+
 //                telemetryEncoderArray();
 //                opmode.telemetry.addData("deltaY: ", encoderArray.getDeltaY());
 //                telemetryWheelPower();
@@ -831,8 +874,13 @@ public class SSDriveObject extends Object{
         } else if (distance < 0) {
             powerLimit = -powerLimit;
             powerMin = -powerMin;
-            while((deltaY >= distance) && opmode.opModeIsActive()) {
+            direction = BACKWARD;
+            while(opmode.opModeIsActive()) {
+
                 deltaY = encoderArray.getDeltaY();
+                if (deltaY <= distance) {
+                    break;
+                }
                 if (deltaY > PERCENT * distance) {
                     setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
 //                    opmode.telemetry.addLine("accelerating");
@@ -994,33 +1042,33 @@ public class SSDriveObject extends Object{
         // distance in inches
         //conjecture instead of moving 12", wheels will go 12"*cos(45)= 8.5"
 
-        int ticks = (int) (TICKS_PER_DEGREE * degrees);
+        double radians = degrees * Math.PI/180;
 
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opmode.telemetry.addLine("Encoders reset");
-        opmode.telemetry.update();
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        double deltaTheta = 0;
 
-        getAngleTelemetry("TURN START");
+        encoderArray.updateAll();
+        encoderArray.resetAll();
 
 
-        if (ticks > 0) {
+        if (radians > 0) {
             // positive (CCW) turn => left motor goes in (-) direction
-            while ((frontLeft.getCurrentPosition() >= -ticks) && opmode.opModeIsActive()) {
+            while ((deltaTheta >= -radians) && opmode.opModeIsActive()) {
+                deltaTheta = encoderArray.getDeltaTheta();
                 setTurnPowerAll(-power);
                 opmode.telemetry.addData("frontLeft", frontLeft.getCurrentPosition());
                 opmode.telemetry.update();
             }
-        } else if (ticks < 0) {
-            while ((frontLeft.getCurrentPosition() <= -ticks) && opmode.opModeIsActive()) {
+        } else if (radians < 0) {
+            while ((deltaTheta <= -radians) && opmode.opModeIsActive()) {
+                deltaTheta = encoderArray.getDeltaTheta();
                 setTurnPowerAll(power);
-                opmode.telemetry.addData("frontLeft", frontLeft.getCurrentPosition());
-                opmode.telemetry.update();
+//                opmode.telemetry.addData("frontLeft", frontLeft.getCurrentPosition());
+//                opmode.telemetry.update();
             }
         }
 
         stopDriving();
-        getAngleTelemetry("TURN END");
+//        getAngleTelemetry("TURN END");
     }
 
     //set chassis motor
