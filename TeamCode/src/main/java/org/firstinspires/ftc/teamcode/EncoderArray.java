@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import java.lang.reflect.Array;
-
 public class EncoderArray {
 
     Encoder left, right,center;
@@ -18,8 +16,6 @@ public class EncoderArray {
     double accumulatedY = 0;
     double accumulatedTheta = 0;
     double theta = 0;
-
-
 
     public EncoderArray(Encoder myLeft, Encoder myRight, Encoder myCenter, double myR1, double myR2, double myR3){
         left = myLeft;
@@ -76,9 +72,11 @@ public class EncoderArray {
     double getDeltaX(){
         return -getCenterPosition()-r3*(getLeftPosition()+getRightPosition())/(r1+r2);
     }
+
     double getDeltaY(){
         return .5*(getRightPosition()-getLeftPosition()-(r2-r1)*(getLeftPosition()+getRightPosition())/(r1+r2));
     }
+
     double getDeltaTheta(){
         return (getLeftPosition()+getRightPosition())/(r1+r2);
     }
@@ -86,9 +84,11 @@ public class EncoderArray {
     double getDx(){
         return -getCenterDisplacement()+r3*(getLeftDisplacement()+getRightDisplacement())/(r1+r2);
     }
+
     double getDy(){
         return .5*(getRightDisplacement()-getLeftDisplacement()-(r2-r1)*(getLeftDisplacement()+getRightDisplacement())/(r1+r2));
     }
+
     double getDTheta(){
         return (getLeftDisplacement()+getRightDisplacement())/(r1+r2);
     }
@@ -103,9 +103,4 @@ public class EncoderArray {
         right.update();
         center.update();
     }
-
-
-
-
-
 }

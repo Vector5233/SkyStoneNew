@@ -34,13 +34,6 @@ public class SkyStoneTeleOp extends OpMode {
 
     double rotationPos = 0;
 
-    //test required
-    final int maxLift = 700;
-    final int minLift = 0;
-
-    final String BACK = "BACK";
-    final String FORWARD = "FORWARD";
-
     final String rotationOut = "rotationOut";
     final String rotationIn = "rotationIn";
     final String rotationHalf = "rotationHalf";
@@ -62,43 +55,28 @@ public class SkyStoneTeleOp extends OpMode {
     final String liftDown = "liftDown";
 
     // motor speeds
+
     final double SLOWSPEED = .3;
     final double FASTSPEED = 1;
 
-
     //ifUnpressed should be changed to if_pressed in the rest of the code
-    boolean ifUnpressedRT = true;
-    boolean ifUnpressedLT = true;
 
     boolean if_pressedRT = false;
     boolean if_pressedLT = false;
-
     boolean if_pressedDpadDown = false;
     boolean if_pressedDpadHrz = false;
     boolean if_pressedDpadUp = false;
-
     boolean if_pressedGp1X = false;
     boolean if_pressedGp1Y = false;
-    boolean if_pressedGp2A = false;
-    boolean if_pressedGp1B = false;
-    boolean if_pressedGp2B = false;
     boolean if_pressedGp2X = false;
-
-
-    boolean if_pressedRB = false;
-    boolean if_pressedLB = false;
+    boolean if_pressedGp1B = false;
 
     double[] radii = new double[3];
 
-
-    String DriveState = null;
     String GrabberState = null;
-    String LiftGrabberState = null;
     String RotationState = null;
     String ExtenderState = null;
 
-    ElapsedTime grabberTime = new ElapsedTime();
-    final int GRABBERTIMEOUT = 200;
     ElapsedTime rotationTime = new ElapsedTime();
     final int ROTATIONTIMEOUT = 500;
     ElapsedTime extenderTime = new ElapsedTime();
@@ -319,7 +297,6 @@ public class SkyStoneTeleOp extends OpMode {
         }
     }
 
-
     private void setDeliveryMotors() {
         final double ROTATIONHALF = 0.5;
         final double ROTATIONOUT = 1;
@@ -366,7 +343,6 @@ public class SkyStoneTeleOp extends OpMode {
 
 
     }
-
 
     /*private void setHook() {
         if (!if_pressedGp1X && gamepad1.x) {
@@ -448,7 +424,7 @@ public class SkyStoneTeleOp extends OpMode {
         }
     }
 
-   /* private void setCapServo() {
+    /* private void setCapServo() {
         if (gamepad2.a) {
             capServo.setPosition(0);
         } else {
@@ -510,52 +486,10 @@ public class SkyStoneTeleOp extends OpMode {
 
     }*/
 
-
-    private void testDeliveryExtender() {
-        switch (ExtenderState) {
-            case extenderIn:
-                if (gamepad2.right_stick_y >= 0.5) {
-                    ExtenderState = extenderMovingOut;
-                    telemetry.addLine("ExtenderState set to extenderMovingOut");
-                } else {
-                    telemetry.addLine("extenderIn");
-                }
-
-                break;
-            case extenderOut:
-                if (gamepad2.right_stick_y <= -0.5) {
-                    ExtenderState = extenderMovingIn;
-                    telemetry.addLine("ExtenderState set to extenderMovingIn");
-                } else {
-                    telemetry.addLine("extenderOut");
-                }
-                break;
-            case extenderMovingIn:
-                if (extenderTime.milliseconds() > EXTENDERTIMEOUT) {
-//                    deliveryExtender.setPower(1);
-                    telemetry.addLine("extenderMovingIn");
-
-                } else {
-                    ExtenderState = extenderIn;
-                }
-                break;
-            case extenderMovingOut:
-                if (extenderTime.milliseconds() > EXTENDERTIMEOUT) {
-//                    deliveryExtender.setPower(-1);
-                    telemetry.addLine("extenderMovingOut");
-
-                }
-                ExtenderState = extenderOut;
-                break;
-            default:
-                telemetry.addLine("testFailed");
-        }
-        telemetry.addData("ExtenderState: ", ExtenderState);
-    }
-
     private void setCameraServo() {
         return;
     }
+
     /*
         if (gamepad2.y){
             cameraServo.setPosition(0);

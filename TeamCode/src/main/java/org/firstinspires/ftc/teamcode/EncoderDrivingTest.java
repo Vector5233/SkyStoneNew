@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -14,7 +12,6 @@ public class EncoderDrivingTest extends LinearOpMode {
         drive = new SSDriveObject(this);
 
     }
-
 
     public void runOpMode() {
         initialize();
@@ -30,13 +27,11 @@ public class EncoderDrivingTest extends LinearOpMode {
         sleep(4000);
         stop();
     }
-    
+
     public void getPositionTelemetry() {
         telemetry.addData("X", drive.encoderArray.X);
         telemetry.addData("Y", drive.encoderArray.Y);
         telemetry.addData("theta", drive.encoderArray.theta*180/Math.PI);
         telemetry.update();
-
     }
-    
 }

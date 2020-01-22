@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.vuforia.ar.pl.DebugLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -24,7 +23,6 @@ import java.util.Locale;
    1) make function that makes the robot smoothly accelerating stars and stops
    2) lowering the power
    3) Having a function that calculates the ticks for a given distance
-
  */
 
 public class SSDriveObject extends Object{
@@ -67,7 +65,6 @@ public class SSDriveObject extends Object{
     final double r2 = 5.85;
     final double r3 = 3.22;
 
-    final double TOLERANCE = 2;  // in degrees
     final double ACCEL_DIST = 10;
     final double DECEL_DIST = 15;
 
@@ -201,7 +198,7 @@ public class SSDriveObject extends Object{
             //might need to change driveDistance, add a strafe
             driveDistance(.6, 22);
             opmode.sleep(400);
-            strafeDistanceNoAccel(.3,-4.5);
+            strafeDistance(.3,-4.5);
             opmode.sleep(400);
             turnDegree(.67,-97);
 
@@ -213,8 +210,6 @@ public class SSDriveObject extends Object{
         }
 
     }
-
-
 
     public int detectReady(boolean side){
 
@@ -278,29 +273,6 @@ public class SSDriveObject extends Object{
             opmode.telemetry.addLine("tfod fail");
             return CENTER;
         }
-
-
-    }
-
-    public void testCollectionAndDelivery(){
-        setRollerMotors(false, 1);
-        //how to check if the block is collected or not (next round)
-        driveDistance(.3,6);
-        opmode.sleep(700);
-//        setBlockSweeper(true);
-//        opmode.sleep(1000);
-//        setBlockSweeper(false);
-//        opmode.idle();
-        setRollerMotors(true,0.0);
-        opmode.idle();
-        driveDistance(1,20);
-        opmode.idle();
-        setRollerMotors(true,1);
-        opmode.idle();
-        driveDistance(1,-10);
-//        setDeliveryGrabber(true);
-//        opmode.sleep(500);
-
     }
 
     public void collectSkyStone(boolean side, int skystone){
@@ -309,7 +281,7 @@ public class SSDriveObject extends Object{
                 case LEFT:
                     driveDistance(.6,-24);
                     opmode.sleep(400);
-                    strafeDistanceNoAccel(.3,-5);
+                    strafeDistance(.3,-5);
                     opmode.sleep(400);
                     turnDegree(.67,45);
                     setRollerMotors(false, 1);
@@ -321,7 +293,7 @@ public class SSDriveObject extends Object{
                     opmode.sleep(400);
                     turnDegree(.67,-45);
                     opmode.sleep(400);
-                    driveDistanceNoAccel(1,82);
+                    driveDistance(1,82);
                     setRollerMotors(true,1);
                     opmode.idle();
                     driveDistance(1,-15);
@@ -332,7 +304,7 @@ public class SSDriveObject extends Object{
                 case CENTER:
                     driveDistance(.6,-16);
                     opmode.sleep(500);
-                    strafeDistanceNoAccel(.3,-5);
+                    strafeDistance(.3,-5);
                     opmode.sleep(400);
                     turnDegree(.67,45);
                     setRollerMotors(false, 1);
@@ -344,7 +316,7 @@ public class SSDriveObject extends Object{
                     opmode.sleep(400);
                     turnDegree(.67,-45);
                     opmode.sleep(400);
-                    driveDistanceNoAccel(1,74);
+                    driveDistance(1,74);
                     setRollerMotors(true,1);
                     opmode.idle();
                     driveDistance(1,-15);
@@ -354,7 +326,7 @@ public class SSDriveObject extends Object{
                 case RIGHT:
                     driveDistance(.6,-7.5);
                     opmode.sleep(500);
-                    strafeDistanceNoAccel(.3,-5);
+                    strafeDistance(.3,-5);
                     opmode.sleep(400);
                     turnDegree(.67,45);
                     setRollerMotors(false, 1);
@@ -366,7 +338,7 @@ public class SSDriveObject extends Object{
                     opmode.sleep(400);
                     turnDegree(.67,-45);
                     opmode.sleep(400);
-                    driveDistanceNoAccel(1,66);
+                    driveDistance(1,66);
                     setRollerMotors(true,1);
                     opmode.idle();
                     driveDistance(1,-15);
@@ -378,7 +350,7 @@ public class SSDriveObject extends Object{
 //            how to check if the block is collected or not (next round)
 //            driveDistance(.3,6);
 //            opmode.sleep(700);
-            
+
         } else {
             switch (skystone) {
                 case LEFT:
@@ -415,7 +387,7 @@ public class SSDriveObject extends Object{
                     opmode.sleep(400);
                     turnDegree(.67,-50);
                     opmode.sleep(400);
-                    driveDistanceNoAccel(1,74);
+                    driveDistance(1,74);
                     setRollerMotors(true,1);
                     opmode.idle();
                     driveDistance(1,-15);
@@ -435,7 +407,7 @@ public class SSDriveObject extends Object{
                     opmode.sleep(400);
                     turnDegree(.67,-50);
                     opmode.sleep(400);
-                    driveDistanceNoAccel(1,66);
+                    driveDistance(1,66);
                     setRollerMotors(true,1);
                     opmode.idle();
                     driveDistance(1,-15);
@@ -487,7 +459,7 @@ public class SSDriveObject extends Object{
         if (side == BLUE) {
             driveDistance(.6, -27);
             opmode.sleep(400);
-            strafeDistanceNoAccel(.6,4);
+            strafeDistance(.6,4);
             opmode.sleep(400);
             setFoundation(true);
             opmode.sleep(400);
@@ -506,7 +478,7 @@ public class SSDriveObject extends Object{
             opmode.telemetry.addLine("red Foundation moving");
             driveDistance(.6, -27);
             opmode.sleep(400);
-            strafeDistanceNoAccel(.6,-2);
+            strafeDistance(.6,-2);
             opmode.sleep(400);
             setFoundation(true);
             opmode.sleep(400);
@@ -518,33 +490,7 @@ public class SSDriveObject extends Object{
             opmode.sleep(400);
             driveDistance(.7,-11);
             opmode.sleep(400);
-
         }
-
-
-
-
-
-
-        //turnDegree(.4, -5);
-
-        /*turnDegree(.4,1.5);
-        opmode.sleep(400);
-
-        driveDistance(1,-1);
-        opmode.sleep(400);
-
-        strafeDistanceNoAccel(1,-39);
-        opmode.sleep(400);
-
-        turnDegree(.67,90);
-        opmode.sleep(400);
-
-        strafeDistanceNoAccel(.8,23);
-        opmode.sleep(400);
-
-        driveDistance(.5,-15);
-        //park(side, FOUNDATION);*/
     }
 
     public void park (boolean side, boolean state) {
@@ -561,7 +507,7 @@ public class SSDriveObject extends Object{
                 opmode.telemetry.update();
                 driveDistance(.6,10);
                 opmode.sleep(400);
-                strafeDistanceNoAccel(.6,16);
+                strafeDistance(.6,16);
                 opmode.sleep(400);
                 driveDistance(.6,28);
                 opmode.sleep(400);
@@ -570,7 +516,7 @@ public class SSDriveObject extends Object{
                 opmode.telemetry.update();
                 driveDistance(.6,10);
                 opmode.sleep(400);
-                strafeDistanceNoAccel(.6,-25);
+                strafeDistance(.6,-25);
                 opmode.sleep(400);
                 driveDistance(.6,28);
                 opmode.sleep(400);
@@ -581,7 +527,7 @@ public class SSDriveObject extends Object{
                 opmode.telemetry.update();
                 driveDistance(.6,10);
                 opmode.sleep(400);
-                strafeDistanceNoAccel(.6,-10);
+                strafeDistance(.6,-10);
                 opmode.sleep(400);
                 driveDistance(.6,28);
                 opmode.sleep(400);
@@ -614,7 +560,7 @@ public class SSDriveObject extends Object{
 
     public void deliverSkystone (boolean side) {
         if (side) {
-            strafeDistanceNoAccel(1,25);
+            strafeDistance(1,25);
             driveDistance(1,-25);
             setBlockSweeper(true);
             opmode.sleep(500);
@@ -629,6 +575,8 @@ public class SSDriveObject extends Object{
 
         }
     }
+
+    //detection
 
     public void initTfod(){
         int tfodMonitorViewId = opmode.hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", opmode.hardwareMap.appContext.getPackageName());
@@ -698,8 +646,6 @@ public class SSDriveObject extends Object{
         inchPerPixel = Math.abs(BLOCK_LENGTH/(SS_size));
         opmode.telemetry.addData("inch / pixel", "%.03f", inchPerPixel);
 
-
-
         //displacement = ((5/8)*(SS_rightPixel - SS_leftPixel) + SS_leftPixel - CENTER_PIXELS)*inchPerPixel - ARM_TO_WEBCAM;
         if(250 <= SS_rightPixel && SS_rightPixel <= 500) {
             opmode.telemetry.addLine("center");
@@ -717,16 +663,7 @@ public class SSDriveObject extends Object{
 
     //drive chassis motor
 
-    public void setDrivePowerLeft(double powerLeft) {
-        frontLeft.setPower(powerLeft);
-        backLeft.setPower(powerLeft);
-    }
-
-    public void setDrivePowerRight(double powerRight) {
-        frontRight.setPower(powerRight);
-        backRight.setPower(powerRight);
-    }
-
+    /*
     public void driveDistanceCompensate(double powerLeft, double powerRight, double distance) {
         final double PERCENT = .1;
         double powerMin = 0.22;
@@ -762,7 +699,9 @@ public class SSDriveObject extends Object{
         stopDriving();
         opmode.telemetry.addLine("done driving");
     }
+    */
 
+    /*
     public void driveDistanceNoAccel(double power, double distance) {
 
         encoderArray.updateAll();
@@ -785,18 +724,8 @@ public class SSDriveObject extends Object{
         stopDriving();
         opmode.telemetry.addLine("motors stopped");
         opmode.telemetry.update();
-//        opmode.sleep(750);
-
-    }
-
-    /*public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
-        if (deltaY < PERCENT * distance) {
-            return Math.max((1 / PERCENT) * powerLimit * deltaY / distance, powerMin);
-        } else {
-            return Math.max(-(1 / PERCENT) * powerLimit * (deltaY - distance) / distance, 0);
-        }
     }*/
-    
+
     public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
         //distance = true means moving forward
         //distance = false means moving backward
@@ -834,7 +763,6 @@ public class SSDriveObject extends Object{
             return Math.max(-(1 / PERCENT) * powerLimit * (deltaTheta - distance) / distance, powerMin);
         }
     }
-
 
     public void driveDistance(double powerLimit, double distance) {
         double deltaY = 0;
@@ -904,64 +832,7 @@ public class SSDriveObject extends Object{
         opmode.sleep(500);
     }
 
-    /*public void driveDistance(double powerLimit, double distance) {
-        final double PERCENT = .1;
-        double powerMin = 0.22;
-        int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
-
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opmode.telemetry.addLine("Encoders reset");
-        opmode.telemetry.update();
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        if (ticks > 0) {
-            while((frontLeft.getCurrentPosition() <= ticks) && opmode.opModeIsActive()) {
-                if (frontLeft.getCurrentPosition() < PERCENT * ticks) {
-                    setDrivePowerAll(Math.max((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
-                    opmode.telemetry.addLine("accelerating");
-
-                } else if (frontLeft.getCurrentPosition() < (1 - PERCENT) * ticks) {
-                    setDrivePowerAll(powerLimit);
-                    opmode.telemetry.addLine("cruising");
-
-                } else {
-                    setDrivePowerAll(Math.max(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
-                    opmode.telemetry.addLine("decelerating");
-
-                }
-                telemetryDcMotor();
-                opmode.telemetry.addData("distance", (double) ticks / TICKS_PER_INCH_STRAIGHT);
-                opmode.telemetry.update();
-            }
-        } else if (ticks < 0) {
-            powerLimit = -powerLimit;
-            powerMin = -powerMin;
-            while((frontLeft.getCurrentPosition() >= ticks) && opmode.opModeIsActive()) {
-                if (frontLeft.getCurrentPosition() > PERCENT * ticks) {
-                    setDrivePowerAll(Math.min((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
-                    opmode.telemetry.addLine("accelerating");
-
-                } else if (frontLeft.getCurrentPosition() > (1 - PERCENT) * ticks) {
-                    setDrivePowerAll(powerLimit);
-                    opmode.telemetry.addLine("cruising");
-
-                } else {
-                    setDrivePowerAll(Math.min(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
-                    opmode.telemetry.addLine("decelerating");
-
-                }
-                telemetryDcMotor();
-                opmode.telemetry.addData("distance", (double) ticks / TICKS_PER_INCH_STRAIGHT);
-                opmode.telemetry.update();
-            }
-        }
-        stopDriving();
-        opmode.telemetry.addData("distance", (double) ticks / TICKS_PER_INCH_STRAIGHT);
-        opmode.telemetry.addLine("done driving");
-        opmode.telemetry.update();
-    }*/
-
-    public void strafeDistanceNoAccel(double power, double distance) {
+    /*public void strafeDistanceNoAccel(double power, double distance) {
         encoderArray.updateAll();
         encoderArray.resetAll();
 
@@ -983,7 +854,7 @@ public class SSDriveObject extends Object{
         opmode.telemetry.addLine("motors stopped");
         opmode.telemetry.update();
 
-    }
+    }*/
 
     public void strafeDistance(double powerLimit, double distance) {
 
@@ -1071,9 +942,7 @@ public class SSDriveObject extends Object{
 //        getAngleTelemetry("TURN END");
     }
 
-    //set chassis motor
-
-
+    //set chassis motors
 
     public void setModeAll(DcMotor.RunMode mode) {
         frontLeft.setMode(mode);
@@ -1097,14 +966,6 @@ public class SSDriveObject extends Object{
         backLeft.setPower(power);
     }
 
-    public void setSelectPowerAll(double FRpower, double FLpower, double BRpower, double BLpower){
-        frontRight.setPower(FRpower);
-        frontLeft.setPower(FLpower);
-        backRight.setPower(BRpower);
-        backLeft.setPower(BLpower);
-
-    }
-
     public void setStrafePowerAll(double power) {
         frontLeft.setPower(FLpower*power);
         frontRight.setPower(-FRpower*power);
@@ -1119,8 +980,9 @@ public class SSDriveObject extends Object{
         backRight.setPower(-power);
     }
 
+    //set other motors
 
-    public void setRollerMotors (boolean direction, double power/*, int time*/) {
+    public void setRollerMotors (boolean direction, double power) {
         //direction true = inward
         //direction false = outward
         /*rollerTimeout = new ElapsedTime();
@@ -1145,21 +1007,8 @@ public class SSDriveObject extends Object{
         }*/
     }
 
-
-
     public void setCameraServo (double position) {
         cameraServo.setPosition(position);
-    }
-
-    public void setFoundationLeft (boolean launch) {
-        //launch true = grabber down
-        //launch false = grabber up
-        if (launch) {
-            leftFoundation.setPosition(.5);
-        }
-        else if (!launch) {
-            leftFoundation.setPosition(0);
-        }
     }
 
     public void setFoundation (boolean launch) {
@@ -1173,8 +1022,6 @@ public class SSDriveObject extends Object{
             rightFoundation.setPosition(.8);
         }
     }
-
-    
 
     public void setBlockSweeper (boolean kick) {
         //kick true = blockSweeper up
@@ -1197,6 +1044,10 @@ public class SSDriveObject extends Object{
         }
     }
 
+    public void setDeliveryExtender (double power, int time) {
+        deliveryExtender.setPower(power);
+    }
+
     public void setDeliveryRotation (boolean rotate) {
         //rotate true = rotate out
         //rotate false = rotate in
@@ -1207,10 +1058,6 @@ public class SSDriveObject extends Object{
         else {
             deliveryRotation.setPosition(0);
         }
-    }
-
-    public void setDeliveryExtender (double power, int time) {
-        deliveryExtender.setPower(power);
     }
 
     //telemetry
@@ -1229,19 +1076,4 @@ public class SSDriveObject extends Object{
         opmode.telemetry.addData("BL", backLeft.getCurrentPosition());
         opmode.telemetry.update();
     }
-
-    public void telemetryWheelPower(){
-        opmode.telemetry.addData("FR", frontRight.getPower());
-        opmode.telemetry.addData("FL", frontLeft.getPower());
-        opmode.telemetry.addData("BR", backRight.getPower());
-        opmode.telemetry.addData("BL", backLeft.getPower());
-        opmode.telemetry.update();
-    }
-
-    public void getAngleTelemetry (String status){
-        opmode.telemetry.addLine(status);
-        opmode.telemetry.addData("   encoder: ", frontLeft.getCurrentPosition()/TICKS_PER_DEGREE);
-        opmode.telemetry.update();
-    }
-
 }
