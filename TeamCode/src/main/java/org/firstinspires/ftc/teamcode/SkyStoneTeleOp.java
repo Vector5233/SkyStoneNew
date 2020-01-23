@@ -257,6 +257,7 @@ public class SkyStoneTeleOp extends OpMode {
         frontLeft.setPower((gamepad1.right_stick_x - gamepad1.right_stick_y + gamepad1.left_stick_x) * driveSpeed);
         backRight.setPower((gamepad1.right_stick_x - gamepad1.right_stick_y - gamepad1.left_stick_x) * driveSpeed);
         backLeft.setPower((-gamepad1.right_stick_x - gamepad1.right_stick_y + gamepad1.left_stick_x) * driveSpeed);
+        encoderArray.readEncoderValue();
     }
 
     private void setRollerMotors() {

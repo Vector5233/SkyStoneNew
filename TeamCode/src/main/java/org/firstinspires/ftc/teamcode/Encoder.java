@@ -50,11 +50,6 @@ public class Encoder {
          */
         return getPosition()-oldPosition;
     }
-
-
-
-
-
 }
 
 

@@ -10,14 +10,13 @@ public class EncoderDrivingTest extends LinearOpMode {
 
     public void initialize() {
         drive = new SSDriveObject(this);
-
     }
 
     public void runOpMode() {
         initialize();
         waitForStart();
 
-        drive.driveDistance(1,30);
+        drive.driveDistance(.5,30);
         telemetry.addLine("final deltaY read");
         telemetry.update();
         sleep(500);

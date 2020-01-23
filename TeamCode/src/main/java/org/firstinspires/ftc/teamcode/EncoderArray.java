@@ -27,25 +27,12 @@ public class EncoderArray {
 
     }
 
-    double getLeftPosition(){
-        return left.getPosition();
-    }
-    double getRightPosition(){
-        return right.getPosition();
-    }
-    double getCenterPosition(){
-        return center.getPosition();
-    }
-
-    double getLeftDisplacement(){
-        return left.getDiff();
-    }
-    double getRightDisplacement(){
-        return right.getDiff();
-    }
-    double getCenterDisplacement(){
-        return center.getDiff();
-    }
+    double getLeftPosition;
+    double getRightPosition;
+    double getCenterPosition;
+    /*double getLeftDisplacement;
+    double getRightDisplacement;
+    double getCenterDisplacement;*/
 
     public double[] calibrate(double degrees) {
         double theta = degrees * Math.PI / 180.0;
@@ -70,37 +57,46 @@ public class EncoderArray {
     }
 
     double getDeltaX(){
-        return -getCenterPosition()-r3*(getLeftPosition()+getRightPosition())/(r1+r2);
+        return -getCenterPosition-r3*(getLeftPosition+getRightPosition)/(r1+r2);
     }
 
     double getDeltaY(){
-        return .5*(getRightPosition()-getLeftPosition()-(r2-r1)*(getLeftPosition()+getRightPosition())/(r1+r2));
+        return .5*(getRightPosition-getLeftPosition-(r2-r1)*(getLeftPosition+getRightPosition)/(r1+r2));
     }
 
     double getDeltaTheta(){
-        return (getLeftPosition()+getRightPosition())/(r1+r2);
+        return (getLeftPosition+getRightPosition)/(r1+r2);
     }
 
-    double getDx(){
-        return -getCenterDisplacement()+r3*(getLeftDisplacement()+getRightDisplacement())/(r1+r2);
+    /*double getDx(){
+        return -getCenterDisplacement+r3*(getLeftDisplacement+getRightDisplacement)/(r1+r2);
     }
 
     double getDy(){
-        return .5*(getRightDisplacement()-getLeftDisplacement()-(r2-r1)*(getLeftDisplacement()+getRightDisplacement())/(r1+r2));
+        return .5*(getRightDisplacement-getLeftDisplacement-(r2-r1)*(getLeftDisplacement+getRightDisplacement)/(r1+r2));
     }
 
     double getDTheta(){
-        return (getLeftDisplacement()+getRightDisplacement())/(r1+r2);
+        return (getLeftDisplacement+getRightDisplacement)/(r1+r2);
     }
-
+*/
     void updateAll(){
-        accumulatedX += getDx()*Math.cos(getDTheta())+getDy()*Math.sin(getDTheta());
+        /*accumulatedX += getDx()*Math.cos(getDTheta())+getDy()*Math.sin(getDTheta());
         accumulatedY += getDy()*Math.cos(getDTheta())-getDx()*Math.sin(getDTheta());
         accumulatedTheta += getDTheta();
         relativeY += getDy();
-        relativeX += getDx();
+        relativeX += getDx();*/
         left.update();
         right.update();
         center.update();
+    }
+
+    void readEncoderValue(){
+        getLeftPosition = left.getPosition();
+        getRightPosition = right.getPosition();
+        getCenterPosition = center.getPosition();
+        /*getLeftDisplacement = left.getDiff();
+        getRightDisplacement = right.getDiff();
+        getCenterDisplacement = center.getDiff();*/
     }
 }

@@ -774,52 +774,30 @@ public class SSDriveObject extends Object{
         if (distance > 0) {
             direction = FORWARD;
             while(opmode.opModeIsActive()) {
+                encoderArray.readEncoderValue();
                 deltaY = encoderArray.getDeltaY();
-                if (deltaY >= distance) {
+                if (deltaY >= distance)
                     break;
-                }
-                if (deltaY < PERCENT * distance) {
-                    setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
-//                    opmode.telemetry.addLine("accelerating");
 
-                } else if (deltaY < (1 - PERCENT) * distance) {
-                    setDrivePowerAll(powerLimit);
-//                    opmode.telemetry.addLine("cruising");
-
-                } else /*if (deltaY <= distance && deltaY >= (1 - PERCENT) * distance)*/{
-                    setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
-//                    opmode.telemetry.addLine("decelerating");
-
-                }
+                setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
 
 //                telemetryEncoderArray();
-//                opmode.telemetry.addData("deltaY: ", encoderArray.getDeltaY());
+                opmode.telemetry.addData("deltaY: ", deltaY);
+                opmode.telemetry.update();
 //                telemetryWheelPower();
-
 //                debugString.concat(String.format("Y: %f\tpower: %f\n", encoderArray.getDeltaY(), calculatePowerStraight(powerLimit,distance)));
-
             }
         } else if (distance < 0) {
             powerLimit = -powerLimit;
             powerMin = -powerMin;
             direction = BACKWARD;
             while(opmode.opModeIsActive()) {
-
+                encoderArray.readEncoderValue();
                 deltaY = encoderArray.getDeltaY();
-                if (deltaY <= distance) {
+                if (deltaY <= distance)
                     break;
-                }
-                if (deltaY > PERCENT * distance) {
-                    setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
-//                    opmode.telemetry.addLine("accelerating");
 
-                } else if (deltaY > (1 - PERCENT) * distance) {
-                    setDrivePowerAll(powerLimit);
-//                    opmode.telemetry.addLine("cruising");
-                } else {
-                    setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
-//                    opmode.telemetry.addLine("decelerating");
-                }
+                setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
 //                opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
 //                opmode.telemetry.update();
             }
