@@ -778,17 +778,18 @@ public class SSDriveObject extends Object{
         stopDriving();
         opmode.telemetry.addLine("motors stopped");
         opmode.telemetry.update();
-//        opmode.sleep(750);
+//         opmode.sleep(750);
 
     }
 
     public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
-        if (deltaY < PERCENT * distance) {
-            return Math.max((1 / PERCENT) * powerLimit * deltaY / distance, powerMin);
+        if (deltaY != 0) {
+            return ((0.44 - 4 * powerLimit) / distance * distance) * deltaY * deltaY + ((4 * powerLimit - 0.66) / distance) * deltaY + 0.22;
         } else {
-            return Math.max(-(1 / PERCENT) * powerLimit * (deltaY - distance) / distance, powerMin);
+            return 0;
         }
     }
+
     public double calculatePowerStrafe(double powerLimit, double distance, double deltaX) {
         if (deltaX < PERCENT * distance) {
             return Math.max((1 / PERCENT) * powerLimit * deltaX / distance, powerMin);
