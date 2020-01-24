@@ -17,12 +17,10 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeoutException;
 
 /* TODO
-   To prevent robot from lumping at the endpoint
-   1) make function that makes the robot smoothly accelerating stars and stops
-   2) lowering the power
-   3) Having a function that calculates the ticks for a given distance
+   Possibly revert Code to 1/22
  */
 
 public class SSDriveObject extends Object{
@@ -32,6 +30,7 @@ public class SSDriveObject extends Object{
     LinearOpMode opmode;
     Encoder myLeft, myRight, myCenter;
     EncoderArray encoderArray;
+    ElapsedTime elapsedTime;
 
     public static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     public static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -726,13 +725,22 @@ public class SSDriveObject extends Object{
         opmode.telemetry.update();
     }*/
 
+    public void testEncoderRead(double time){
+        double TIMEOUT = time;
+        elapsedTime = new ElapsedTime();
+        while (elapsedTime.milliseconds() < TIMEOUT) {
+            encoderArray.readEncoderValue();
+            telemetryEncoderArray();
+        }
+    }
+
     public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
         //distance = true means moving forward
         //distance = false means moving backward
         if (distance > 0) {
             if (deltaY < ACCEL_DIST) {
                 return deltaY * (powerLimit-powerMin)/ACCEL_DIST + powerMin;
-            } else if (distance >= ACCEL_DIST && distance < (distance - DECEL_DIST)){
+            } else if (deltaY >= ACCEL_DIST && deltaY < (distance - DECEL_DIST)){
                 return  powerLimit;
             } else {
                 return (deltaY - distance) * (powerMin-powerLimit)/DECEL_DIST + powerMin;
@@ -740,7 +748,7 @@ public class SSDriveObject extends Object{
         } else {
             if (Math.abs(deltaY) < ACCEL_DIST) {
                 return deltaY * (powerLimit - powerMin) / -ACCEL_DIST + powerMin;
-            } else if (Math.abs(distance) >= ACCEL_DIST && Math.abs(distance) < (Math.abs(distance) - DECEL_DIST)) {
+            } else if (Math.abs(deltaY) >= ACCEL_DIST && Math.abs(deltaY) < (Math.abs(distance) - DECEL_DIST)) {
                 return powerLimit;
             } else {
                 return (deltaY-distance) * (powerMin-powerLimit)/-DECEL_DIST + powerMin;
