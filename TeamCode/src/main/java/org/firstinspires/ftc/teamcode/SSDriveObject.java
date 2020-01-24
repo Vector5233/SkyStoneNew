@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -735,27 +737,30 @@ public class SSDriveObject extends Object{
     }
 
     public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
-        if (deltaY != 0) {
-            return ((0.44 - 4 * powerLimit) / distance * distance) * deltaY * deltaY + ((4 * powerLimit - 0.66) / distance) * deltaY + 0.22;
+        if(distance > 0){
+            return ((0.44 - 4 * powerLimit) / (distance * distance)) * deltaY * deltaY + ((4 * powerLimit - 0.66) / distance) * deltaY + 0.22;
+
+        } else if(distance < 0) {
+            return -1*(((0.44 - 4 * powerLimit) / (distance * distance)) * deltaY * deltaY + ((4 * powerLimit - 0.66) / distance) * deltaY + 0.22);
         } else {
             return 0;
         }
     }
 
     public double calculatePowerStrafe(double powerLimit, double distance, double deltaX) {
-        if (deltaX < PERCENT * distance) {
-            return Math.max((1 / PERCENT) * powerLimit * deltaX / distance, powerMin);
-        } else {
-            return Math.max(-(1 / PERCENT) * powerLimit * (deltaX - distance) / distance, powerMin);
+        if(distance > 0 && deltaX != 0){
+            return ((0.44 - 4 * powerLimit) / (distance * distance)) * deltaX * deltaX + ((4 * powerLimit - 0.66) / distance) * deltaX + 0.22;
+        } else if(distance < 0 && deltaX != 0) {
+            return -1*((0.44 - 4 * powerLimit) / (distance * distance)) * deltaX * deltaX + ((4 * powerLimit - 0.66) / distance) * deltaX + 0.22;
+        } else{
+            return 0;
         }
     }
 
-    public double calculatePowerTurn(double powerLimit, double distance, double deltaTheta) {
-        if (deltaTheta < PERCENT * distance) {
-            return Math.max((1 / PERCENT) * powerLimit * deltaTheta / distance, powerMin);
-        } else {
-            return Math.max(-(1 / PERCENT) * powerLimit * (deltaTheta - distance) / distance, powerMin);
-        }
+    public double calculatePowerTurn(double powerLimit, double degrees, double deltaTheta) {
+
+            return ((0.44 - 4 * powerLimit) / (degrees * degrees)) * deltaTheta * deltaTheta + ((4 * powerLimit - 0.66) / degrees) * deltaTheta + 0.22;
+
     }
 
     public void driveDistance(double powerLimit, double distance) {
@@ -774,6 +779,8 @@ public class SSDriveObject extends Object{
                     break;
 
                 setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
+                Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
+
 
 //                telemetryEncoderArray();
                 opmode.telemetry.addData("deltaY: ", deltaY);
@@ -856,7 +863,6 @@ public class SSDriveObject extends Object{
 //                telemetryWheelPower();
             }
         } else if (distance < 0) {
-            powerLimit = -powerLimit;
             powerMin = -powerMin;
             while((deltaX >= distance) && opmode.opModeIsActive()) {
                 deltaX = encoderArray.getDeltaX();
@@ -881,11 +887,11 @@ public class SSDriveObject extends Object{
         opmode.sleep(500);
     }
 
-    public void turnDegree(double power, double degrees) {
+    public void turnDegree(double powerLimit, double degrees) {
         // distance in inches
         //conjecture instead of moving 12", wheels will go 12"*cos(45)= 8.5"
 
-        double radians = degrees * Math.PI/180;
+
 
         double deltaTheta = 0;
 
@@ -893,18 +899,20 @@ public class SSDriveObject extends Object{
         encoderArray.resetAll();
 
 
-        if (radians > 0) {
+        if (degrees > 0) {
             // positive (CCW) turn => left motor goes in (-) direction
-            while ((deltaTheta >= -radians) && opmode.opModeIsActive()) {
-                deltaTheta = encoderArray.getDeltaTheta();
-                setTurnPowerAll(-power);
-                opmode.telemetry.addData("frontLeft", frontLeft.getCurrentPosition());
-                opmode.telemetry.update();
+            while ((deltaTheta <= degrees) && opmode.opModeIsActive()) {
+                encoderArray.readEncoderValue();
+                deltaTheta = encoderArray.getDeltaTheta()*180/Math.PI/*Math.PI/180*/;
+                setTurnPowerAll(calculatePowerTurn(powerLimit, degrees, deltaTheta));
+                Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaTheta, calculatePowerTurn(powerLimit,degrees,deltaTheta)));
+
             }
-        } else if (radians < 0) {
-            while ((deltaTheta <= -radians) && opmode.opModeIsActive()) {
+        } else if (degrees < 0) {
+            while ((deltaTheta >= degrees) && opmode.opModeIsActive()) {
+                encoderArray.readEncoderValue();
                 deltaTheta = encoderArray.getDeltaTheta();
-                setTurnPowerAll(power);
+                setTurnPowerAll(-calculatePowerTurn(powerLimit, degrees, deltaTheta));
 //                opmode.telemetry.addData("frontLeft", frontLeft.getCurrentPosition());
 //                opmode.telemetry.update();
             }

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -23,9 +25,11 @@ public class EncoderDrivingTest extends LinearOpMode {
 */
         waitForStart();
 
-        drive.driveDistance(1,30);
-        telemetry.addLine("final deltaY read");
+        telemetry.addLine("start driving");
+        drive.turnDegree(.67,90);
+        telemetry.addLine("final delta read");
         drive.encoderArray.readEncoderValue();
+        Log.i("FINAL DISPLACEMENT",String.format("DeltaTheta: %f", drive.encoderArray.getDeltaTheta()));
 /*
         telemetry.addLine("initial delta");
         drive.telemetryEncoderArray();
