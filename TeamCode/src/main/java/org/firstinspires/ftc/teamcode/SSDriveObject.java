@@ -735,24 +735,10 @@ public class SSDriveObject extends Object{
     }
 
     public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
-        //distance = true means moving forward
-        //distance = false means moving backward
-        if (distance > 0) {
-            if (deltaY < ACCEL_DIST) {
-                return deltaY * (powerLimit-powerMin)/ACCEL_DIST + powerMin;
-            } else if (deltaY >= ACCEL_DIST && deltaY < (distance - DECEL_DIST)){
-                return  powerLimit;
-            } else {
-                return (deltaY - distance) * (powerMin-powerLimit)/DECEL_DIST + powerMin;
-            }
+        if (deltaY != 0) {
+            return ((0.44 - 4 * powerLimit) / distance * distance) * deltaY * deltaY + ((4 * powerLimit - 0.66) / distance) * deltaY + 0.22;
         } else {
-            if (Math.abs(deltaY) < ACCEL_DIST) {
-                return deltaY * (powerLimit - powerMin) / -ACCEL_DIST + powerMin;
-            } else if (Math.abs(deltaY) >= ACCEL_DIST && Math.abs(deltaY) < (Math.abs(distance) - DECEL_DIST)) {
-                return powerLimit;
-            } else {
-                return (deltaY-distance) * (powerMin-powerLimit)/-DECEL_DIST + powerMin;
-            }
+            return 0;
         }
     }
 
