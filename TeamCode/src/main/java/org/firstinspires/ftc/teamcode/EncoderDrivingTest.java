@@ -25,11 +25,20 @@ public class EncoderDrivingTest extends LinearOpMode {
 */
         waitForStart();
 
-        telemetry.addLine("start driving");
+        /*telemetry.addLine("start driving");
         drive.turnDegree(.67,90);
         telemetry.addLine("final delta read");
         drive.encoderArray.readEncoderValue();
         Log.i("FINAL DISPLACEMENT",String.format("DeltaTheta: %f", drive.encoderArray.getDeltaTheta()));
+
+         */
+
+        drive.driveDistance(0.8,20);
+        drive.encoderArray.readEncoderValue();
+        telemetry.addData("final distance reached: ", drive.encoderArray.getDeltaY());
+        telemetry.update();
+        sleep(4000);
+        Log.i("FINAL DISPLACEMENT",String.format("DeltaY: %f", drive.encoderArray.getDeltaY()));
 /*
         telemetry.addLine("initial delta");
         drive.telemetryEncoderArray();

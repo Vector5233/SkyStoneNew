@@ -73,7 +73,7 @@ public class SSDriveObject extends Object{
     final boolean BACKWARD = false;
 
     final double PERCENT = .45;
-    double powerMin = 0.22;
+    final double POWER_MIN = 0.22;
 
     final int TFOD_TIMEOUT = 500;
     final int LEFT = 0;
@@ -738,10 +738,10 @@ public class SSDriveObject extends Object{
 
     public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
         if(distance > 0){
-            return ((0.44 - 4 * powerLimit) / (distance * distance)) * deltaY * deltaY + ((4 * powerLimit - 0.66) / distance) * deltaY + 0.22;
+            return ((2*POWER_MIN - 4 * powerLimit) / (distance * distance)) * deltaY * deltaY + ((4 * powerLimit - 3*POWER_MIN) / distance) * deltaY + POWER_MIN;
 
         } else if(distance < 0) {
-            return -1*(((0.44 - 4 * powerLimit) / (distance * distance)) * deltaY * deltaY + ((4 * powerLimit - 0.66) / distance) * deltaY + 0.22);
+            return -1*(((4*POWER_MIN - 4 * powerLimit) / (distance * distance)) * deltaY * deltaY + ((4 * powerLimit - 3*POWER_MIN) / distance) * deltaY + POWER_MIN);
         } else {
             return 0;
         }
@@ -749,9 +749,9 @@ public class SSDriveObject extends Object{
 
     public double calculatePowerStrafe(double powerLimit, double distance, double deltaX) {
         if(distance > 0 && deltaX != 0){
-            return ((0.44 - 4 * powerLimit) / (distance * distance)) * deltaX * deltaX + ((4 * powerLimit - 0.66) / distance) * deltaX + 0.22;
+            return ((2*POWER_MIN - 4 * powerLimit) / (distance * distance)) * deltaX * deltaX + ((4 * powerLimit - 3*POWER_MIN) / distance) * deltaX + POWER_MIN;
         } else if(distance < 0 && deltaX != 0) {
-            return -1*((0.44 - 4 * powerLimit) / (distance * distance)) * deltaX * deltaX + ((4 * powerLimit - 0.66) / distance) * deltaX + 0.22;
+            return -1*((2*POWER_MIN - 4 * powerLimit) / (distance * distance)) * deltaX * deltaX + ((4 * powerLimit - 3*POWER_MIN) / distance) * deltaX + POWER_MIN;
         } else{
             return 0;
         }
@@ -759,28 +759,35 @@ public class SSDriveObject extends Object{
 
     public double calculatePowerTurn(double powerLimit, double degrees, double deltaTheta) {
 
-            return ((0.44 - 4 * powerLimit) / (degrees * degrees)) * deltaTheta * deltaTheta + ((4 * powerLimit - 0.66) / degrees) * deltaTheta + 0.22;
+            return ((2*POWER_MIN - 4 * powerLimit) / (degrees * degrees)) * deltaTheta * deltaTheta + ((4 * powerLimit - 3*POWER_MIN) / degrees) * deltaTheta + POWER_MIN;
 
     }
 
     public void driveDistance(double powerLimit, double distance) {
-        double deltaY = 0;
+        double deltaY = 0.0;
+        double oldY = 0.0, speed = 0.0;
         boolean direction;
+        double oldTime = 0.0;
+        ElapsedTime time = new ElapsedTime();
 
         encoderArray.updateAll();
         encoderArray.resetAll();
 
         if (distance > 0) {
-            direction = FORWARD;
+            time.reset();
             while(opmode.opModeIsActive()) {
                 encoderArray.readEncoderValue();
+                oldY = deltaY;
                 deltaY = encoderArray.getDeltaY();
                 if (deltaY >= distance)
                     break;
+                speed = (deltaY - oldY) / (time.seconds()-oldTime);
+                oldTime = time.seconds();
+
 
                 setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
                 Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
-
+                Log.i("SPEED", String.format("Delta Y: %f\tSpeed: %f\n", deltaY, speed));
 
 //                telemetryEncoderArray();
                 opmode.telemetry.addData("deltaY: ", deltaY);
@@ -790,8 +797,6 @@ public class SSDriveObject extends Object{
             }
         } else if (distance < 0) {
             powerLimit = -powerLimit;
-            powerMin = -powerMin;
-            direction = BACKWARD;
             while(opmode.opModeIsActive()) {
                 encoderArray.readEncoderValue();
                 deltaY = encoderArray.getDeltaY();
@@ -854,7 +859,7 @@ public class SSDriveObject extends Object{
 //                    opmode.telemetry.addLine("cruising");
 
                 } else /*if (deltaX <= distance && deltaX >= (1 - PERCENT) * distance)*/{
-                    setStrafePowerAll(/*calculatePowerStrafe(powerLimit, distance)*/powerMin);
+                    setStrafePowerAll(/*calculatePowerStrafe(powerLimit, distance)*/POWER_MIN);
 //                    opmode.telemetry.addLine("decelerating");
 
                 }
@@ -863,7 +868,7 @@ public class SSDriveObject extends Object{
 //                telemetryWheelPower();
             }
         } else if (distance < 0) {
-            powerMin = -powerMin;
+
             while((deltaX >= distance) && opmode.opModeIsActive()) {
                 deltaX = encoderArray.getDeltaX();
                 if (deltaX > PERCENT * distance) {
@@ -906,6 +911,7 @@ public class SSDriveObject extends Object{
                 deltaTheta = encoderArray.getDeltaTheta()*180/Math.PI/*Math.PI/180*/;
                 setTurnPowerAll(calculatePowerTurn(powerLimit, degrees, deltaTheta));
                 Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaTheta, calculatePowerTurn(powerLimit,degrees,deltaTheta)));
+
 
             }
         } else if (degrees < 0) {

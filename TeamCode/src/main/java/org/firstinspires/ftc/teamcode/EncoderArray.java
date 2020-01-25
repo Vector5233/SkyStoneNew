@@ -17,6 +17,7 @@ public class EncoderArray {
     double accumulatedTheta = 0;
     double theta = 0;
 
+
     public EncoderArray(Encoder myLeft, Encoder myRight, Encoder myCenter, double myR1, double myR2, double myR3){
         left = myLeft;
         right = myRight;
@@ -54,6 +55,7 @@ public class EncoderArray {
         left.reset();
         right.reset();
         center.reset();
+
     }
 
     double getDeltaX(){
