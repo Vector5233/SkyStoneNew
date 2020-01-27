@@ -16,7 +16,10 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
+
 import java.util.Locale;
+
+import static java.lang.Math.abs;
 
 /* TODO
    To prevent robot from lumping at the endpoint
@@ -681,7 +684,7 @@ public class SSDriveObject extends Object{
 
     public void getDisplacement(){
         double SS_size = SS_rightPixel - SS_leftPixel;
-        inchPerPixel = Math.abs(BLOCK_LENGTH/(SS_size));
+        inchPerPixel = abs(BLOCK_LENGTH/(SS_size));
         opmode.telemetry.addData("inch / pixel", "%.03f", inchPerPixel);
 
         //displacement = ((5/8)*(SS_rightPixel - SS_leftPixel) + SS_leftPixel - CENTER_PIXELS)*inchPerPixel - ARM_TO_WEBCAM;
@@ -769,6 +772,7 @@ public class SSDriveObject extends Object{
     }
 
     public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
+        distance = Math.abs(distance);
         if (deltaY != 0) {
             return ((0.44 - 4 * powerLimit) / distance * distance) * deltaY * deltaY + ((4 * powerLimit - 0.66) / distance) * deltaY + 0.22;
         } else {
