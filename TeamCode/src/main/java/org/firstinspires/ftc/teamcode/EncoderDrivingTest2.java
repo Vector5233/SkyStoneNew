@@ -1,14 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name="EncoderDrivingTest", group = "Blue")
+@Autonomous(name="EncoderDrivingTest2", group = "Blue")
 
-public class EncoderDrivingTest extends LinearOpMode {
+public class EncoderDrivingTest2 extends LinearOpMode {
     SSDriveObject drive;
 
     public void initialize() {
@@ -17,30 +15,13 @@ public class EncoderDrivingTest extends LinearOpMode {
 
     public void runOpMode() {
         initialize();
-/*
         drive.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         drive.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         drive.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         drive.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-*/
         waitForStart();
 
-        telemetry.addLine("start driving");
-        drive.turnDegree(.67,90);
-        telemetry.addLine("final delta read");
-        drive.encoderArray.readEncoderValue();
-        Log.i("FINAL DISPLACEMENT",String.format("DeltaTheta: %f", drive.encoderArray.getDeltaTheta()));
-/*
-        telemetry.addLine("initial delta");
-        drive.telemetryEncoderArray();
-        sleep(8000);
-        drive.encoderArray.updateAll();
-        drive.encoderArray.resetAll();
-        drive.encoderArray.readEncoderValue();
-        telemetry.addLine("final delta");
-*/
-        drive.telemetryEncoderArray();
-        sleep(4000);
+        drive.testEncoderRead(10000);
         stop();
     }
 

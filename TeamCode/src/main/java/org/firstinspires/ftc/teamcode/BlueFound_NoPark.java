@@ -3,15 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="DriveTestAutoOp", group="Test")
+@Autonomous(name="BlueFound_NoPark", group="Blue")
 
-public class DriveTestAutoOp extends LinearOpMode {
+public class BlueFound_NoPark extends LinearOpMode {
     SSDriveObject drive;
 
     public void initialize(){
         drive = new SSDriveObject(this);
-
-        drive.capServo.setPosition(0.8);
 
         drive.initialize();
     }
@@ -19,9 +17,16 @@ public class DriveTestAutoOp extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.strafeDistanceNoAccel(1,20);
-        sleep(5500);
-        drive.driveDistance(1, 20);
+
+
+        drive.moveFoundation(drive.BLUE);
+        telemetry.addLine("FoundationMoved");
+        telemetry.update();
+        sleep(500);
+        /*drive.park(drive.BLUE, drive.BRIDGE);
+        telemetry.addLine("Parked");
+        telemetry.update();
+        sleep(500);*/
     }
 }
 
