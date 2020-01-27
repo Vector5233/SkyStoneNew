@@ -68,7 +68,7 @@ public class SSDriveObject extends Object{
     final double r3 = 3.22;
 
     final double PERCENT = .45;
-    double powerMin = 0.22;
+    final double POWER_MIN = 0.22;
 
     final int TFOD_TIMEOUT = 500;
     final int LEFT = 0;
@@ -792,9 +792,9 @@ public class SSDriveObject extends Object{
 
     public double calculatePowerStrafe(double powerLimit, double distance, double deltaX) {
         if (deltaX < PERCENT * distance) {
-            return Math.max((1 / PERCENT) * powerLimit * deltaX / distance, powerMin);
+            return Math.max((1 / PERCENT) * powerLimit * deltaX / distance, POWER_MIN);
         } else {
-            return Math.max(-(1 / PERCENT) * powerLimit * (deltaX - distance) / distance, powerMin);
+            return Math.max(-(1 / PERCENT) * powerLimit * (deltaX - distance) / distance, POWER_MIN);
         }
     }
 
@@ -818,7 +818,7 @@ public class SSDriveObject extends Object{
 //                    opmode.telemetry.addLine("cruising");
 
                 } else /*if (deltaY <= distance && deltaY >= (1 - PERCENT) * distance)*/{
-                    setDrivePowerAll(/*calculatePowerStraight(powerLimit, distance, deltaY)*/powerMin);
+                    setDrivePowerAll(/*calculatePowerStraight(powerLimit, distance, deltaY)*/POWER_MIN);
 //                    opmode.telemetry.addLine("decelerating");
 
                 }
@@ -831,7 +831,7 @@ public class SSDriveObject extends Object{
             }
         } else if (distance < 0) {
             powerLimit = -powerLimit;
-            powerMin = -powerMin;
+
             while((deltaY >= distance) && opmode.opModeIsActive()) {
                 deltaY = encoderArray.getDeltaY();
                 if (deltaY > PERCENT * distance) {
@@ -957,7 +957,7 @@ public class SSDriveObject extends Object{
 //                    opmode.telemetry.addLine("cruising");
 
                 } else /*if (deltaX <= distance && deltaX >= (1 - PERCENT) * distance)*/{
-                    setStrafePowerAll(/*calculatePowerStrafe(powerLimit, distance)*/powerMin);
+                    setStrafePowerAll(/*calculatePowerStrafe(powerLimit, distance)*/POWER_MIN);
 //                    opmode.telemetry.addLine("decelerating");
 
                 }
@@ -967,7 +967,7 @@ public class SSDriveObject extends Object{
             }
         } else if (distance < 0) {
             powerLimit = -powerLimit;
-            powerMin = -powerMin;
+
             while((deltaX >= distance) && opmode.opModeIsActive()) {
                 deltaX = encoderArray.getDeltaX();
                 if (deltaX > PERCENT * distance) {

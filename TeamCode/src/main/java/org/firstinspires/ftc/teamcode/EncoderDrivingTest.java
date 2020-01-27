@@ -12,9 +12,7 @@ public class EncoderDrivingTest extends LinearOpMode {
 
     public void initialize() {
         drive = new SSDriveObject(this);
-
     }
-
 
     public void runOpMode() {
         initialize();
