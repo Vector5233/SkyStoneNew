@@ -514,11 +514,6 @@ public class SSDriveObject extends Object{
 
         }
 
-
-
-
-
-
         //turnDegree(.4, -5);
 
         /*turnDegree(.4,1.5);
@@ -592,8 +587,6 @@ public class SSDriveObject extends Object{
                 driveDistance(.6,38);
                 opmode.sleep(400);
             }
-
-
         }
     }
 
@@ -601,7 +594,7 @@ public class SSDriveObject extends Object{
         if (side) {
             driveDistance(1,20);
         } else {
-
+            ;
         }
     }
 
@@ -619,7 +612,7 @@ public class SSDriveObject extends Object{
             opmode.sleep(250);
             setDeliveryExtender(-1,2500);
         } else {
-
+            ;
         }
     }
 
@@ -691,8 +684,6 @@ public class SSDriveObject extends Object{
         inchPerPixel = Math.abs(BLOCK_LENGTH/(SS_size));
         opmode.telemetry.addData("inch / pixel", "%.03f", inchPerPixel);
 
-
-
         //displacement = ((5/8)*(SS_rightPixel - SS_leftPixel) + SS_leftPixel - CENTER_PIXELS)*inchPerPixel - ARM_TO_WEBCAM;
         if(250 <= SS_rightPixel && SS_rightPixel <= 500) {
             opmode.telemetry.addLine("center");
@@ -725,12 +716,10 @@ public class SSDriveObject extends Object{
         double powerMin = 0.22;
         int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
 
-
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         opmode.telemetry.addLine("Encoders reset");
         opmode.telemetry.update();
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
 
         if (ticks > 0) {
             while ((frontLeft.getCurrentPosition() <= ticks) && opmode.opModeIsActive()) {
@@ -738,7 +727,6 @@ public class SSDriveObject extends Object{
                 setDrivePowerRight(powerRight);
                 opmode.telemetry.addLine("cruising");
                 telemetryDcMotor();
-
             }
         } else if (ticks < 0) {
             powerLeft = -powerLeft;
@@ -757,7 +745,6 @@ public class SSDriveObject extends Object{
     }
 
     public void driveDistanceNoAccel(double power, double distance) {
-
         encoderArray.updateAll();
         encoderArray.resetAll();
 
@@ -779,7 +766,6 @@ public class SSDriveObject extends Object{
         opmode.telemetry.addLine("motors stopped");
         opmode.telemetry.update();
 //         opmode.sleep(750);
-
     }
 
     public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
@@ -797,7 +783,6 @@ public class SSDriveObject extends Object{
             return Math.max(-(1 / PERCENT) * powerLimit * (deltaX - distance) / distance, powerMin);
         }
     }
-
 //    public double calculatePower(doubel)
 
     public void driveDistance(double powerLimit, double distance) {
@@ -812,22 +797,17 @@ public class SSDriveObject extends Object{
                 if (deltaY < PERCENT * distance) {
                     setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
 //                    opmode.telemetry.addLine("accelerating");
-
                 } else if (deltaY < (1 - PERCENT) * distance) {
                     setDrivePowerAll(powerLimit);
 //                    opmode.telemetry.addLine("cruising");
-
                 } else /*if (deltaY <= distance && deltaY >= (1 - PERCENT) * distance)*/{
                     setDrivePowerAll(/*calculatePowerStraight(powerLimit, distance, deltaY)*/powerMin);
 //                    opmode.telemetry.addLine("decelerating");
-
                 }
 //                telemetryEncoderArray();
 //                opmode.telemetry.addData("deltaY: ", encoderArray.getDeltaY());
 //                telemetryWheelPower();
-
 //                debugString.concat(String.format("Y: %f\tpower: %f\n", encoderArray.getDeltaY(), calculatePowerStraight(powerLimit,distance)));
-
             }
         } else if (distance < 0) {
             powerLimit = -powerLimit;
@@ -837,7 +817,6 @@ public class SSDriveObject extends Object{
                 if (deltaY > PERCENT * distance) {
                     setDrivePowerAll(calculatePowerStraight(powerLimit, distance, deltaY));
 //                    opmode.telemetry.addLine("accelerating");
-
                 } else if (deltaY > (1 - PERCENT) * distance) {
                     setDrivePowerAll(powerLimit);
 //                    opmode.telemetry.addLine("cruising");
@@ -872,15 +851,12 @@ public class SSDriveObject extends Object{
                 if (frontLeft.getCurrentPosition() < PERCENT * ticks) {
                     setDrivePowerAll(Math.max((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
                     opmode.telemetry.addLine("accelerating");
-
                 } else if (frontLeft.getCurrentPosition() < (1 - PERCENT) * ticks) {
                     setDrivePowerAll(powerLimit);
                     opmode.telemetry.addLine("cruising");
-
                 } else {
                     setDrivePowerAll(Math.max(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
                     opmode.telemetry.addLine("decelerating");
-
                 }
                 telemetryDcMotor();
                 opmode.telemetry.addData("distance", (double) ticks / TICKS_PER_INCH_STRAIGHT);
@@ -893,11 +869,9 @@ public class SSDriveObject extends Object{
                 if (frontLeft.getCurrentPosition() > PERCENT * ticks) {
                     setDrivePowerAll(Math.min((1 / PERCENT) * powerLimit * frontLeft.getCurrentPosition() / ticks, powerMin));
                     opmode.telemetry.addLine("accelerating");
-
                 } else if (frontLeft.getCurrentPosition() > (1 - PERCENT) * ticks) {
                     setDrivePowerAll(powerLimit);
                     opmode.telemetry.addLine("cruising");
-
                 } else {
                     setDrivePowerAll(Math.min(-(1 / PERCENT) * powerLimit * (frontLeft.getCurrentPosition() - ticks) / ticks, powerMin));
                     opmode.telemetry.addLine("decelerating");
@@ -917,7 +891,6 @@ public class SSDriveObject extends Object{
     public void strafeDistanceNoAccel(double power, double distance) {
         encoderArray.updateAll();
         encoderArray.resetAll();
-
         if (distance > 0) {
             while((encoderArray.getDeltaX() <= distance) && opmode.opModeIsActive()) {
                 setStrafePowerAll(power);
@@ -935,7 +908,6 @@ public class SSDriveObject extends Object{
         stopDriving();
         opmode.telemetry.addLine("motors stopped");
         opmode.telemetry.update();
-
     }
 
     public void strafeDistance(double powerLimit, double distance) {
@@ -959,7 +931,6 @@ public class SSDriveObject extends Object{
                 } else /*if (deltaX <= distance && deltaX >= (1 - PERCENT) * distance)*/{
                     setStrafePowerAll(/*calculatePowerStrafe(powerLimit, distance)*/powerMin);
 //                    opmode.telemetry.addLine("decelerating");
-
                 }
 //                telemetryEncoderArray();
 //                opmode.telemetry.addData("deltaX: ", encoderArray.getDeltaX());
@@ -1004,7 +975,6 @@ public class SSDriveObject extends Object{
 
         getAngleTelemetry("TURN START");
 
-
         if (ticks > 0) {
             // positive (CCW) turn => left motor goes in (-) direction
             while ((frontLeft.getCurrentPosition() >= -ticks) && opmode.opModeIsActive()) {
@@ -1019,21 +989,17 @@ public class SSDriveObject extends Object{
                 opmode.telemetry.update();
             }
         }
-
         stopDriving();
         getAngleTelemetry("TURN END");
     }
 
     //set chassis motor
 
-
-
     public void setModeAll(DcMotor.RunMode mode) {
         frontLeft.setMode(mode);
         frontRight.setMode(mode);
         backLeft.setMode(mode);
         backRight.setMode(mode);
-
     }
 
     public void stopDriving() {
@@ -1055,7 +1021,6 @@ public class SSDriveObject extends Object{
         frontLeft.setPower(FLpower);
         backRight.setPower(BRpower);
         backLeft.setPower(BLpower);
-
     }
 
     public void setStrafePowerAll(double power) {
@@ -1071,7 +1036,6 @@ public class SSDriveObject extends Object{
         backLeft.setPower(power);
         backRight.setPower(-power);
     }
-
 
     public void setRollerMotors (boolean direction, double power/*, int time*/) {
         //direction true = inward
@@ -1090,15 +1054,11 @@ public class SSDriveObject extends Object{
         leftRoller.setPower(power);
         rightRoller.setPower(power);
 
-
-
         /*while ((rightRoller.isBusy() || leftRoller.isBusy()) && opmode.opModeIsActive()){
             if (rollerTimeout.milliseconds() > ROLLER_TIMEOUT)
                 break;
         }*/
     }
-
-
 
     public void setCameraServo (double position) {
         cameraServo.setPosition(position);
@@ -1127,18 +1087,14 @@ public class SSDriveObject extends Object{
         }
     }
 
-    
-
     public void setBlockSweeper (boolean kick) {
         //kick true = blockSweeper up
         //kick false = blockSweeper down
 
         if (kick) {
             blockSweeper.setPosition(0.725);
-
         } else {
             blockSweeper.setPosition(1);
-
         }
     }
 
@@ -1196,5 +1152,4 @@ public class SSDriveObject extends Object{
         opmode.telemetry.addData("   encoder: ", frontLeft.getCurrentPosition()/TICKS_PER_DEGREE);
         opmode.telemetry.update();
     }
-
 }
