@@ -4,14 +4,12 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name="EncoderDrivingTest", group = "Blue")
+@Autonomous(name="EncoderDrivingTest050", group = "Blue")
 
-public class EncoderDrivingTest extends LinearOpMode {
+public class EncoderDrivingTest050 extends LinearOpMode {
     SSDriveObject drive;
-    double powerLevel;
-
+    
     public void initialize() {
         drive = new SSDriveObject(this);
 
@@ -35,7 +33,7 @@ public class EncoderDrivingTest extends LinearOpMode {
 
          */
 
-        drive.driveDistance(0.8,20);
+        drive.driveDistance(0.5,20);
         drive.encoderArray.readEncoderValue();
         telemetry.addData("final distance reached: ", drive.encoderArray.getDeltaY());
         telemetry.update();

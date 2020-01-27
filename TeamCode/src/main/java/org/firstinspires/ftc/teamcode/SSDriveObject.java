@@ -107,6 +107,7 @@ public class SSDriveObject extends Object{
     ElapsedTime rollerTimeout;
 
     String debugString = "";
+    double speed = 0;
 
     public SSDriveObject(LinearOpMode parent){
         opmode = parent;
@@ -737,14 +738,29 @@ public class SSDriveObject extends Object{
     }
 
     public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
+        final double BRAKE_DISTANCE = 3.0;
+        final double BRAKE_POWER = 0.0;
+        final double SPEED_TO_BRAKE = 10.0;
+        double power = 0;
         if(distance > 0){
-            return ((2*POWER_MIN - 4 * powerLimit) / (distance * distance)) * deltaY * deltaY + ((4 * powerLimit - 3*POWER_MIN) / distance) * deltaY + POWER_MIN;
+            if ((deltaY > distance - BRAKE_DISTANCE) && speed > SPEED_TO_BRAKE) {
+                power = BRAKE_POWER;
+            }
+            else {
+                power = ((2*POWER_MIN - 4 * powerLimit) / (distance * distance)) * deltaY * deltaY + ((4 * powerLimit - 3*POWER_MIN) / distance) * deltaY + POWER_MIN;
+            }
 
         } else if(distance < 0) {
-            return -1*(((4*POWER_MIN - 4 * powerLimit) / (distance * distance)) * deltaY * deltaY + ((4 * powerLimit - 3*POWER_MIN) / distance) * deltaY + POWER_MIN);
+            if ((deltaY < distance + BRAKE_DISTANCE) && speed < -SPEED_TO_BRAKE) {
+                power = -BRAKE_POWER;
+            }
+            else {
+                power = -1*(((4*POWER_MIN - 4 * powerLimit) / (distance * distance)) * deltaY * deltaY + ((4 * powerLimit - 3*POWER_MIN) / distance) * deltaY + POWER_MIN);
+            }
         } else {
-            return 0;
+            power = 0;
         }
+        return power;
     }
 
     public double calculatePowerStrafe(double powerLimit, double distance, double deltaX) {
@@ -765,7 +781,7 @@ public class SSDriveObject extends Object{
 
     public void driveDistance(double powerLimit, double distance) {
         double deltaY = 0.0;
-        double oldY = 0.0, speed = 0.0;
+        double oldY = 0.0;
         boolean direction;
         double oldTime = 0.0;
         ElapsedTime time = new ElapsedTime();
