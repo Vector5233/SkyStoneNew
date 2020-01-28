@@ -36,12 +36,14 @@ public class SkyStoneDynamic extends LinearOpMode {
         telemetry.addData("  SS left", "%.03f", drive.SS_leftPixel);
         telemetry.addData("  SS right", "%.03f", drive.SS_rightPixel);
         telemetry.update();
-        sleep(1000);
+        Log.i("DYNAMIC DETECTION", String.format("LeftPixel: %f\tRightPixel: %f",drive.SS_leftPixel,drive.SS_rightPixel));
+        sleep(500);
 
         drive.getDisplacement();
         telemetry.addData("displacement", "%.03f", drive.displacement);
         telemetry.update();
-        sleep(1000);
+        Log.i("DYNAMIC DETECTION", String.format("Displacement: %f",drive.displacement));
+        sleep(500);
 
 //        drive.collectSkyStone();
 
