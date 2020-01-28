@@ -19,7 +19,7 @@ public class Red1SkyFoundPark extends LinearOpMode {
 
         drive.goToDetectPosition(drive.RED);
         sleep(2000);
-        int skystone = drive.detectReady(drive.RED);
+        int skystone = drive.detectStonesStatic(drive.RED);
         telemetry.addLine(skystoneString(skystone));
         telemetry.update();
         drive.collectSkyStone(drive.RED,skystone);

@@ -221,7 +221,7 @@ public class SSDriveObject extends Object{
         return finalPos;
     }
 
-    public int detectReady(boolean side){
+    public int detectStonesStatic(boolean side){
 
         opmode.sleep(1600);
         if (tfod != null) {
@@ -619,7 +619,7 @@ public class SSDriveObject extends Object{
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 
-    public void detectStones(){
+    public void detectStonesDynamic(){
         tfodTimeout = new ElapsedTime();
 
         if (opmode.opModeIsActive()) {
