@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -22,6 +24,8 @@ public class Blue1SkyFoundPark extends LinearOpMode {
         int skystone = drive.detectStonesStatic(drive.BLUE);
         telemetry.addLine(skystoneString(skystone));
         telemetry.update();
+        Log.i("STATIC DETECTION", String.format("Number of Stones Detected: %f",drive.numberOfStones));
+        Log.i("STATIC DETECTION","SkyStone Pos: " + skystoneString(skystone));
 //        drive.collectSkyStone(drive.BLUE,drive.LEFT);
 
 //

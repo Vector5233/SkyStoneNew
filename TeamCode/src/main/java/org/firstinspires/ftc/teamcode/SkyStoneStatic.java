@@ -30,6 +30,7 @@ public class SkyStoneStatic extends LinearOpMode {
         waitForStart();
 
         int skystone = drive.detectStonesStatic(drive.BLUE);
+        Log.i("STATIC DETECTION", String.format("Number of Stones Detected: %f",drive.numberOfStones));
         Log.i("STATIC DETECTION","SkyStone Pos: " + skystoneString(skystone));
 
 //        drive.detectStonesDynamic();

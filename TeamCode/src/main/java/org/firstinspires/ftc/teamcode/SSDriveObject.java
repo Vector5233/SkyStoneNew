@@ -93,6 +93,8 @@ public class SSDriveObject extends Object{
     double BRpower = 1;
     double BLpower = 1;
 
+    double numberOfStones;
+
     double SS_leftPixel;
     double SS_rightPixel;
 
@@ -200,11 +202,9 @@ public class SSDriveObject extends Object{
 
         if (side == BLUE) {
             //might need to change driveDistance, add a strafe
-            driveDistance(.6, 22);
+            driveDistance(.8, 23.125);
             opmode.sleep(400);
-            strafeDistance(.3,-4.5);
-            opmode.sleep(400);
-            turnDegree(.67,-97);
+            turnDegree(.67,-90);
 
 
         } else {
@@ -231,46 +231,56 @@ public class SSDriveObject extends Object{
                 if (side == RED) {
                     switch (updatedRecognitions.size()) {
                         case 1:
+                            numberOfStones = 1;
                             return CENTER;
                         case 2:
                             for (Recognition recognition : updatedRecognitions) {
                                 opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
+                                Log.i("STATIC DETECTION","SkyStone Left px: " + recognition.getLeft());
                                 opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
+                                Log.i("STATIC DETECTION","SkyStone Right px: " + recognition.getRight());
                                 opmode.telemetry.update();
                                 opmode.sleep(500);
+                                numberOfStones = 2;
                                 if (recognition.getLabel().equals("Skystone")) {
-                                    if ((recognition.getLeft() + recognition.getRight()) / 2.0 < 300) {
-                                        return CENTER;
-                                    } else {
+                                    if (recognition.getRight() > 485) {
                                         return RIGHT;
+                                    } else if (recognition.getLeft() < 25){
+                                        return CENTER;
                                     }
                                 }
                             }
                             return LEFT;
                         default:
+                            numberOfStones = 100;
                             return CENTER;
 
                     }
                 } else {
                     switch (updatedRecognitions.size()) {
                         case 1:
+                            numberOfStones = 1;
                             return CENTER;
                         case 2:
+                            numberOfStones = 2;
                             for (Recognition recognition : updatedRecognitions) {
                                 opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
+                                Log.i("STATIC DETECTION","SkyStone Left px: " + recognition.getLeft());
                                 opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
+                                Log.i("STATIC DETECTION","SkyStone Right px: " + recognition.getRight());
                                 opmode.telemetry.update();
                                 opmode.sleep(500);
                                 if (recognition.getLabel().equals("Skystone")) {
-                                    if ((recognition.getLeft() + recognition.getRight()) / 2.0 > 700) {
-                                        return RIGHT;
-                                    } else {
+                                    if (recognition.getLeft() < 200) {
+                                        return LEFT;
+                                    } else if(recognition.getRight() > 750){
                                         return CENTER;
                                     }
                                 }
                             }
-                            return LEFT;
+                            return RIGHT;
                         default:
+                            numberOfStones = 100;
                             return CENTER;
 
                     }
