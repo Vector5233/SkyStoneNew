@@ -29,7 +29,7 @@ public class EncoderDrivingTest extends LinearOpMode {
         telemetry.update();
         sleep(500);
 
-        drive.turnDegree(.67, 90);
+        drive.driveDistance(.5, 23);
         sleep(500);
         drive.encoderArray.readEncoderValue();
         drive.encoderArray.updateAll();

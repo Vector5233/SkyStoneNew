@@ -202,8 +202,8 @@ public class SSDriveObject extends Object{
 
         if (side == BLUE) {
             //might need to change driveDistance, add a strafe
-            driveDistance(.8, 23.125);
-            opmode.sleep(400);
+            driveDistance(.5, 23.125);
+            opmode.sleep(500);
             turnDegree(.67,-90);
 
 
@@ -827,7 +827,7 @@ public class SSDriveObject extends Object{
                 if (deltaY >= distance)
                     break;
 
-                setDrivePowerAll(Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaY)));
+                setDrivePowerAll(Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY)));
                 Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
 
 
@@ -845,7 +845,7 @@ public class SSDriveObject extends Object{
                 if (deltaY <= distance)
                     break;
 
-                setDrivePowerAll(-Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaY)));
+                setDrivePowerAll(-Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY)));
 //                opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
 //                opmode.telemetry.update();
             }
@@ -894,7 +894,7 @@ public class SSDriveObject extends Object{
             while((deltaX <= distance) && opmode.opModeIsActive()) {
                 encoderArray.readEncoderValue();
                 deltaX = encoderArray.getDeltaX();
-                setStrafePowerAll(Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaX)));
+                setStrafePowerAll(Math.max(.22,calculatePowerStrafe(powerLimit, distance, deltaX)));
                 Log.i("POWER",String.format("Delta X: %f\tPower: %f\n", deltaX, Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaX))));
 //                telemetryEncoderArray();
 //                opmode.telemetry.addData("deltaX: ", encoderArray.getDeltaX());
@@ -905,7 +905,7 @@ public class SSDriveObject extends Object{
             while((deltaX >= distance) && opmode.opModeIsActive()) {
                 encoderArray.readEncoderValue();
                 deltaX = encoderArray.getDeltaX();
-                setStrafePowerAll(-Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaX)));
+                setStrafePowerAll(-Math.max(.22,calculatePowerStrafe(powerLimit, distance, deltaX)));
                 Log.i("POWER",String.format("Delta X: %f\tPower: %f\n", deltaX, -Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaX))));
 //                opmode.telemetry.addData("deltaY", deltaX);
 //                opmode.telemetry.update();
