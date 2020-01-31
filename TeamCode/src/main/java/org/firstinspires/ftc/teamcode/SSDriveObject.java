@@ -105,11 +105,7 @@ public class SSDriveObject extends Object{
     TFObjectDetector tfod;
 
     ElapsedTime tfodTimeout;
-    ElapsedTime rollerTimeout;
-
-
-
-
+    ElapsedTime extenderTimeout = new ElapsedTime();
 
     public SSDriveObject(LinearOpMode parent){
         opmode = parent;
@@ -1053,15 +1049,16 @@ public class SSDriveObject extends Object{
     }
 
     public void setDeliveryExtender (double power, int time) {
+        extenderTimeout.reset();
         deliveryExtender.setPower(power);
     }
 
     public void setDeliveryRotation (boolean rotate) {
-        //rotate true = rotate out
+        //rotate true = rotate Middle
         //rotate false = rotate in
 
         if (rotate) {
-            deliveryRotation.setPosition(1);
+            deliveryRotation.setPosition(0.5);
         }
         else {
             deliveryRotation.setPosition(0);
