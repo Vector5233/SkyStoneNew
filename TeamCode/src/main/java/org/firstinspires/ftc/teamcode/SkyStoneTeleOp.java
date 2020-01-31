@@ -183,7 +183,7 @@ public class SkyStoneTeleOp extends OpMode {
         setCapServo();
         resetEncoder();
         setCameraServo();
-        calibrateEncoderArray();
+        //calibrateEncoderArray();
         encoderArray.updateAll();
         telemetry.addData("driveSpeed", driveSpeed);
         /*telemetry.addData("r1", radii[0]);
@@ -203,7 +203,7 @@ public class SkyStoneTeleOp extends OpMode {
         if (gamepad1.y) {
             if (!if_pressedGp1Y) {
                 encoderArray.resetAll();
-                gyro.calibrate();
+                //gyro.calibrate();
                 telemetry.addLine("Encoders reset");
                 if_pressedGp1Y = true;
             }
@@ -212,7 +212,7 @@ public class SkyStoneTeleOp extends OpMode {
         }
     }
 
-    private void calibrateEncoderArray() {
+    /*private void calibrateEncoderArray() {
         if (gamepad1.x) {
             if (!if_pressedGp1X) {
                 encoderArray.calibrate((double)gyro.getIntegratedZValue());
@@ -224,7 +224,7 @@ public class SkyStoneTeleOp extends OpMode {
         } else {
             if_pressedGp1X = false;
         }
-    }
+    }*/
 
     private void setDriveMotors() {
 
@@ -253,10 +253,10 @@ public class SkyStoneTeleOp extends OpMode {
             if_pressedDpadUp = false;
         }
 
-        frontRight.setPower((-gamepad1.right_stick_x - gamepad1.right_stick_y - gamepad1.left_stick_x) * driveSpeed);
-        frontLeft.setPower((gamepad1.right_stick_x - gamepad1.right_stick_y + gamepad1.left_stick_x) * driveSpeed);
-        backRight.setPower((gamepad1.right_stick_x - gamepad1.right_stick_y - gamepad1.left_stick_x) * driveSpeed);
-        backLeft.setPower((-gamepad1.right_stick_x - gamepad1.right_stick_y + gamepad1.left_stick_x) * driveSpeed);
+        frontRight.setPower((-gamepad1.right_stick_x + gamepad1.right_stick_y - gamepad1.left_stick_x) * driveSpeed);
+        frontLeft.setPower((gamepad1.right_stick_x + gamepad1.right_stick_y + gamepad1.left_stick_x) * driveSpeed);
+        backRight.setPower((gamepad1.right_stick_x + gamepad1.right_stick_y - gamepad1.left_stick_x) * driveSpeed);
+        backLeft.setPower((-gamepad1.right_stick_x + gamepad1.right_stick_y + gamepad1.left_stick_x) * driveSpeed);
         encoderArray.readEncoderValue();
     }
 

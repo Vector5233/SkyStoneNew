@@ -88,10 +88,12 @@ public class SSDriveObject extends Object{
 
     double inchPerPixel;
 
-    double FRpower = .94;
-    double FLpower = .94;
+    double FRpower = 1;
+    double FLpower = 1;
     double BRpower = 1;
     double BLpower = 1;
+
+    double numberOfStones;
 
     double SS_leftPixel;
     double SS_rightPixel;
@@ -196,11 +198,7 @@ public class SSDriveObject extends Object{
 
         if (side == BLUE) {
             //might need to change driveDistance, add a strafe
-            driveDistance(.6, 22);
-            opmode.sleep(400);
-            strafeDistance(.3,-4.5);
-            opmode.sleep(400);
-            turnDegree(.67,-97);
+            strafeDistance(.8,-20.5);
 
 
         } else {
@@ -227,46 +225,56 @@ public class SSDriveObject extends Object{
                 if (side == RED) {
                     switch (updatedRecognitions.size()) {
                         case 1:
+                            numberOfStones = 1;
                             return CENTER;
                         case 2:
                             for (Recognition recognition : updatedRecognitions) {
                                 opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
+                                Log.i("STATIC DETECTION","SkyStone Left px: " + recognition.getLeft());
                                 opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
+                                Log.i("STATIC DETECTION","SkyStone Right px: " + recognition.getRight());
                                 opmode.telemetry.update();
                                 opmode.sleep(500);
+                                numberOfStones = 2;
                                 if (recognition.getLabel().equals("Skystone")) {
-                                    if ((recognition.getLeft() + recognition.getRight()) / 2.0 < 300) {
-                                        return CENTER;
-                                    } else {
+                                    if (recognition.getRight() > 485) {
                                         return RIGHT;
+                                    } else if (recognition.getLeft() < 25){
+                                        return CENTER;
                                     }
                                 }
                             }
                             return LEFT;
                         default:
+                            numberOfStones = 100;
                             return CENTER;
 
                     }
                 } else {
                     switch (updatedRecognitions.size()) {
                         case 1:
+                            numberOfStones = 1;
                             return CENTER;
                         case 2:
+                            numberOfStones = 2;
                             for (Recognition recognition : updatedRecognitions) {
                                 opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
+                                Log.i("STATIC DETECTION","SkyStone Left px: " + recognition.getLeft());
                                 opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
+                                Log.i("STATIC DETECTION","SkyStone Right px: " + recognition.getRight());
                                 opmode.telemetry.update();
                                 opmode.sleep(500);
                                 if (recognition.getLabel().equals("Skystone")) {
-                                    if ((recognition.getLeft() + recognition.getRight()) / 2.0 > 700) {
-                                        return RIGHT;
-                                    } else {
+                                    if (recognition.getLeft() < 200) {
+                                        return LEFT;
+                                    } else if(recognition.getRight() > 750){
                                         return CENTER;
                                     }
                                 }
                             }
-                            return LEFT;
+                            return RIGHT;
                         default:
+                            numberOfStones = 100;
                             return CENTER;
 
                     }
@@ -430,7 +438,6 @@ public class SSDriveObject extends Object{
                     setRollerMotors(false, 1);
                     opmode.sleep(200);
                     driveDistance(.6,25);
-                    opmode.sleep(700);
                     setRollerMotors(false,0.0);
                     driveDistance(.6,-25);
                     opmode.sleep(400);
@@ -777,11 +784,14 @@ public class SSDriveObject extends Object{
         }
     }
 
-    public double calculatePowerStrafe(double powerLimit, double distance, double deltaX) {
+    public double calculatePowerStrafe(double powerLimit, double distance, double deltaX){
         distance = Math.abs(distance);
         deltaX = Math.abs(deltaX);
+
         if(distance != 0){
+
             return ((0.44 - 4 * powerLimit) / (distance * distance)) * deltaX * deltaX + ((4 * powerLimit - 0.66) / distance) * deltaX + POWER_MIN;
+
         } else {
             return 0;
         }
@@ -795,13 +805,12 @@ public class SSDriveObject extends Object{
         } else {
             return 0;
         }
-
-
     }
 
     public void driveDistance(double powerLimit, double distance) {
         double deltaY = 0;
         double powerMin = POWER_MIN;
+        encoderArray.readEncoderValue();
         encoderArray.updateAll();
         encoderArray.resetAll();
 
@@ -813,7 +822,7 @@ public class SSDriveObject extends Object{
                 if (deltaY >= distance)
                     break;
 
-                setDrivePowerAll(Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaY)));
+                setDrivePowerAll(Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY)));
                 Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
 
 
@@ -831,7 +840,7 @@ public class SSDriveObject extends Object{
                 if (deltaY <= distance)
                     break;
 
-                setDrivePowerAll(-Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaY)));
+                setDrivePowerAll(-Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY)));
 //                opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
 //                opmode.telemetry.update();
             }
@@ -869,10 +878,12 @@ public class SSDriveObject extends Object{
 
     }*/
 
-    public void strafeDistance(double powerLimit, double distance) {
-
+    public void strafeDistance (double powerLimit, double distance) {
         double deltaX = 0;
+        double deltaTheta = 0;
+        double strafePower;
 
+        encoderArray.readEncoderValue();
         encoderArray.updateAll();
         encoderArray.resetAll();
 
@@ -880,7 +891,9 @@ public class SSDriveObject extends Object{
             while((deltaX <= distance) && opmode.opModeIsActive()) {
                 encoderArray.readEncoderValue();
                 deltaX = encoderArray.getDeltaX();
-                setStrafePowerAll(Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaX)));
+                deltaTheta = encoderArray.getDeltaTheta();
+                strafePower = Math.max(.22,calculatePowerStrafe(powerLimit, distance, deltaX));
+                setSelectPowerAll(-strafePower - .02*deltaTheta, strafePower + .02*deltaTheta, strafePower + .02*deltaTheta,-strafePower - .02*deltaTheta);
                 Log.i("POWER",String.format("Delta X: %f\tPower: %f\n", deltaX, Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaX))));
 //                telemetryEncoderArray();
 //                opmode.telemetry.addData("deltaX: ", encoderArray.getDeltaX());
@@ -891,7 +904,8 @@ public class SSDriveObject extends Object{
             while((deltaX >= distance) && opmode.opModeIsActive()) {
                 encoderArray.readEncoderValue();
                 deltaX = encoderArray.getDeltaX();
-                setStrafePowerAll(-Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaX)));
+                strafePower = Math.max(.22,calculatePowerStrafe(powerLimit, distance, deltaX));
+                setSelectPowerAll(strafePower,-strafePower,-strafePower,strafePower);
                 Log.i("POWER",String.format("Delta X: %f\tPower: %f\n", deltaX, -Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaX))));
 //                opmode.telemetry.addData("deltaY", deltaX);
 //                opmode.telemetry.update();
@@ -908,10 +922,8 @@ public class SSDriveObject extends Object{
         // distance in inches
         //conjecture instead of moving 12", wheels will go 12"*cos(45)= 8.5"
 
-
-
         double deltaTheta = 0;
-
+        encoderArray.readEncoderValue();
         encoderArray.updateAll();
         encoderArray.resetAll();
 
