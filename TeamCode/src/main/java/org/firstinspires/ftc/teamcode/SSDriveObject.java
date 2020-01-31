@@ -227,12 +227,11 @@ public class SSDriveObject extends Object{
                             return CENTER;
                         case 2:
                             for (Recognition recognition : updatedRecognitions) {
-                                opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
+//                                opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
                                 Log.i("STATIC DETECTION","SkyStone Left px: " + recognition.getLeft());
-                                opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
+//                                opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
                                 Log.i("STATIC DETECTION","SkyStone Right px: " + recognition.getRight());
-                                opmode.telemetry.update();
-                                opmode.sleep(500);
+//                                opmode.telemetry.update();
                                 numberOfStones = 2;
                                 if (recognition.getLabel().equals("Skystone")) {
                                     if (recognition.getRight() > 485) {
@@ -256,12 +255,11 @@ public class SSDriveObject extends Object{
                         case 2:
                             numberOfStones = 2;
                             for (Recognition recognition : updatedRecognitions) {
-                                opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
+//                                opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
                                 Log.i("STATIC DETECTION","SkyStone Left px: " + recognition.getLeft());
-                                opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
+//                                opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
                                 Log.i("STATIC DETECTION","SkyStone Right px: " + recognition.getRight());
-                                opmode.telemetry.update();
-                                opmode.sleep(500);
+
                                 if (recognition.getLabel().equals("Skystone")) {
                                     if (recognition.getLeft() < 200) {
                                         return LEFT;
@@ -290,7 +288,7 @@ public class SSDriveObject extends Object{
     }
 
     public void testCollectionAndDelivery(){
-        setRollerMotors(false, 1);
+        setRollerMotors(false,.8);
         //how to check if the block is collected or not (next round)
         driveDistance(.3,6);
         opmode.sleep(700);
@@ -302,7 +300,7 @@ public class SSDriveObject extends Object{
         opmode.idle();
         driveDistance(1,20);
         opmode.idle();
-        setRollerMotors(true,1);
+        setRollerMotors(true,.8);
         opmode.idle();
         driveDistance(1,-10);
 //        setDeliveryGrabber(true);
@@ -319,7 +317,7 @@ public class SSDriveObject extends Object{
                     strafeDistance(.3,-5);
                     opmode.sleep(400);
                     turnDegree(.67,45);
-                    setRollerMotors(false, 1);
+                    setRollerMotors(false,.8);
                     opmode.sleep(200);
                     driveDistance(.6,25);
                     opmode.sleep(700);
@@ -328,12 +326,14 @@ public class SSDriveObject extends Object{
                     opmode.sleep(400);
                     turnDegree(.67,-45);
                     opmode.sleep(400);
-                    driveDistance(1,82);
-                    setRollerMotors(true,1);
+                    driveDistance(1,114);
+
+
+                    /*setRollerMotors(true,.8);
                     opmode.idle();
                     driveDistance(1,-15);
                     opmode.sleep(700);
-                    setRollerMotors(true,0.0);
+                    setRollerMotors(true,0.0);*/
 
                     break;
                 case CENTER:
@@ -351,12 +351,12 @@ public class SSDriveObject extends Object{
                     opmode.sleep(400);
                     turnDegree(.67,-45);
                     opmode.sleep(400);
-                    driveDistance(1,74);
-                    setRollerMotors(true,.8);
+                    driveDistance(1,106);
+                    /*setRollerMotors(true,.8);
                     opmode.idle();
                     driveDistance(1,-15);
                     opmode.sleep(700);
-                    setRollerMotors(true,0.0);
+                    setRollerMotors(true,0.0);*/
                     break;
                 case RIGHT:
                     driveDistance(.6,-7.5);
@@ -373,15 +373,15 @@ public class SSDriveObject extends Object{
                     opmode.sleep(400);
                     turnDegree(.67,-45);
                     opmode.sleep(400);
-                    driveDistance(1,66);
-                    setRollerMotors(true,.8);
+                    driveDistance(1,98);
+                    /*setRollerMotors(true,.8);
                     opmode.idle();
                     driveDistance(1,-15);
                     opmode.sleep(700);
-                    setRollerMotors(true,0.0);
+                    setRollerMotors(true,0.0);*/
                     break;
             }
-//            setRollerMotors(false, 1);
+//            setRollerMotors(false,.8);
 //            how to check if the block is collected or not (next round)
 //            driveDistance(.3,6);
 //            opmode.sleep(700);
@@ -392,7 +392,7 @@ public class SSDriveObject extends Object{
                     driveDistance(.6,-20);
                     opmode.sleep(500);
                     turnDegree(.67,45);
-                    setRollerMotors(false, 1);
+                    setRollerMotors(false,.8);
                     opmode.idle();
                     driveDistance(.6,25);
                     opmode.sleep(700);
@@ -413,7 +413,7 @@ public class SSDriveObject extends Object{
                     driveDistance(.6,-18);
                     opmode.sleep(500);
                     turnDegree(.67,45);
-                    setRollerMotors(false, 1);
+                    setRollerMotors(false,.8);
                     opmode.sleep(200);
                     driveDistance(.6,25);
                     opmode.sleep(700);
@@ -433,7 +433,7 @@ public class SSDriveObject extends Object{
                     driveDistance(.6,-7.5);
                     opmode.sleep(500);
                     turnDegree(.67,45);
-                    setRollerMotors(false, 1);
+                    setRollerMotors(false,.8);
                     opmode.sleep(200);
                     driveDistance(.6,25);
                     setRollerMotors(false,0.0);
@@ -450,7 +450,7 @@ public class SSDriveObject extends Object{
                     break;
             }
         }
-//        setRollerMotors(true, 1);
+//        setRollerMotors(true, .8);
 //        driveDistance(1,6);
 //        opmode.sleep(400);
 //        setBlockSweeper(true);
@@ -808,6 +808,8 @@ public class SSDriveObject extends Object{
     public void driveDistance(double powerLimit, double distance) {
         double deltaY = 0;
         double powerMin = POWER_MIN;
+        double deltaTheta = 0;
+
         encoderArray.readEncoderValue();
         encoderArray.updateAll();
         encoderArray.resetAll();
@@ -835,10 +837,12 @@ public class SSDriveObject extends Object{
             while(opmode.opModeIsActive()) {
                 encoderArray.readEncoderValue();
                 deltaY = encoderArray.getDeltaY();
+                deltaTheta = encoderArray.getDeltaTheta();
                 if (deltaY >= distance)
                     break;
 
-                setDrivePowerAll(Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY)));
+                double drivePower = Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
+                setSelectPowerAll(drivePower +.22*deltaTheta, drivePower - .22*deltaTheta, drivePower +.22*deltaTheta, drivePower - .22*deltaTheta);
                 Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
 
 
@@ -853,6 +857,7 @@ public class SSDriveObject extends Object{
             while(opmode.opModeIsActive()) {
                 encoderArray.readEncoderValue();
                 deltaY = encoderArray.getDeltaY();
+                deltaTheta = encoderArray.getDeltaTheta();
                 if (deltaY <= distance)
                     break;
 
