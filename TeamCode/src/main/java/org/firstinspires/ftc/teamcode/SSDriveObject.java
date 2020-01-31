@@ -202,9 +202,7 @@ public class SSDriveObject extends Object{
 
         if (side == BLUE) {
             //might need to change driveDistance, add a strafe
-            driveDistance(.5, 23.125);
-            opmode.sleep(500);
-            turnDegree(.67,-90);
+            strafeDistance(.8,-20.5);
 
 
         } else {
@@ -816,6 +814,7 @@ public class SSDriveObject extends Object{
     public void driveDistance(double powerLimit, double distance) {
         double deltaY = 0;
         double powerMin = POWER_MIN;
+        encoderArray.readEncoderValue();
         encoderArray.updateAll();
         encoderArray.resetAll();
 
@@ -886,7 +885,7 @@ public class SSDriveObject extends Object{
     public void strafeDistance(double powerLimit, double distance) {
 
         double deltaX = 0;
-
+        encoderArray.readEncoderValue();
         encoderArray.updateAll();
         encoderArray.resetAll();
 
@@ -925,7 +924,7 @@ public class SSDriveObject extends Object{
 
 
         double deltaTheta = 0;
-
+        encoderArray.readEncoderValue();
         encoderArray.updateAll();
         encoderArray.resetAll();
 
