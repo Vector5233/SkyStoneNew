@@ -21,13 +21,11 @@ public class Blue1SkyFoundPark extends LinearOpMode {
 
         drive.goToDetectPosition(drive.BLUE);
         sleep(500);
-        drive.turnDegree(.67,-drive.encoderArray.theta);
-        sleep(500);
         drive.encoderArray.readEncoderValue();
         drive.encoderArray.updateAll();
         drive.encoderArray.resetAll();
         Log.i("FINAL POSITION",drive.getFinalPosition());
-        sleep(1500);
+        sleep(1700);
         int skystone = drive.detectStonesStatic(drive.BLUE);
         telemetry.addLine(skystoneString(skystone));
         telemetry.update();

@@ -198,13 +198,11 @@ public class SSDriveObject extends Object{
 
         if (side == BLUE) {
             //might need to change driveDistance, add a strafe
-            strafeDistance(.8,-20.5);
+            strafeDistance(.8,-21);
 
 
         } else {
-            driveDistance(.6, 22);
-            opmode.sleep(400);
-            turnDegree(.67,-97);
+            strafeDistance(.8,-21);
         }
 
     }
@@ -344,7 +342,7 @@ public class SSDriveObject extends Object{
                     strafeDistance(.3,-5);
                     opmode.sleep(400);
                     turnDegree(.67,45);
-                    setRollerMotors(false, 1);
+                    setRollerMotors(false, .8);
                     opmode.sleep(200);
                     driveDistance(.6,25);
                     opmode.sleep(700);
@@ -354,7 +352,7 @@ public class SSDriveObject extends Object{
                     turnDegree(.67,-45);
                     opmode.sleep(400);
                     driveDistance(1,74);
-                    setRollerMotors(true,1);
+                    setRollerMotors(true,.8);
                     opmode.idle();
                     driveDistance(1,-15);
                     opmode.sleep(700);
@@ -366,7 +364,7 @@ public class SSDriveObject extends Object{
                     strafeDistance(.3,-5);
                     opmode.sleep(400);
                     turnDegree(.67,45);
-                    setRollerMotors(false, 1);
+                    setRollerMotors(false, .8);
                     opmode.sleep(200);
                     driveDistance(.6,25);
                     opmode.sleep(700);
@@ -376,7 +374,7 @@ public class SSDriveObject extends Object{
                     turnDegree(.67,-45);
                     opmode.sleep(400);
                     driveDistance(1,66);
-                    setRollerMotors(true,1);
+                    setRollerMotors(true,.8);
                     opmode.idle();
                     driveDistance(1,-15);
                     opmode.sleep(700);
@@ -404,7 +402,7 @@ public class SSDriveObject extends Object{
                     turnDegree(.67,155);
                     opmode.sleep(400);
 //                    driveDistanceNoAccel(1,82);
-//                    setRollerMotors(true,1);
+//                    setRollerMotors(true,.8);
 //                    opmode.idle();
 //                    driveDistance(1,-15);
 //                    opmode.sleep(700);
@@ -425,7 +423,7 @@ public class SSDriveObject extends Object{
                     turnDegree(.67,-50);
                     opmode.sleep(400);
                     driveDistance(1,74);
-                    setRollerMotors(true,1);
+                    setRollerMotors(true,.8);
                     opmode.idle();
                     driveDistance(1,-15);
                     opmode.sleep(700);
@@ -444,7 +442,7 @@ public class SSDriveObject extends Object{
                     turnDegree(.67,-50);
                     opmode.sleep(400);
                     driveDistance(1,66);
-                    setRollerMotors(true,1);
+                    setRollerMotors(true,.8);
                     opmode.idle();
                     driveDistance(1,-15);
                     opmode.sleep(700);
@@ -813,6 +811,24 @@ public class SSDriveObject extends Object{
         encoderArray.readEncoderValue();
         encoderArray.updateAll();
         encoderArray.resetAll();
+        if (distance > 0) {
+            if (powerLimit == .8) {
+                distance -= 2.24;
+            } else if (powerLimit ==.5) {
+                distance -= .71;
+            } else {
+                distance -= 3.39;
+            }
+        } else if (distance < 0) {
+            if (powerLimit == .8) {
+                distance += 2.24;
+            } else if (powerLimit ==.5) {
+                distance += .71;
+            } else {
+                distance += 3.39;
+            }
+        }
+
 
         if (distance > 0) {
 //            direction = FORWARD;
@@ -878,10 +894,29 @@ public class SSDriveObject extends Object{
 
     }*/
 
-    public void strafeDistance (double powerLimit, double distance) {
+    public void strafeDistance(double powerLimit, double distance) {
         double deltaX = 0;
         double deltaTheta = 0;
         double strafePower;
+
+        if (distance > 0) {
+            if (powerLimit == .8) {
+                distance -= .23;
+            } else if (powerLimit ==.5) {
+                distance -= .24;
+            } else {
+                distance -= .68;
+            }
+        } else if (distance < 0) {
+            if (powerLimit == .8) {
+                distance += .23;
+            } else if (powerLimit ==.5) {
+                distance += .24;
+            } else {
+                distance += .68;
+            }
+        }
+
 
         encoderArray.readEncoderValue();
         encoderArray.updateAll();
