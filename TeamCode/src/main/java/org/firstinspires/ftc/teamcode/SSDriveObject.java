@@ -594,8 +594,7 @@ public class SSDriveObject extends Object{
 
     public void deliverSkystone (boolean side) {
         if (side) {
-            strafeDistance(1,25);
-            driveDistance(1,-25);
+            turnDegree(.5, -90);
             setBlockSweeper(true);
             opmode.sleep(500);
             setDeliveryGrabber(true);
