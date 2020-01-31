@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Red1SkyFoundPark", group="Blue")
+@Autonomous(name="Red1SkyFoundPark", group="Red")
 
 public class Red1SkyFoundPark extends LinearOpMode {
     SSDriveObject drive;
@@ -26,11 +26,12 @@ public class Red1SkyFoundPark extends LinearOpMode {
         /*drive.detectReady();
         drive.detectStones();
         drive.getDisplacement();
-//        drive.collectSkyStone();
+        drive.collectSkyStone();
         drive.moveToFoundation(drive.RED);
         drive.moveFoundation(drive.RED);
         drive.park(drive.BLUE, drive.FOUNDATION);*/
     }
+
     public String skystoneString(int skystone){
         switch(skystone) {
             case 0:
@@ -44,4 +45,3 @@ public class Red1SkyFoundPark extends LinearOpMode {
         }
     }
 }
-

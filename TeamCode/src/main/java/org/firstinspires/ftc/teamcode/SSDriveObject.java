@@ -476,7 +476,7 @@ public class SSDriveObject extends Object{
         driveDistance(1,-12.5);
     }
 
-    public void moveFoundation (boolean side) {
+    public void moveFoundation (boolean side)  {
         /*setFoundation(true);
         opmode.sleep(400);
         driveDistanceNoAccel(.4,1);
