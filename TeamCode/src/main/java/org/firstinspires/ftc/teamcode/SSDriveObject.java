@@ -107,11 +107,7 @@ public class SSDriveObject extends Object{
     TFObjectDetector tfod;
 
     ElapsedTime tfodTimeout;
-    ElapsedTime rollerTimeout;
-
-
-
-
+    ElapsedTime extenderTimeout = new ElapsedTime();
 
     public SSDriveObject(LinearOpMode parent){
         opmode = parent;
@@ -497,7 +493,7 @@ public class SSDriveObject extends Object{
         driveDistance(1,-30);*/
 
         if (side == BLUE) {
-            driveDistance(.6, -27);
+            /*driveDistance(.6, -27);
             opmode.sleep(400);
             strafeDistance(.6,4);
             opmode.sleep(400);
@@ -512,10 +508,10 @@ public class SSDriveObject extends Object{
             driveDistance(.7,-11);
             opmode.sleep(400);
             turnDegree(.67,2);
-            opmode.sleep(400);
+            opmode.sleep(400);*/
 
         } else if (side == RED) {
-            opmode.telemetry.addLine("red Foundation moving");
+            /*opmode.telemetry.addLine("red Foundation moving");
             driveDistance(.6, -27);
             opmode.sleep(400);
             strafeDistance(.6,-2);
@@ -529,7 +525,7 @@ public class SSDriveObject extends Object{
             setFoundation(false);
             opmode.sleep(400);
             driveDistance(.7,-11);
-            opmode.sleep(400);
+            opmode.sleep(400);*/
         }
     }
 
@@ -1065,15 +1061,16 @@ public class SSDriveObject extends Object{
     }
 
     public void setDeliveryExtender (double power, int time) {
+        extenderTimeout.reset();
         deliveryExtender.setPower(power);
     }
 
     public void setDeliveryRotation (boolean rotate) {
-        //rotate true = rotate out
+        //rotate true = rotate Middle
         //rotate false = rotate in
 
         if (rotate) {
-            deliveryRotation.setPosition(1);
+            deliveryRotation.setPosition(0.5);
         }
         else {
             deliveryRotation.setPosition(0);
