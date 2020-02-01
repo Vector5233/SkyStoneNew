@@ -226,6 +226,7 @@ public class SSDriveObject extends Object{
                     switch (updatedRecognitions.size()) {
                         case 1:
                             numberOfStones = 1;
+                            Log.i("DETECTTIME", "detectStonesStatic");
                             return CENTER;
                         case 2:
                             for (Recognition recognition : updatedRecognitions) {
@@ -237,15 +238,19 @@ public class SSDriveObject extends Object{
                                 numberOfStones = 2;
                                 if (recognition.getLabel().equals("Skystone")) {
                                     if (recognition.getRight() > 485) {
+                                        Log.i("DETECTTIME", "detectStonesStatic");
                                         return RIGHT;
                                     } else if (recognition.getLeft() < 25){
+                                        Log.i("DETECTTIME", "detectStonesStatic");
                                         return CENTER;
                                     }
                                 }
                             }
+                            Log.i("DETECTTIME", "detectStonesStatic");
                             return LEFT;
                         default:
                             numberOfStones = 100;
+                            Log.i("DETECTTIME", "detectStonesStatic");
                             return CENTER;
 
                     }
@@ -253,6 +258,7 @@ public class SSDriveObject extends Object{
                     switch (updatedRecognitions.size()) {
                         case 1:
                             numberOfStones = 1;
+                            Log.i("DETECTTIME", "detectStonesStatic");
                             return CENTER;
                         case 2:
                             numberOfStones = 2;
@@ -264,25 +270,31 @@ public class SSDriveObject extends Object{
 
                                 if (recognition.getLabel().equals("Skystone")) {
                                     if (recognition.getLeft() < 200) {
+                                        Log.i("DETECTTIME", "detectStonesStatic");
                                         return LEFT;
                                     } else if(recognition.getRight() > 750){
+                                        Log.i("DETECTTIME", "detectStonesStatic");
                                         return CENTER;
                                     }
                                 }
                             }
+                            Log.i("DETECTTIME", "detectStonesStatic");
                             return RIGHT;
                         default:
                             numberOfStones = 100;
+                            Log.i("DETECTTIME", "detectStonesStatic");
                             return CENTER;
 
                     }
                 }
             } else {
                 opmode.telemetry.addLine("0 objects detected");
+                Log.i("DETECTTIME", "detectStonesStatic");
                 return CENTER;
             }
         } else {
             opmode.telemetry.addLine("tfod fail");
+            Log.i("DETECTTIME", "detectStonesStatic");
             return CENTER;
         }
 
@@ -845,8 +857,8 @@ public class SSDriveObject extends Object{
                     break;
 
                 double drivePower = Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
-                setSelectPowerAll(drivePower +.22*deltaTheta, drivePower - .22*deltaTheta, drivePower +.22*deltaTheta, drivePower - .22*deltaTheta);
-//                Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
+                setSelectPowerAll(drivePower -.22*deltaTheta, drivePower + .22*deltaTheta, drivePower -.22*deltaTheta, drivePower + .22*deltaTheta);
+                Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
 
 
 //                telemetryEncoderArray();
@@ -865,14 +877,14 @@ public class SSDriveObject extends Object{
                     break;
 
                 double drivePower = Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
-                setSelectPowerAll(-(drivePower +.22*deltaTheta), -(drivePower - .22*deltaTheta), -(drivePower +.22*deltaTheta), -(drivePower - .22*deltaTheta));                opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
+//                setSelectPowerAll(-(drivePower +.22*deltaTheta), -(drivePower - .22*deltaTheta), -(drivePower +.22*deltaTheta), -(drivePower - .22*deltaTheta));                opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
 //                opmode.telemetry.update();
             }
         }
         stopDriving();
         opmode.telemetry.addLine("motors stopped");
         opmode.telemetry.update();
-        Log.i("DRIVE", "Drive Distance");
+        Log.i("DRIVETIME", "driveDistance");
 
 //        System.out.println(debugString);
 //        debugString="";
@@ -957,7 +969,7 @@ public class SSDriveObject extends Object{
         stopDriving();
         opmode.telemetry.addLine("motors stopped");
         opmode.telemetry.update();
-        Log.i("DRIVE", "Strafe Distance");
+        Log.i("DRIVETIME", "strafeDistance");
 //        opmode.sleep(500);
 
     }
@@ -992,7 +1004,7 @@ public class SSDriveObject extends Object{
         }
 
         stopDriving();
-        Log.i("DRIVE", "Turn Degree");
+        Log.i("DRIVETIME", "turnDegree");
 //        getAngleTelemetry("TURN END");
 
     }
@@ -1142,6 +1154,7 @@ public class SSDriveObject extends Object{
             leftRoller.setDirection(DcMotorSimple.Direction.REVERSE);
             rightRoller.setDirection(DcMotorSimple.Direction.FORWARD);
         }
+        Log.i("ROLLERTIME", "setRollerMotors");
 
         leftRoller.setPower(power);
         rightRoller.setPower(power);
@@ -1181,6 +1194,7 @@ public class SSDriveObject extends Object{
             blockSweeper.setPosition(1);
 
         }
+
     }
 
     public void setDeliveryGrabber (boolean grab) {

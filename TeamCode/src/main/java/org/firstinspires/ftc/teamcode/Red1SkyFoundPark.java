@@ -5,7 +5,7 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Red1SkyFoundPark", group="Blue")
+@Autonomous(name="Red1SkyFoundPark", group="Red")
 
 public class Red1SkyFoundPark extends LinearOpMode {
     SSDriveObject drive;
@@ -32,15 +32,16 @@ public class Red1SkyFoundPark extends LinearOpMode {
         Log.i("STATIC DETECTION", String.format("Number of Stones Detected: %f",drive.numberOfStones));
         Log.i("STATIC DETECTION","SkyStone Pos: " + skystoneString(skystone));
         drive.collectSkyStone(drive.RED,skystone);
-        drive.deliverSkystone(drive.RED);
+//        drive.deliverSkystone(drive.RED);
         /*drive.detectReady();
         drive.detectStones();
         drive.getDisplacement();
-//        drive.collectSkyStone();
+        drive.collectSkyStone();
         drive.moveToFoundation(drive.RED);
         drive.moveFoundation(drive.RED);
         drive.park(drive.RED, drive.FOUNDATION);*/
     }
+
     public String skystoneString(int skystone){
         switch(skystone) {
             case 0:
@@ -54,4 +55,3 @@ public class Red1SkyFoundPark extends LinearOpMode {
         }
     }
 }
-
