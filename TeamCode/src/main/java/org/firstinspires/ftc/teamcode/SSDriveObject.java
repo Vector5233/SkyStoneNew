@@ -846,7 +846,7 @@ public class SSDriveObject extends Object{
 
                 double drivePower = Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
                 setSelectPowerAll(drivePower +.22*deltaTheta, drivePower - .22*deltaTheta, drivePower +.22*deltaTheta, drivePower - .22*deltaTheta);
-                Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
+//                Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
 
 
 //                telemetryEncoderArray();
@@ -864,14 +864,15 @@ public class SSDriveObject extends Object{
                 if (deltaY <= distance)
                     break;
 
-                setDrivePowerAll(-Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY)));
-//                opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
+                double drivePower = Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
+                setSelectPowerAll(-(drivePower +.22*deltaTheta), -(drivePower - .22*deltaTheta), -(drivePower +.22*deltaTheta), -(drivePower - .22*deltaTheta));                opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
 //                opmode.telemetry.update();
             }
         }
         stopDriving();
         opmode.telemetry.addLine("motors stopped");
         opmode.telemetry.update();
+        Log.i("DRIVE", "Drive Distance");
 
 //        System.out.println(debugString);
 //        debugString="";
@@ -936,7 +937,7 @@ public class SSDriveObject extends Object{
                 deltaTheta = encoderArray.getDeltaTheta();
                 strafePower = Math.max(.22,calculatePowerStrafe(powerLimit, distance, deltaX));
                 setSelectPowerAll(-strafePower - .02*deltaTheta, strafePower + .02*deltaTheta, strafePower + .02*deltaTheta,-strafePower - .02*deltaTheta);
-                Log.i("POWER",String.format("Delta X: %f\tPower: %f\n", deltaX, Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaX))));
+//                Log.i("POWER",String.format("Delta X: %f\tPower: %f\n", deltaX, Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaX))));
 //                telemetryEncoderArray();
 //                opmode.telemetry.addData("deltaX: ", encoderArray.getDeltaX());
 //                telemetryWheelPower();
@@ -948,7 +949,7 @@ public class SSDriveObject extends Object{
                 deltaX = encoderArray.getDeltaX();
                 strafePower = Math.max(.22,calculatePowerStrafe(powerLimit, distance, deltaX));
                 setSelectPowerAll(strafePower,-strafePower,-strafePower,strafePower);
-                Log.i("POWER",String.format("Delta X: %f\tPower: %f\n", deltaX, -Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaX))));
+//                Log.i("POWER",String.format("Delta X: %f\tPower: %f\n", deltaX, -Math.max(.22,calculatePowerTurn(powerLimit, distance, deltaX))));
 //                opmode.telemetry.addData("deltaY", deltaX);
 //                opmode.telemetry.update();
             }
@@ -956,6 +957,7 @@ public class SSDriveObject extends Object{
         stopDriving();
         opmode.telemetry.addLine("motors stopped");
         opmode.telemetry.update();
+        Log.i("DRIVE", "Strafe Distance");
 //        opmode.sleep(500);
 
     }
@@ -990,6 +992,7 @@ public class SSDriveObject extends Object{
         }
 
         stopDriving();
+        Log.i("DRIVE", "Turn Degree");
 //        getAngleTelemetry("TURN END");
 
     }
