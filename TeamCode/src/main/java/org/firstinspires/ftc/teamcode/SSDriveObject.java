@@ -109,6 +109,8 @@ public class SSDriveObject extends Object{
     ElapsedTime tfodTimeout;
     ElapsedTime extenderTimeout = new ElapsedTime();
 
+    final int EXTEND_TIMEOUT = 1875;
+
     public SSDriveObject(LinearOpMode parent){
         opmode = parent;
 
@@ -227,12 +229,11 @@ public class SSDriveObject extends Object{
                             return CENTER;
                         case 2:
                             for (Recognition recognition : updatedRecognitions) {
-                                opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
+//                                opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
                                 Log.i("STATIC DETECTION","SkyStone Left px: " + recognition.getLeft());
-                                opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
+//                                opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
                                 Log.i("STATIC DETECTION","SkyStone Right px: " + recognition.getRight());
-                                opmode.telemetry.update();
-                                opmode.sleep(500);
+//                                opmode.telemetry.update();
                                 numberOfStones = 2;
                                 if (recognition.getLabel().equals("Skystone")) {
                                     if (recognition.getRight() > 485) {
@@ -256,12 +257,11 @@ public class SSDriveObject extends Object{
                         case 2:
                             numberOfStones = 2;
                             for (Recognition recognition : updatedRecognitions) {
-                                opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
+//                                opmode.telemetry.addData("  left", "%.03f", recognition.getLeft());
                                 Log.i("STATIC DETECTION","SkyStone Left px: " + recognition.getLeft());
-                                opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
+//                                opmode.telemetry.addData("  right", "%.03f", recognition.getRight());
                                 Log.i("STATIC DETECTION","SkyStone Right px: " + recognition.getRight());
-                                opmode.telemetry.update();
-                                opmode.sleep(500);
+
                                 if (recognition.getLabel().equals("Skystone")) {
                                     if (recognition.getLeft() < 200) {
                                         return LEFT;
@@ -290,7 +290,7 @@ public class SSDriveObject extends Object{
     }
 
     public void testCollectionAndDelivery(){
-        setRollerMotors(false, 1);
+        setRollerMotors(false,.8);
         //how to check if the block is collected or not (next round)
         driveDistance(.3,6);
         opmode.sleep(700);
@@ -302,7 +302,7 @@ public class SSDriveObject extends Object{
         opmode.idle();
         driveDistance(1,20);
         opmode.idle();
-        setRollerMotors(true,1);
+        setRollerMotors(true,.8);
         opmode.idle();
         driveDistance(1,-10);
 //        setDeliveryGrabber(true);
@@ -319,21 +319,25 @@ public class SSDriveObject extends Object{
                     strafeDistance(.3,-5);
                     opmode.sleep(400);
                     turnDegree(.67,45);
-                    setRollerMotors(false, 1);
+                    setRollerMotors(false,.8);
                     opmode.sleep(200);
                     driveDistance(.6,25);
                     opmode.sleep(700);
                     setRollerMotors(false,0.0);
+                    setBlockSweeper(true);
                     driveDistance(.6,-25);
+                    setDeliveryGrabber(true);
                     opmode.sleep(400);
                     turnDegree(.67,-45);
                     opmode.sleep(400);
-                    driveDistance(1,82);
-                    setRollerMotors(true,1);
+                    driveDistance(.8,110);
+
+
+                    /*setRollerMotors(true,.8);
                     opmode.idle();
                     driveDistance(1,-15);
                     opmode.sleep(700);
-                    setRollerMotors(true,0.0);
+                    setRollerMotors(true,0.0);*/
 
                     break;
                 case CENTER:
@@ -351,12 +355,12 @@ public class SSDriveObject extends Object{
                     opmode.sleep(400);
                     turnDegree(.67,-45);
                     opmode.sleep(400);
-                    driveDistance(1,74);
-                    setRollerMotors(true,.8);
+                    driveDistance(1,106);
+                    /*setRollerMotors(true,.8);
                     opmode.idle();
                     driveDistance(1,-15);
                     opmode.sleep(700);
-                    setRollerMotors(true,0.0);
+                    setRollerMotors(true,0.0);*/
                     break;
                 case RIGHT:
                     driveDistance(.6,-7.5);
@@ -373,15 +377,15 @@ public class SSDriveObject extends Object{
                     opmode.sleep(400);
                     turnDegree(.67,-45);
                     opmode.sleep(400);
-                    driveDistance(1,66);
-                    setRollerMotors(true,.8);
+                    driveDistance(1,98);
+                    /*setRollerMotors(true,.8);
                     opmode.idle();
                     driveDistance(1,-15);
                     opmode.sleep(700);
-                    setRollerMotors(true,0.0);
+                    setRollerMotors(true,0.0);*/
                     break;
             }
-//            setRollerMotors(false, 1);
+//            setRollerMotors(false,.8);
 //            how to check if the block is collected or not (next round)
 //            driveDistance(.3,6);
 //            opmode.sleep(700);
@@ -392,7 +396,7 @@ public class SSDriveObject extends Object{
                     driveDistance(.6,-20);
                     opmode.sleep(500);
                     turnDegree(.67,45);
-                    setRollerMotors(false, 1);
+                    setRollerMotors(false,.8);
                     opmode.idle();
                     driveDistance(.6,25);
                     opmode.sleep(700);
@@ -413,7 +417,7 @@ public class SSDriveObject extends Object{
                     driveDistance(.6,-18);
                     opmode.sleep(500);
                     turnDegree(.67,45);
-                    setRollerMotors(false, 1);
+                    setRollerMotors(false,.8);
                     opmode.sleep(200);
                     driveDistance(.6,25);
                     opmode.sleep(700);
@@ -433,7 +437,7 @@ public class SSDriveObject extends Object{
                     driveDistance(.6,-7.5);
                     opmode.sleep(500);
                     turnDegree(.67,45);
-                    setRollerMotors(false, 1);
+                    setRollerMotors(false,.8);
                     opmode.sleep(200);
                     driveDistance(.6,25);
                     setRollerMotors(false,0.0);
@@ -450,7 +454,7 @@ public class SSDriveObject extends Object{
                     break;
             }
         }
-//        setRollerMotors(true, 1);
+//        setRollerMotors(true, .8);
 //        driveDistance(1,6);
 //        opmode.sleep(400);
 //        setBlockSweeper(true);
@@ -474,21 +478,21 @@ public class SSDriveObject extends Object{
         driveDistance(1,-12.5);
     }
 
-    public void moveFoundation (boolean side)  {
-        /*setFoundation(true);
+    public void moveFoundation (boolean side) {
+        setFoundation(true);
         opmode.sleep(400);
-        driveDistanceNoAccel(.4,1);
+        driveDistance(.4,1);
         opmode.sleep(400);
-        strafeDistanceNoAccel(.3,20 );
-        *//*opmode.sleep(400);
-        strafeDistanceNoAccel(.5,-10);
+        strafeDistance(.3,20 );
+        opmode.sleep(400);
+        strafeDistance(.5,-10);
         opmode.sleep(400);
         turnDegree(.3,-80);
         opmode.sleep(400);
         turnDegree(.4,7.5);
-        strafeDistanceNoAccel(.8,12);
+        strafeDistance(.8,12);
         opmode.sleep(400);
-        driveDistance(1,-30);*/
+        driveDistance(1,-30);
 
         if (side == BLUE) {
             /*driveDistance(.6, -27);
@@ -594,18 +598,20 @@ public class SSDriveObject extends Object{
 
     public void deliverSkystone (boolean side) {
         if (side) {
-            turnDegree(.5, -90);
-            setBlockSweeper(true);
+
+        } else {
+            turnDegree(.67, -90);
+            driveDistance(.8, -7);
+            setDeliveryExtender(true);
             opmode.sleep(500);
-            setDeliveryGrabber(true);
-            opmode.sleep(500);
-            setDeliveryExtender(1,2500);
-            opmode.sleep(500);
+            setDeliveryRotation(true);
+            opmode.sleep(2000);
             setDeliveryGrabber(false);
             opmode.sleep(250);
-            setDeliveryExtender(-1,2500);
-        } else {
-
+            setRollerMotors(true, 1);
+            setDeliveryExtender(false);
+            opmode.sleep(100);
+            setRollerMotors(true, 1);
         }
     }
 
@@ -786,9 +792,7 @@ public class SSDriveObject extends Object{
         deltaX = Math.abs(deltaX);
 
         if(distance != 0){
-
             return ((0.44 - 4 * powerLimit) / (distance * distance)) * deltaX * deltaX + ((4 * powerLimit - 0.66) / distance) * deltaX + POWER_MIN;
-
         } else {
             return 0;
         }
@@ -807,6 +811,8 @@ public class SSDriveObject extends Object{
     public void driveDistance(double powerLimit, double distance) {
         double deltaY = 0;
         double powerMin = POWER_MIN;
+        double deltaTheta = 0;
+
         encoderArray.readEncoderValue();
         encoderArray.updateAll();
         encoderArray.resetAll();
@@ -834,10 +840,12 @@ public class SSDriveObject extends Object{
             while(opmode.opModeIsActive()) {
                 encoderArray.readEncoderValue();
                 deltaY = encoderArray.getDeltaY();
+                deltaTheta = encoderArray.getDeltaTheta();
                 if (deltaY >= distance)
                     break;
 
-                setDrivePowerAll(Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY)));
+                double drivePower = Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
+                setSelectPowerAll(drivePower +.22*deltaTheta, drivePower - .22*deltaTheta, drivePower +.22*deltaTheta, drivePower - .22*deltaTheta);
                 Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
 
 
@@ -852,6 +860,7 @@ public class SSDriveObject extends Object{
             while(opmode.opModeIsActive()) {
                 encoderArray.readEncoderValue();
                 deltaY = encoderArray.getDeltaY();
+                deltaTheta = encoderArray.getDeltaTheta();
                 if (deltaY <= distance)
                     break;
 
@@ -915,7 +924,6 @@ public class SSDriveObject extends Object{
                 distance += .68;
             }
         }
-
 
         encoderArray.readEncoderValue();
         encoderArray.updateAll();
@@ -985,6 +993,92 @@ public class SSDriveObject extends Object{
 //        getAngleTelemetry("TURN END");
 
     }
+
+    public void runWhileExtending (double powerLimit, double distance, boolean direction) {
+        //true = in
+        //false = out
+
+        double deltaY = 0;
+        double powerMin = POWER_MIN;
+        double deltaTheta = 0;
+
+        encoderArray.readEncoderValue();
+        encoderArray.updateAll();
+
+        encoderArray.resetAll();
+        if (distance > 0) {
+            if (powerLimit == .8) {
+                distance -= 2.24;
+            } else if (powerLimit ==.5) {
+                distance -= .71;
+            } else {
+                distance -= 3.39;
+            }
+        } else if (distance < 0) {
+            if (powerLimit == .8) {
+                distance += 2.24;
+            } else if (powerLimit ==.5) {
+                distance += .71;
+            } else {
+                distance += 3.39;
+            }
+        }
+
+
+        if (distance > 0) {
+//            direction = FORWARD;
+            extenderTimeout.reset();
+
+            if (direction)
+                deliveryExtender.setPower(1);
+            else if (!direction)
+                deliveryExtender.setPower(-1);
+
+            while(opmode.opModeIsActive()) {
+                encoderArray.readEncoderValue();
+                deltaY = encoderArray.getDeltaY();
+                deltaTheta = encoderArray.getDeltaTheta();
+                if(extenderTimeout.milliseconds() < EXTEND_TIMEOUT)
+                    deliveryExtender.setPower(0);
+                if (deltaY >= distance)
+                    break;
+
+                double drivePower = Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
+                setSelectPowerAll(drivePower +.22*deltaTheta, drivePower - .22*deltaTheta, drivePower +.22*deltaTheta, drivePower - .22*deltaTheta);
+                Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
+
+
+//                telemetryEncoderArray();
+                opmode.telemetry.addData("deltaY: ", deltaY);
+                opmode.telemetry.update();
+//                telemetryWheelPower();
+//                debugString.concat(String.format("Y: %f\tpower: %f\n", encoderArray.getDeltaY(), calculatePowerStraight(powerLimit,distance)));
+            }
+        } else if (distance < 0) {
+            extenderTimeout.reset();
+
+            if (direction)
+                deliveryExtender.setPower(1);
+            else if (!direction)
+                deliveryExtender.setPower(-1);
+
+            while(opmode.opModeIsActive()) {
+                encoderArray.readEncoderValue();
+                deltaY = encoderArray.getDeltaY();
+                deltaTheta = encoderArray.getDeltaTheta();
+                if(extenderTimeout.milliseconds() < EXTEND_TIMEOUT)
+                    deliveryExtender.setPower(0);
+                if (deltaY <= distance)
+                    break;
+
+                setDrivePowerAll(-Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY)));
+//                opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
+//                opmode.telemetry.update();
+            }
+        }
+        stopDriving();
+    }
+
 
     //set chassis motors
 
@@ -1094,9 +1188,20 @@ public class SSDriveObject extends Object{
         }
     }
 
-    public void setDeliveryExtender (double power, int time) {
+    public void setDeliveryExtender (boolean direction) {
+        //true = in
+        //false = out
+
         extenderTimeout.reset();
-        deliveryExtender.setPower(power);
+
+        while(extenderTimeout.milliseconds() < EXTEND_TIMEOUT) {
+            if (direction)
+                deliveryExtender.setPower(-1);
+            else if (!direction)
+                deliveryExtender.setPower(1);
+        }
+
+        deliveryExtender.setPower(0);
     }
 
     public void setDeliveryRotation (boolean rotate) {

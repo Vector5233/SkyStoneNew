@@ -32,6 +32,7 @@ public class Red1SkyFoundPark extends LinearOpMode {
         Log.i("STATIC DETECTION", String.format("Number of Stones Detected: %f",drive.numberOfStones));
         Log.i("STATIC DETECTION","SkyStone Pos: " + skystoneString(skystone));
         drive.collectSkyStone(drive.RED,skystone);
+        drive.deliverSkystone(drive.RED);
         /*drive.detectReady();
         drive.detectStones();
         drive.getDisplacement();
