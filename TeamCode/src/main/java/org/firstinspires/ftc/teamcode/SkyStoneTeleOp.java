@@ -253,10 +253,10 @@ public class SkyStoneTeleOp extends OpMode {
             if_pressedDpadUp = false;
         }
 
-        frontRight.setPower((-gamepad1.right_stick_x + gamepad1.right_stick_y - gamepad1.left_stick_x) * driveSpeed);
-        frontLeft.setPower((gamepad1.right_stick_x + gamepad1.right_stick_y + gamepad1.left_stick_x) * driveSpeed);
-        backRight.setPower((gamepad1.right_stick_x + gamepad1.right_stick_y - gamepad1.left_stick_x) * driveSpeed);
-        backLeft.setPower((-gamepad1.right_stick_x + gamepad1.right_stick_y + gamepad1.left_stick_x) * driveSpeed);
+        frontRight.setPower((-gamepad1.right_stick_x - gamepad1.right_stick_y - gamepad1.left_stick_x) * driveSpeed);
+        frontLeft.setPower((gamepad1.right_stick_x - gamepad1.right_stick_y + gamepad1.left_stick_x) * driveSpeed);
+        backRight.setPower((gamepad1.right_stick_x - gamepad1.right_stick_y - gamepad1.left_stick_x) * driveSpeed);
+        backLeft.setPower((-gamepad1.right_stick_x - gamepad1.right_stick_y + gamepad1.left_stick_x) * driveSpeed);
         encoderArray.readEncoderValue();
     }
 

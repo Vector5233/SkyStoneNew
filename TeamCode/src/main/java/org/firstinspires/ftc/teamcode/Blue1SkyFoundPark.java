@@ -19,7 +19,7 @@ public class Blue1SkyFoundPark extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.goToDetectPosition(drive.BLUE);
+        drive.goToDetectPosition();
         sleep(500);
         drive.encoderArray.readEncoderValue();
         drive.encoderArray.updateAll();

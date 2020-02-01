@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="EncoderDrivingTest2", group = "Blue")
+@Disabled
 
 public class EncoderDrivingTest2 extends LinearOpMode {
     SSDriveObject drive;
@@ -21,7 +23,6 @@ public class EncoderDrivingTest2 extends LinearOpMode {
         drive.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         waitForStart();
 
-        drive.testEncoderRead(10000);
         stop();
     }
 

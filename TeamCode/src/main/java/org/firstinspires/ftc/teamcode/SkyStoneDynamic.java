@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 @Autonomous(name="SkyStoneDynamic", group="Test")
+@Disabled
 
 public class SkyStoneDynamic extends LinearOpMode {
     SSDriveObject drive;
@@ -32,7 +34,7 @@ public class SkyStoneDynamic extends LinearOpMode {
 //        int skystone = drive.detectStonesStatic(drive.BLUE);
 //        Log.i("STATIC DETECTION","SkyStone Pos: " + skystoneString(skystone));
 
-        drive.detectStonesDynamic();
+        //drive.detectStonesDynamic();
         telemetry.addData("  SS left", "%.03f", drive.SS_leftPixel);
         telemetry.addData("  SS right", "%.03f", drive.SS_rightPixel);
         telemetry.update();

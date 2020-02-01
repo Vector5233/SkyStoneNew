@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="EncoderDrivingTest", group = "Blue")
+@Disabled
 
 public class EncoderDrivingTest extends LinearOpMode {
     SSDriveObject drive;
