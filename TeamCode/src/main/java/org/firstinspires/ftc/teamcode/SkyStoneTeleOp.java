@@ -25,8 +25,8 @@ public class SkyStoneTeleOp extends OpMode {
     final double r2 = 5.850125;
     final double r3 = 3.2215;
 
-
-    final double rollerPower = .8;
+    //change to .8 once finished with testing
+    final double ROLLERPOWER = .8;
 
     final double TRIGGERTHRESHOLD = 0.5;
 
@@ -262,11 +262,11 @@ public class SkyStoneTeleOp extends OpMode {
 
     private void setRollerMotors() {
         if (gamepad1.right_bumper) {
-            rightRoller.setPower(rollerPower);
-            leftRoller.setPower(rollerPower);
+            rightRoller.setPower(ROLLERPOWER);
+            leftRoller.setPower(ROLLERPOWER);
         } else if (gamepad1.left_bumper) {
-            rightRoller.setPower(-rollerPower);
-            leftRoller.setPower(-rollerPower);
+            rightRoller.setPower(-ROLLERPOWER);
+            leftRoller.setPower(-ROLLERPOWER);
         } else {
             rightRoller.setPower(0);
             leftRoller.setPower(0);

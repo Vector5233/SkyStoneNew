@@ -49,8 +49,8 @@ public class EncoderArray {
 //        X += getDeltaX()*Math.cos(theta)+getDeltaY()*Math.sin(theta);
 //        Y += getDeltaY()*Math.cos(theta)-getDeltaX()*Math.sin(theta);
         theta += getDeltaTheta();
-        Y += getDeltaY()*Math.cos(theta)+getDeltaX()*Math.sin(theta);
-        X += -getDeltaY()*Math.sin(theta)+getDeltaX()*Math.cos(theta);
+        Y += getDeltaY()*Math.cos(theta*Math.PI/180)+getDeltaX()*Math.sin(theta*Math.PI/180);
+        X += -getDeltaY()*Math.sin(theta*Math.PI/180)+getDeltaX()*Math.cos(theta*Math.PI/180);
         left.reset();
         right.reset();
         center.reset();
@@ -65,7 +65,7 @@ public class EncoderArray {
     }
 
     double getDeltaTheta(){
-        return (getLeftPosition+getRightPosition)/(r1+r2);
+        return (180/Math.PI)*(getLeftPosition+getRightPosition)/(r1+r2);
     }
 
     /*double getDx(){

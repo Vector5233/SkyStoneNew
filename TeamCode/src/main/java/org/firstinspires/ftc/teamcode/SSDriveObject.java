@@ -81,6 +81,8 @@ public class SSDriveObject extends Object{
     double BRpower = 1;
     double BLpower = 1;
 
+    final double ROLLER_POWER = 1;
+
     double numberOfStones;
 
     double SS_leftPixel;
@@ -301,7 +303,7 @@ public class SSDriveObject extends Object{
         } else {
             switch (skystone) {
                 case LEFT:
-                    driveDistance(.8,-24);
+                    driveDistance(.8,-22.5);
                     sleepBetweenMotion();
                     collection(side);
                     driveDistance(POWER_MAX,105);
@@ -309,7 +311,7 @@ public class SSDriveObject extends Object{
                     Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case CENTER:
-                    driveDistance(.8,-16);
+                    driveDistance(.8,-14.5);
                     sleepBetweenMotion();
                     collection(side);
                     driveDistance(1,97);
@@ -317,7 +319,7 @@ public class SSDriveObject extends Object{
                     Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case RIGHT:
-                    driveDistance(.8,-7.5);
+                    driveDistance(.8,-6);
                     sleepBetweenMotion();
                     collection(side);
                     driveDistance(1,89);
@@ -330,9 +332,9 @@ public class SSDriveObject extends Object{
 
     public void moveToFoundation(boolean side){
         if (side) {
-            turnDegree(.67, 88);
+            turnToDegree(.67, 90);
         } else{
-            turnDegree(.67, -88);
+            turnToDegree(.67,-90);
         }
         sleepBetweenMotion();
         driveDistance(POWER_MAX, -7);
@@ -344,7 +346,7 @@ public class SSDriveObject extends Object{
         setDeliveryExtender(true);
         setRollerMotors(true, 1);
         opmode.sleep(100);
-        setRollerMotors(true, 0);
+        stopRollerMotors();
         setDeliveryRotation(true);
         opmode.sleep(1000);
         setDeliveryGrabber(false);
@@ -471,7 +473,8 @@ public class SSDriveObject extends Object{
         distance = Math.abs(distance);
         deltaY = Math.abs(deltaY);
         if (distance != 0) {
-            return ((-16 * powerLimit) / (distance * distance * distance * distance)) * (deltaY - distance / 2) * (deltaY - distance / 2) * (deltaY - distance / 2) * (deltaY - distance / 2) + powerLimit;
+//            return ((0.44 - 4 * powerLimit) / (distance * distance)) * deltaY * deltaY + ((4 * powerLimit - 0.66) / distance) * deltaY + POWER_MIN;
+            return ((-16 * (powerLimit-POWER_MIN)) / (distance * distance * distance * distance)) * (deltaY - distance / 2) * (deltaY - distance / 2) * (deltaY - distance / 2) * (deltaY - distance / 2) + powerLimit;
         } else {
             return 0;
         }
@@ -482,8 +485,8 @@ public class SSDriveObject extends Object{
         deltaX = Math.abs(deltaX);
 
         if(distance != 0){
-            return ((-16 * powerLimit) / (distance * distance * distance * distance)) * (deltaX - distance / 2) * (deltaX - distance / 2) * (deltaX - distance / 2) * (deltaX - distance / 2) + powerLimit;
-            //((0.44 - 4 * powerLimit) / (distance * distance)) * deltaX * deltaX + ((4 * powerLimit - 0.66) / distance) * deltaX + POWER_MIN
+            return ((-16 * (powerLimit-POWER_MIN)) / (distance * distance * distance * distance)) * (deltaX - distance / 2) * (deltaX - distance / 2) * (deltaX - distance / 2) * (deltaX - distance / 2) + powerLimit;
+//            return ((0.44 - 4 * powerLimit) / (distance * distance)) * deltaX * deltaX + ((4 * powerLimit - 0.66) / distance) * deltaX + POWER_MIN;
         } else {
             return 0;
         }
@@ -632,20 +635,44 @@ public class SSDriveObject extends Object{
 
     }
 
+    public void turnToDegree(double powerLimit, double targetDegrees) {
+        encoderArray.readEncoderValue();
+        encoderArray.updateAll();
+        encoderArray.resetAll();
+
+        Log.i("TOTALTHETA", String.format("theta: \t%f\n",encoderArray.theta));
+
+        double initialTheta = encoderArray.theta;
+        double deltaTheta = targetDegrees - initialTheta;
+        Log.i("RELATIVETHETA",String.format("theta: \t%f\n",deltaTheta));
+
+        if (deltaTheta < 55){
+            powerLimit = .4;
+        }
+
+        turnDegree(powerLimit, deltaTheta);
+        stopDriving();
+
+        Log.i("OPMODETIME", String.format("turnDegree: \t%f\n",opModeTime.milliseconds()));
+//        getAngleTelemetry("TURN END");
+
+    }
+
     public void turnDegree(double powerLimit, double degrees) {
         // distance in inches
         //conjecture instead of moving 12", wheels will go 12"*cos(45)= 8.5"
 
-        double deltaTheta = 0;
+
         encoderArray.readEncoderValue();
         encoderArray.updateAll();
         encoderArray.resetAll();
+        double deltaTheta = 0;
 
         if (degrees > 0) {
             // positive (CCW) turn => left motor goes in (-) direction
             while ((deltaTheta <= degrees) && opmode.opModeIsActive()) {
                 encoderArray.readEncoderValue();
-                deltaTheta = encoderArray.getDeltaTheta()*180/Math.PI;
+                deltaTheta = encoderArray.getDeltaTheta();
                 double turnPower = Math.max(.15,calculatePowerTurn(powerLimit, degrees, deltaTheta));
                 setTurnPowerAll(turnPower);
                 Log.i("POWER",String.format("Delta Theta: %f\tPower: %f\n", deltaTheta, turnPower));
@@ -654,7 +681,7 @@ public class SSDriveObject extends Object{
         } else if (degrees < 0) {
             while ((deltaTheta >= degrees) && opmode.opModeIsActive()) {
                 encoderArray.readEncoderValue();
-                deltaTheta = encoderArray.getDeltaTheta()*180/Math.PI;
+                deltaTheta = encoderArray.getDeltaTheta();
                 double turnPower = Math.max(.15,calculatePowerTurn(powerLimit, degrees, deltaTheta));
                 setTurnPowerAll(-turnPower);
                 Log.i("POWER",String.format("Delta Theta: %f\tPower: %f\n", deltaTheta, -turnPower));
@@ -799,10 +826,15 @@ public class SSDriveObject extends Object{
     }
     
     //set other motors
+    public void stopRollerMotors () {
+        leftRoller.setPower(0.0);
+        rightRoller.setPower(0.0);
+        Log.i("OPMODETIME", String.format("setRollerMotors: \t%f\n",opModeTime.milliseconds()));
+    }
 
     public void setRollerMotors (boolean direction, double power) {
-        //direction true = inward
-        //direction false = outward
+        //direction true = outward
+        //direction false = inward
         /*rollerTimeout = new ElapsedTime();
         final int ROLLER_OPMODETIMEOUT = time;*/
 
@@ -815,8 +847,8 @@ public class SSDriveObject extends Object{
         }
         Log.i("OPMODETIME", String.format("setRollerMotors: \t%f\n",opModeTime.milliseconds()));
 
-        leftRoller.setPower(power);
-        rightRoller.setPower(power);
+        leftRoller.setPower(ROLLER_POWER);
+        rightRoller.setPower(ROLLER_POWER);
 
 
 
@@ -897,7 +929,7 @@ public class SSDriveObject extends Object{
     public void telemetryEncoderArray (){
         opmode.telemetry.addData("deltaX", encoderArray.getDeltaX());
         opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
-        opmode.telemetry.addData("deltaTheta(degrees)", encoderArray.getDeltaTheta()*180/Math.PI);
+        opmode.telemetry.addData("deltaTheta(degrees)", encoderArray.getDeltaTheta());
         opmode.telemetry.update();
     }
     
@@ -910,7 +942,7 @@ public class SSDriveObject extends Object{
     }
 
     public String getFinalPosition() {
-        String finalPos = String.format("X: %f\tY: %f\tTheta: %f",encoderArray.X,encoderArray.Y,encoderArray.theta*180/Math.PI);
+        String finalPos = String.format("X: %f\tY: %f\tTheta: %f",encoderArray.X,encoderArray.Y,encoderArray.theta);
         return finalPos;
     }
 
@@ -920,28 +952,29 @@ public class SSDriveObject extends Object{
 
     public void collection(boolean side){
         if(side) {
-            turnDegree(.67, 45);
-            setRollerMotors(false, .8);
+            turnToDegree(.67, 45);
+            setRollerMotors(false, .6);
             opmode.idle();
-            driveDistance(.6, 25);
+            driveDistance(.6, 15);
             opmode.idle();
-            driveDistance(.6, -25);
-            setRollerMotors(false, 0.0);
+            driveDistance(.6, -15);
+            opmode.sleep(300);
+            stopRollerMotors();
             setBlockSweeper(true);
             sleepBetweenMotion();
         } else {
-            strafeDistance(.3, -5);
+//            strafeDistance(.3, -5);
             sleepBetweenMotion();
-            turnDegree(.67, 45);
+            turnToDegree(.67, 45);
             sleepBetweenMotion();
-            setRollerMotors(false, .8);
-            driveDistance(.6, 25);
-            opmode.sleep(700);
-            setRollerMotors(false, 0.0);
-            driveDistance(.6, -25);
+            setRollerMotors(false, .6);
+            driveDistance(.6, 15);
+            opmode.idle();
+            driveDistance(.6, -15);
             setBlockSweeper(true);
             sleepBetweenMotion();
-            turnDegree(.67, -45);
+            stopRollerMotors();
+            turnToDegree(.67, -45);
             setDeliveryGrabber(true);
             sleepBetweenMotion();
         }
