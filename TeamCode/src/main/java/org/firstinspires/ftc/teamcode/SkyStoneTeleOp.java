@@ -154,7 +154,7 @@ public class SkyStoneTeleOp extends OpMode {
 
         deliveryGrabber.setPosition(0);
 
-        capServo.setPosition(0.8);
+        capServo.setPosition(0.725);
         cameraServo.setPosition(0);
 
         myLeft = new Encoder(frontLeft);
@@ -412,9 +412,9 @@ public class SkyStoneTeleOp extends OpMode {
         // better code
         if (gamepad2.x && !if_pressedGp2X) {
             if (capServo.getPosition() <= 0.1) {
-                capServo.setPosition(0.78);
+                capServo.setPosition(0.725);
                 if_pressedGp2X = true;
-            } else if (capServo.getPosition() <= 0.9 && capServo.getPosition() >= 0.7) {
+            } else if (capServo.getPosition() <= 0.85 && capServo.getPosition() >= 0.65) {
                 capServo.setPosition(0);
                 if_pressedGp2X = true;
             }
