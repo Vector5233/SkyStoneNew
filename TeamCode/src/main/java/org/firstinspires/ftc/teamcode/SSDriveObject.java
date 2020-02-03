@@ -379,37 +379,37 @@ public class SSDriveObject extends Object{
         //true = wall
         //false = bridge
 
-        if(state) {
-            if (side) {
+        if(state == WALL) {
+            if (side == BLUE) {
                 opmode.telemetry.addLine("Blue wall");
                 opmode.telemetry.update();
-                driveDistance(.6,10);
+                driveDistance(.8,10);
                 sleepBetweenMotion();
-                strafeDistance(.6,16);
+                strafeDistance(.8,16);
                 sleepBetweenMotion();
-                driveDistance(.6,28);
+                driveDistance(.8,28);
                 sleepBetweenMotion();
-            } else {
+            } else if (side == RED) {
                 opmode.telemetry.addLine("Red wall");
                 opmode.telemetry.update();
-                driveDistance(.6,10);
+                driveDistance(.8,10);
                 sleepBetweenMotion();
-                strafeDistance(.6,-25);
+                strafeDistance(.8,-25);
                 sleepBetweenMotion();
-                driveDistance(.6,28);
+                driveDistance(.8,28);
                 sleepBetweenMotion();
             }
-        } else {
-            if (side) {
+        } else if (state == BRIDGE) {
+            if (side == BLUE) {
                 opmode.telemetry.addLine("Blue bridge");
                 opmode.telemetry.update();
-                driveDistance(.6,10);
+                driveDistance(.8,10);
                 sleepBetweenMotion();
-                strafeDistance(.6,-10);
+                strafeDistance(.8,-10);
                 sleepBetweenMotion();
-                driveDistance(.6,28);
+                driveDistance(.8,28);
                 sleepBetweenMotion();
-            } else {
+            } else if (side == RED) {
                 opmode.telemetry.addLine("Red bridge");
                 opmode.telemetry.update();
                 /*turnDegree(.4,-1.5);
@@ -420,8 +420,8 @@ public class SSDriveObject extends Object{
                 /*sleepBetweenMotion();
                 driveDistance(1,12);*/
 
-                driveDistance(.6,38);
-                sleepBetweenMotion();
+                driveDistance(.8,40);
+                opmode.idle();
             }
         }
     }
