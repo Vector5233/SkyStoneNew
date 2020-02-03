@@ -81,7 +81,7 @@ public class SSDriveObject extends Object{
     double BRpower = 1;
     double BLpower = 1;
 
-    final double ROLLER_POWER = 1;
+    final double ROLLER_POWER = .7;
 
     double numberOfStones;
 
@@ -266,7 +266,7 @@ public class SSDriveObject extends Object{
     }
     
     public void collectSkyStone(boolean side, int skystone){
-        if(side) {
+        if(side == BLUE) {
             switch (skystone) {
                 case LEFT:
                     driveDistance(.8,-20);
@@ -300,7 +300,7 @@ public class SSDriveObject extends Object{
                     Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
             }
-        } else {
+        } else if (side == RED) {
             switch (skystone) {
                 case LEFT:
                     driveDistance(.8,-22.5);
@@ -360,9 +360,9 @@ public class SSDriveObject extends Object{
     
     public void moveFoundation (boolean side) {
         setFoundation(true);
-        if (side) {
+        if (side == BLUE) {
 
-        } else {
+        } else if (side == RED) {
             opmode.telemetry.addLine("red Foundation moving");
             setSelectPowerAll(0, .5, 0, .5);
             opmode.sleep(2500);
@@ -541,8 +541,8 @@ public class SSDriveObject extends Object{
                     break;
 
                 double drivePower = Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
-                setSelectPowerAll(drivePower -.22*deltaTheta, drivePower + .22*deltaTheta, drivePower -.22*deltaTheta, drivePower + .22*deltaTheta);
-                Log.i("POWER",String.format("Delta Y: %f\tPower: %f\t Compensation: %f\n", deltaY, drivePower,.22*deltaTheta ));
+                setSelectPowerAll(drivePower -.02*deltaTheta, drivePower + .02*deltaTheta, drivePower -.02*deltaTheta, drivePower + .02*deltaTheta);
+                Log.i("POWER",String.format("Delta Y: %f\tPower: %f\t Compensation: %f\n", deltaY, drivePower,.02*deltaTheta ));
 
 
 //                telemetryEncoderArray();
@@ -560,10 +560,10 @@ public class SSDriveObject extends Object{
                 if (deltaY <= distance)
                     break;
 
-                double drivePower = Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
-                setSelectPowerAll(-(drivePower -.22*deltaTheta), -(drivePower + .22*deltaTheta), -(drivePower -.22*deltaTheta), -(drivePower + .22*deltaTheta));
+                double drivePower = -Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
+                setSelectPowerAll(drivePower -.02*deltaTheta, drivePower + .02*deltaTheta, drivePower -.02*deltaTheta, drivePower + .02*deltaTheta);
                 opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
-                Log.i("POWER",String.format("Delta Y: %f\tPower: %f\t Compensation: %f\n", deltaY, -drivePower,.22*deltaTheta ));
+                Log.i("POWER",String.format("Delta Y: %f\tPower: %f\t Compensation: %f\n", deltaY, -drivePower,.02*deltaTheta ));
 //                opmode.telemetry.update();
             }
         }
@@ -951,30 +951,30 @@ public class SSDriveObject extends Object{
     }
 
     public void collection(boolean side){
-        if(side) {
+        if(side == BLUE) {
             turnToDegree(.67, 45);
             setRollerMotors(false, .6);
             opmode.idle();
-            driveDistance(.6, 15);
+            driveDistance(.5, 15);
             opmode.idle();
-            driveDistance(.6, -15);
+            driveDistance(.5, -15);
             opmode.sleep(300);
             stopRollerMotors();
             setBlockSweeper(true);
             sleepBetweenMotion();
-        } else {
+        } else if(side == RED) {
 //            strafeDistance(.3, -5);
             sleepBetweenMotion();
             turnToDegree(.67, 45);
             sleepBetweenMotion();
             setRollerMotors(false, .6);
-            driveDistance(.6, 15);
+            driveDistance(.5, 15);
             opmode.idle();
-            driveDistance(.6, -15);
+            driveDistance(.5, -15);
             setBlockSweeper(true);
             sleepBetweenMotion();
             stopRollerMotors();
-            turnToDegree(.67, -45);
+            turnToDegree(.67, 0);
             setDeliveryGrabber(true);
             sleepBetweenMotion();
         }
