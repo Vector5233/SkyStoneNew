@@ -845,7 +845,7 @@ public class SSDriveObject extends Object{
                     break;
 
                 double drivePower = Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
-                setSelectPowerAll(drivePower -.22*deltaTheta, drivePower + .22*deltaTheta, drivePower -.22*deltaTheta, drivePower + .22*deltaTheta);
+                setSelectPowerAll(drivePower -.22*deltaTheta, drivePower + .22*deltaTheta, drivePower - .22*deltaTheta, drivePower + .22*deltaTheta);
                 Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
 
 
