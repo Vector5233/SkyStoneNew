@@ -68,6 +68,10 @@ public class EncoderArray {
         return (180/Math.PI)*(getLeftPosition+getRightPosition)/(r1+r2);
     }
 
+    double getDeltaThetaRad(){
+        return (getLeftPosition+getRightPosition)/(r1+r2);
+    }
+
     /*double getDx(){
         return -getCenterDisplacement+r3*(getLeftDisplacement+getRightDisplacement)/(r1+r2);
     }

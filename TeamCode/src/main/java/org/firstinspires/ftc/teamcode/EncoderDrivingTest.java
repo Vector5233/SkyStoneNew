@@ -32,12 +32,15 @@ public class EncoderDrivingTest extends LinearOpMode {
         telemetry.update();
         sleep(500);
 
-        drive.turnDegree(1,115);
-        sleep(500);
-        drive.encoderArray.readEncoderValue();
-        Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
+//        drive.turnDegree(1,115);
+//        sleep(500);
+//        drive.encoderArray.readEncoderValue();
+//        Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
 
-        drive.turnToDegree(.67,90);
+
+        drive.setFoundation(true);
+        sleep(2000);
+        drive.turnArc(drive.RIGHT,.7,-90);
         sleep(500);
         drive.encoderArray.readEncoderValue();
         Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
