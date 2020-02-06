@@ -18,15 +18,14 @@ public class RedFoundParkWall extends LinearOpMode {
         initialize();
         waitForStart();
 
-
+        drive.strafeDistance(.8, -8);
+        drive.sleepBetweenMotion();
+        drive.driveDistance(.5, -28);
         drive.moveFoundation(drive.RED);
         telemetry.addLine("FoundationMoved");
         telemetry.update();
-        sleep(500);
+        drive.sleepBetweenMotion();
         drive.park(drive.RED, drive.WALL);
-        telemetry.addLine("Parked");
-        telemetry.update();
-        sleep(500);
     }
 }
 

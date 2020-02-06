@@ -358,20 +358,19 @@ public class SSDriveObject extends Object{
         opmode.sleep(100);
         setDeliveryExtender(false);
         sleepBetweenMotion();
-        Log.i("OPMODETIME", String.format("deliverSkystone: \t%f\n",opModeTime.milliseconds()));
+         Log.i("OPMODETIME", String.format("deliverSkystone: \t%f\n",opModeTime.milliseconds()));
     }
     
     public void moveFoundation (boolean side) {
         setFoundation(true);
+        opmode.sleep(1500);
         if (side == BLUE) {
-
+            turnArc(LEFT,-.7,-90);
         } else if (side == RED) {
-            opmode.telemetry.addLine("red Foundation moving");
-            setSelectPowerAll(0, .5, 0, .5);
-            opmode.sleep(2500);
-            driveDistance(POWER_MAX, -15);
-            sleepBetweenMotion();
+            turnArc(RIGHT,.7,-90);
         }
+        sleepBetweenMotion();
+        driveDistance(.8, -10);
     }
 
     public void park (boolean side, boolean state) {
@@ -381,52 +380,25 @@ public class SSDriveObject extends Object{
         //State
         //true = wall
         //false = bridge
+        setFoundation(false);
+        opmode.sleep(500);
 
         if(state == WALL) {
             if (side == BLUE) {
-                opmode.telemetry.addLine("Blue wall");
-                opmode.telemetry.update();
-                driveDistance(.8,10);
-                sleepBetweenMotion();
-                strafeDistance(.8,16);
-                sleepBetweenMotion();
-                driveDistance(.8,28);
-                sleepBetweenMotion();
+                strafeDistance(.8, 11);
             } else if (side == RED) {
-                opmode.telemetry.addLine("Red wall");
-                opmode.telemetry.update();
-                driveDistance(.8,10);
-                sleepBetweenMotion();
-                strafeDistance(.8,-25);
-                sleepBetweenMotion();
-                driveDistance(.8,28);
-                sleepBetweenMotion();
+                strafeDistance(.8, -11);
             }
         } else if (state == BRIDGE) {
             if (side == BLUE) {
-                opmode.telemetry.addLine("Blue bridge");
-                opmode.telemetry.update();
-                driveDistance(.8,10);
-                sleepBetweenMotion();
-                strafeDistance(.8,-10);
-                sleepBetweenMotion();
-                driveDistance(.8,28);
-                sleepBetweenMotion();
+                strafeDistance(.8, -9.5);
             } else if (side == RED) {
-                opmode.telemetry.addLine("Red bridge");
-                opmode.telemetry.update();
-                /*turnDegree(.4,-1.5);
-                opmode.sleep(250);
-                driveDistance(1,-1);
-                opmode.sleep(250);
-                driveDistance(1,35);*/
-                /*sleepBetweenMotion();
-                driveDistance(1,12);*/
-
-                driveDistance(.8,40);
-                opmode.idle();
+                strafeDistance(.8, 8);
             }
         }
+        sleepBetweenMotion();
+        driveDistance(.8,35);
+        sleepBetweenMotion();
     }
 
     //detection

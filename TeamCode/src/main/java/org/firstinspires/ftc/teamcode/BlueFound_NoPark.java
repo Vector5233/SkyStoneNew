@@ -17,16 +17,10 @@ public class BlueFound_NoPark extends LinearOpMode {
         initialize();
         waitForStart();
 
-
-
         drive.moveFoundation(drive.BLUE);
         telemetry.addLine("FoundationMoved");
         telemetry.update();
         sleep(500);
-        /*drive.park(drive.BLUE, drive.BRIDGE);
-        telemetry.addLine("Parked");
-        telemetry.update();
-        sleep(500);*/
     }
 }
 
