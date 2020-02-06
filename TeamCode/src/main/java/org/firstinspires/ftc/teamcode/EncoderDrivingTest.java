@@ -14,18 +14,14 @@ public class EncoderDrivingTest extends LinearOpMode {
 
     public void initialize() {
         drive = new SSDriveObject(this);
+        drive.initialize();
         telemetry.addLine("initialized");
         telemetry.update();
     }
 
     public void runOpMode() {
         initialize();
-/*
-        drive.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        drive.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        drive.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        drive.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-*/
+
         waitForStart();
 
         telemetry.addLine("start driving");
@@ -38,11 +34,11 @@ public class EncoderDrivingTest extends LinearOpMode {
 //        Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
 
 
-        drive.setFoundation(true);
-        sleep(2000);
-        drive.turnArc(drive.LEFT,-.7,-90);
+        drive.setFoundation(drive.FDOWN);
         sleep(500);
-        drive.driveDistance(1, -10);
+        drive.turnArc(drive.LEFT,.7,92);
+        sleep(500);
+        drive.driveDistance(.8, -10);
         drive.encoderArray.readEncoderValue();
         Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
 

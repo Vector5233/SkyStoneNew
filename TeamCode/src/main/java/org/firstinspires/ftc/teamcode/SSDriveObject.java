@@ -53,6 +53,9 @@ public class SSDriveObject extends Object{
     final boolean LEFT = true;
     final boolean RIGHT = false;
 
+    final boolean FDOWN = true;
+    final boolean FUP = false;
+
     final double WEBCAM_TO_BLOCKS = 9.5;
     final double CENTER_PIXELS = 400.0;
     final double BLOCK_LENGTH = 8.0;
@@ -273,33 +276,33 @@ public class SSDriveObject extends Object{
             switch (skystone) {
                 case LEFT_SS:
                     driveDistance(.8,-20);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     collection(side);
                     turnDegree(.67,155);
                     setDeliveryGrabber(true);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case CENTER_SS:
                     driveDistance(.8,-18);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     collection(side);
                     turnDegree(.67, -50);
                     setDeliveryGrabber(true);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     driveDistance(1,74);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case RIGHT_SS:
                     driveDistance(.8,-7.5);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     collection(side);
                     turnDegree(.67, -50);
                     setDeliveryGrabber(true);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     driveDistance(1,66);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
             }
@@ -307,26 +310,26 @@ public class SSDriveObject extends Object{
             switch (skystone) {
                 case LEFT_SS:
                     driveDistance(.8,-22.5);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     collection(side);
                     driveDistance(POWER_MAX,105);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case CENTER_SS:
                     driveDistance(.8,-14.5);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     collection(side);
                     driveDistance(1,97);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case RIGHT_SS:
                     driveDistance(.5,-7);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     collection(side);
                     driveDistance(1,89);
-                    sleepBetweenMotion();
+                    opmode.idle();
                     Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
             }
@@ -339,9 +342,9 @@ public class SSDriveObject extends Object{
         } else{
             turnToDegree(.67,-90);
         }
-        sleepBetweenMotion();
+        opmode.idle();
         driveDistance(.5, -5);
-        sleepBetweenMotion();
+        opmode.idle();
         Log.i("OPMODETIME", String.format("moveToFoundation: \t%f\n",opModeTime.milliseconds()));
     }
 
@@ -357,19 +360,19 @@ public class SSDriveObject extends Object{
         setDeliveryRotation(false);
         opmode.sleep(100);
         setDeliveryExtender(false);
-        sleepBetweenMotion();
+        opmode.idle();
          Log.i("OPMODETIME", String.format("deliverSkystone: \t%f\n",opModeTime.milliseconds()));
     }
     
     public void moveFoundation (boolean side) {
         setFoundation(true);
-        opmode.sleep(1500);
+        opmode.sleep(500);
         if (side == BLUE) {
-            turnArc(LEFT,-.7,-90);
+            turnArc(LEFT,.7,92);
         } else if (side == RED) {
-            turnArc(RIGHT,.7,-90);
+            turnArc(RIGHT,.7,-92);
         }
-        sleepBetweenMotion();
+        opmode.idle();
         driveDistance(.8, -10);
     }
 
@@ -396,9 +399,9 @@ public class SSDriveObject extends Object{
                 strafeDistance(.8, 8);
             }
         }
-        sleepBetweenMotion();
+        opmode.idle();
         driveDistance(.8,35);
-        sleepBetweenMotion();
+        opmode.idle();
     }
 
     //detection
@@ -621,8 +624,11 @@ public class SSDriveObject extends Object{
 
         double radians = degreesToRadians(degrees);
         double deltaTheta = 0;
-
-        Log.i("POWER",String.format("Target Radians: \t%f\n", radians));
+/*
+        There is no need to enter a negative power. All functionality is based as if the robot was moving around a circle. 
+        Starting at east when going LEFT, west when going RIGHT.
+*/
+        power = Math.abs(power);
 
 
         if (direction == LEFT) {
@@ -906,15 +912,15 @@ public class SSDriveObject extends Object{
         cameraServo.setPosition(position);
     }
 
-    public void setFoundation (boolean launch) {
+    public void setFoundation (boolean position) {
         //launch true = grabber down
         //launch false = grabber up
-        if (launch) {
-            leftFoundation.setPosition(.5);
-            rightFoundation.setPosition(.25);
-        } else {
+        if (position == FDOWN) {
+            leftFoundation.setPosition(.4);
+            rightFoundation.setPosition(.15);
+        } else if (position == FUP) {
             leftFoundation.setPosition(0);
-            rightFoundation.setPosition(.8);
+            rightFoundation.setPosition(.5);
         }
     }
 
@@ -990,9 +996,7 @@ public class SSDriveObject extends Object{
         return finalPos;
     }
 
-    public void sleepBetweenMotion(){
-        opmode.sleep(50);
-    }
+    
 
     public void collection(boolean side){
         if(side == BLUE) {
@@ -1005,22 +1009,22 @@ public class SSDriveObject extends Object{
             opmode.sleep(300);
             stopRollerMotors();
             setBlockSweeper(true);
-            sleepBetweenMotion();
+            opmode.idle();
         } else if(side == RED) {
 //            strafeDistance(.3, -5);
-            sleepBetweenMotion();
+            opmode.idle();
             turnToDegree(.67, 45);
-            sleepBetweenMotion();
+            opmode.idle();
             setRollerMotors(false, .6);
             driveDistance(.5, 15);
             opmode.idle();
             driveDistance(.5, -15);
             setBlockSweeper(true);
-            sleepBetweenMotion();
+            opmode.idle();
             stopRollerMotors();
             turnToDegree(.67, 0);
             setDeliveryGrabber(true);
-            sleepBetweenMotion();
+            opmode.idle();
         }
     }
 
