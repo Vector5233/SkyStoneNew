@@ -30,11 +30,12 @@ public class Red1SkyFoundPark extends LinearOpMode {
         //Log.i("STATIC DETECTION","SkyStone Pos: " + drive.skystoneString(skystone));
         drive.collectSkyStone(drive.RED,skystone);
         drive.moveToFoundation(drive.RED);
+
         drive.deliverSkystone(drive.RED);
         //Log.i("OPMODETIME", String.format("OpModeStop: \t%f\n",drive.opModeTime.milliseconds()));
-        drive.sleepBetweenMotion();
+        idle();
         drive.moveFoundation(drive.RED);
-        drive.sleepBetweenMotion();
-        drive.park(drive.BLUE, drive.BRIDGE);
+        idle();
+        drive.park(drive.RED, drive.BRIDGE);
     }
 }

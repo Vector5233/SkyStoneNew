@@ -31,9 +31,9 @@ public class Blue1SkyFoundPark extends LinearOpMode {
         drive.collectSkyStone(drive.BLUE, skystone);
         drive.moveToFoundation(drive.BLUE);
         drive.deliverSkystone(drive.BLUE);
-        drive.sleepBetweenMotion();
+        idle();
         drive.moveFoundation(drive.BLUE);
-        drive.sleepBetweenMotion();
+        idle();
         drive.park(drive.BLUE, drive.BRIDGE);
 
     }

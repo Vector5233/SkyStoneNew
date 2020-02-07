@@ -11,12 +11,7 @@ public class BluePark extends LinearOpMode {
     public void initialize(){
         drive = new SSDriveObject(this);
 
-        drive.setBlockSweeper(false);
-        drive.setCameraServo(1);
-
-
-        telemetry.addLine("initialized");
-        telemetry.update();
+        drive.initialize();
     }
     public void runOpMode(){
         initialize();
