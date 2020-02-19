@@ -18,7 +18,7 @@ public class RedFoundParkBridge extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.driveDistance(.5, -29);
+        drive.driveDistance(.5, -30);
         idle();
         drive.strafeDistance(.5, -8);
         idle();

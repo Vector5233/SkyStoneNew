@@ -281,13 +281,15 @@ public class SSDriveObject extends Object{
                     turnDegree(.67,155);
                     setDeliveryGrabber(true);
                     opmode.idle();
+                    driveDistance(1,82);
+                    opmode.idle();
                     Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case CENTER_SS:
-                    driveDistance(.8,-18);
+                    driveDistance(.8,-15);
                     opmode.idle();
                     collection(side);
-                    turnDegree(.67, -50);
+                    turnDegree(.67, 155);
                     setDeliveryGrabber(true);
                     opmode.idle();
                     driveDistance(1,74);
@@ -298,7 +300,7 @@ public class SSDriveObject extends Object{
                     driveDistance(.8,-7.5);
                     opmode.idle();
                     collection(side);
-                    turnDegree(.67, -50);
+                    turnDegree(.67, 155);
                     setDeliveryGrabber(true);
                     opmode.idle();
                     driveDistance(1,66);
@@ -379,7 +381,7 @@ public class SSDriveObject extends Object{
         if (side == BLUE) {
             turnArc(LEFT,.7,92);
         } else if (side == RED) {
-            turnArc(RIGHT,.7,-92);
+            turnArc(RIGHT,.7,-89);
         }
         opmode.idle();
         driveDistance(.8, -10);
@@ -397,7 +399,7 @@ public class SSDriveObject extends Object{
 
         if(state == WALL) {
             if (side == BLUE) {
-                strafeDistance(.8, 10);
+                strafeDistance(.8, 12.5 );
             } else if (side == RED) {
                 strafeDistance(.8, -11);
             }
@@ -405,7 +407,7 @@ public class SSDriveObject extends Object{
             if (side == BLUE) {
                 strafeDistance(.8, -9.5);
             } else if (side == RED) {
-                strafeDistance(.8, 7.25);
+                strafeDistance(.8, 4.25);
             }
         }
         opmode.idle();
@@ -928,8 +930,8 @@ public class SSDriveObject extends Object{
         //launch true = grabber down
         //launch false = grabber up
         if (position == FDOWN) {
-            leftFoundation.setPosition(.4);
-            rightFoundation.setPosition(.15);
+            leftFoundation.setPosition(.375);
+            rightFoundation.setPosition(.125);
         } else if (position == FUP) {
             leftFoundation.setPosition(0);
             rightFoundation.setPosition(.5);

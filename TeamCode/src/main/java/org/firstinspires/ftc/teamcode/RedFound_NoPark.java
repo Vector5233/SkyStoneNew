@@ -18,9 +18,7 @@ public class RedFound_NoPark extends LinearOpMode {
         initialize();
         waitForStart();
 
-        drive.strafeDistance(.8, -8);
-        idle();
-        drive.driveDistance(.5, -28);
+        drive.driveDistance(.5, -30);
         drive.moveFoundation(drive.RED);
     }
 }
