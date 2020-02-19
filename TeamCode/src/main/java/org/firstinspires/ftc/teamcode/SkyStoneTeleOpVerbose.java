@@ -1,23 +1,33 @@
 package org.firstinspires.ftc.teamcode;
-import android.app.Notification;
+
+import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.Timer;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-@TeleOp(name="SkyStoneTeleOp", group="TeamCode")
+@TeleOp(name="SkyStoneTeleOpVerbose", group="TeamCode")
 
-public class SkyStoneTeleOp extends OpMode {
+public class SkyStoneTeleOpVerbose extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller, rightLift, leftLift;
     Servo deliveryGrabber, deliveryRotation, leftFoundation, rightFoundation, blockSweeper, capServo, cameraServo;
-    Servo deliveryExtender;
+    CRServo deliveryExtender;
     ModernRoboticsI2cGyro gyro;
     Encoder myLeft, myRight, myCenter;
     EncoderArray encoderArray;
@@ -81,9 +91,9 @@ public class SkyStoneTeleOp extends OpMode {
     final int ROTATIONTIMEOUT = 500;
     ElapsedTime extenderTime = new ElapsedTime();
     final int EXTENDERTIMEOUT = 1875;
-
-    final double EXTENDER_IN = 1.0;
-    final double EXTENDER_OUT = 0.0;
+    ElapsedTime goTime = new ElapsedTime();
+    boolean goFlag = true;
+    String s, commandList;
 
     public void init() {
         frontRight = hardwareMap.dcMotor.get("frontRight");
@@ -113,7 +123,7 @@ public class SkyStoneTeleOp extends OpMode {
 
         cameraServo = hardwareMap.servo.get("cameraServo");
 
-        deliveryExtender = hardwareMap.servo.get("deliveryExtender");
+        deliveryExtender = hardwareMap.crservo.get("deliveryExtender");
 
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -127,6 +137,7 @@ public class SkyStoneTeleOp extends OpMode {
         rightLift.setDirection(DcMotor.Direction.REVERSE);
         leftLift.setDirection(DcMotor.Direction.REVERSE);
 
+        deliveryExtender.setDirection(CRServo.Direction.FORWARD);
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -148,7 +159,7 @@ public class SkyStoneTeleOp extends OpMode {
 
         blockSweeper.setPosition(0.95);
 
-        deliveryExtender.setPosition(EXTENDER_IN);
+
 
 
         leftFoundation.setPosition(0.1);
@@ -176,6 +187,10 @@ public class SkyStoneTeleOp extends OpMode {
     }
 
     public void loop() {
+        if (goFlag) {
+            goFlag = false;
+            goTime.reset();
+        }
         setDriveMotors();
         setRollerMotors();
         setLiftMotors();
@@ -187,18 +202,34 @@ public class SkyStoneTeleOp extends OpMode {
         setCameraServo();
         //calibrateEncoderArray();
         encoderArray.updateAll();
-        telemetry.addData("driveSpeed", driveSpeed);
-        /*telemetry.addData("r1", radii[0]);
-        telemetry.addData("r2", radii[1]);
-        telemetry.addData("r3", radii[2]);*/
-        telemetry.addData("deltaX", encoderArray.getDeltaX());
-        telemetry.addData("deltaY", encoderArray.getDeltaY());
-        telemetry.addData("deltaTheta(degrees)", encoderArray.getDeltaTheta()*180/Math.PI);
-        telemetry.addData("X", encoderArray.X);
-        telemetry.addData("Y", encoderArray.Y);
-        telemetry.addData("theta", encoderArray.theta*180/Math.PI);
-//        telemetry.addData("gyro", gyro.getIntegratedZValue());
-        telemetry.update();
+        telemetry.addData("gamepad1", encodeJoystick(gamepad1));
+        telemetry.addData("gamepad2", encodeJoystick(gamepad2));
+        s = encodeJoystick(gamepad1);
+        Log.i("JOYSTICK 1", s);
+        commandList = commandList.concat(s).concat("\n");
+        s = encodeJoystick(gamepad2);
+        Log.i("JOYSTICK 2", s);
+        commandList = commandList.concat(s).concat("\n");
+    }
+
+    public void stop() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+            String currentDateandTime = sdf.format(new Date());
+            Context context = hardwareMap.appContext;
+            File path = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+            File outputFile = new File(path, currentDateandTime);
+            OutputStream os = new FileOutputStream(outputFile);
+            OutputStreamWriter osw = new OutputStreamWriter(os);
+            osw.write(commandList);
+            osw.close();
+        } catch (IOException e) {
+            ;
+        }
+        finally {
+            ;
+        }
+
     }
 
     private void resetEncoder() {
@@ -213,6 +244,79 @@ public class SkyStoneTeleOp extends OpMode {
             if_pressedGp1Y = false;
         }
     }
+
+    private String encodeJoystick(Gamepad g) {
+        String s = "";
+        s=s.concat(String.format("%.2f ",g.left_stick_x));
+        s=s.concat(String.format("%.2f ",g.left_stick_y));
+        s=s.concat(String.format("%.2f ",g.right_stick_x));
+        s=s.concat(String.format("%.2f ",g.right_stick_y));
+        s=s.concat(String.format("%.2f ",g.left_trigger));
+        s=s.concat(String.format("%.2f ",g.right_trigger));
+        if (g.a) {
+            s=s.concat("1 ");
+        } else {
+            s=s.concat("0 ");
+        }
+        if (g.b) {
+            s=s.concat("1 ");
+        } else {
+            s=s.concat("0 ");
+        }
+        if (g.x) {
+            s=s.concat("1 ");
+        } else {
+            s=s.concat("0 ");
+        }
+        if (g.y) {
+            s=s.concat("1 ");
+        } else {
+            s=s.concat("0 ");
+        }
+        if (g.left_bumper) {
+            s=s.concat("1 ");
+        } else {
+            s=s.concat("0 ");
+        }
+        if (g.right_bumper) {
+            s=s.concat("1 ");
+        } else {
+            s=s.concat("0 ");
+        }
+        if (g.left_stick_button) {
+            s=s.concat("1 ");
+        } else {
+            s=s.concat("0 ");
+        }
+        if (g.right_stick_button) {
+            s=s.concat("1 ");
+        } else {
+            s=s.concat("0 ");
+        }
+        if (g.dpad_up) {
+            s=s.concat("1 ");
+        } else {
+            s=s.concat("0 ");
+        }
+        if (g.dpad_right) {
+            s=s.concat("1 ");
+        } else {
+            s=s.concat("0 ");
+        }
+        if (g.dpad_down) {
+            s=s.concat("1 ");
+        } else {
+            s=s.concat("0 ");
+        }
+        if (g.dpad_left) {
+            s=s.concat("1 ");
+        } else {
+            s=s.concat("0 ");
+        }
+
+    return s;
+    }
+
 
     /*private void calibrateEncoderArray() {
         if (gamepad1.x) {
@@ -305,14 +409,8 @@ public class SkyStoneTeleOp extends OpMode {
         final double ROTATIONOUT = 1;
 
 
-        //deliveryExtender.setPower(gamepad2.right_stick_y);
+        deliveryExtender.setPower(gamepad2.right_stick_y);
 
-        if (gamepad2.right_stick_y>0.5) {
-            deliveryExtender.setPosition(EXTENDER_IN);
-        }
-        else if (gamepad2.right_stick_y<-0.5) {
-            deliveryExtender.setPosition(EXTENDER_OUT);
-        }
 
         if (gamepad2.right_bumper == true) {
             deliveryGrabber.setPosition(0);
@@ -508,7 +606,7 @@ public class SkyStoneTeleOp extends OpMode {
     }*/
 
     private void setDeliveryExtender() {
-        /*switch (ExtenderState) {
+        switch (ExtenderState) {
             case extenderOut:
                 // There is no way to code the position of continuous servo...
                 extenderTime.reset();
@@ -549,8 +647,7 @@ public class SkyStoneTeleOp extends OpMode {
                 }
                 break;
 
-        }*/
-
+        }
     }
 
     private void setDeliveryRotation() {

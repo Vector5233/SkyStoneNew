@@ -18,15 +18,17 @@ public class RedFoundParkBridge extends LinearOpMode {
         initialize();
         waitForStart();
 
-
+        drive.driveDistance(.5, -29);
+        idle();
+        drive.strafeDistance(.5, -8);
+        idle();
         drive.moveFoundation(drive.RED);
         telemetry.addLine("FoundationMoved");
         telemetry.update();
-        sleep(500);
+        idle();
+        drive.turnToDegree(.3,-90);
+        idle();
         drive.park(drive.RED, drive.BRIDGE);
-        telemetry.addLine("Parked");
-        telemetry.update();
-        sleep(500);
     }
 }
 

@@ -18,15 +18,9 @@ public class RedFound_NoPark extends LinearOpMode {
         initialize();
         waitForStart();
 
-
+        drive.strafeDistance(.8, -8);
+        idle();
+        drive.driveDistance(.5, -28);
         drive.moveFoundation(drive.RED);
-        telemetry.addLine("FoundationMoved");
-        telemetry.update();
-        sleep(500);
-        /*drive.park(drive.RED, drive.BRIDGE);
-        telemetry.addLine("Parked");
-        telemetry.update();
-        sleep(500);*/
     }
 }
-

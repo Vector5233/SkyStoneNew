@@ -1,23 +1,19 @@
 package org.firstinspires.ftc.teamcode;
-import android.app.Notification;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.Timer;
+@TeleOp(name="FileControllerAuto", group="TeamCode")
 
-@TeleOp(name="SkyStoneTeleOp", group="TeamCode")
-
-public class SkyStoneTeleOp extends OpMode {
+public class FileControllerAuto extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller, rightLift, leftLift;
     Servo deliveryGrabber, deliveryRotation, leftFoundation, rightFoundation, blockSweeper, capServo, cameraServo;
-    Servo deliveryExtender;
+    CRServo deliveryExtender;
     ModernRoboticsI2cGyro gyro;
     Encoder myLeft, myRight, myCenter;
     EncoderArray encoderArray;
@@ -44,7 +40,7 @@ public class SkyStoneTeleOp extends OpMode {
     final String extenderIn = "extenderIn";
     final String extenderMovingOut = "extenderMovingOut";
     final String extenderMovingIn = "extenderMovingIn";
-    final String extenderOut = "extenderOut";
+    final String extenderOut = " extenderOut";
 
     final String grabberOpen = "grabberOpen";
     final String grabberClose = "grabberClose";
@@ -82,9 +78,6 @@ public class SkyStoneTeleOp extends OpMode {
     ElapsedTime extenderTime = new ElapsedTime();
     final int EXTENDERTIMEOUT = 1875;
 
-    final double EXTENDER_IN = 1.0;
-    final double EXTENDER_OUT = 0.0;
-
     public void init() {
         frontRight = hardwareMap.dcMotor.get("frontRight");
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
@@ -113,7 +106,7 @@ public class SkyStoneTeleOp extends OpMode {
 
         cameraServo = hardwareMap.servo.get("cameraServo");
 
-        deliveryExtender = hardwareMap.servo.get("deliveryExtender");
+        deliveryExtender = hardwareMap.crservo.get("deliveryExtender");
 
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -127,6 +120,7 @@ public class SkyStoneTeleOp extends OpMode {
         rightLift.setDirection(DcMotor.Direction.REVERSE);
         leftLift.setDirection(DcMotor.Direction.REVERSE);
 
+        deliveryExtender.setDirection(CRServo.Direction.FORWARD);
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -148,7 +142,7 @@ public class SkyStoneTeleOp extends OpMode {
 
         blockSweeper.setPosition(0.95);
 
-        deliveryExtender.setPosition(EXTENDER_IN);
+
 
 
         leftFoundation.setPosition(0.1);
@@ -200,6 +194,7 @@ public class SkyStoneTeleOp extends OpMode {
 //        telemetry.addData("gyro", gyro.getIntegratedZValue());
         telemetry.update();
     }
+
 
     private void resetEncoder() {
         if (gamepad1.y) {
@@ -305,14 +300,8 @@ public class SkyStoneTeleOp extends OpMode {
         final double ROTATIONOUT = 1;
 
 
-        //deliveryExtender.setPower(gamepad2.right_stick_y);
+        deliveryExtender.setPower(gamepad2.right_stick_y);
 
-        if (gamepad2.right_stick_y>0.5) {
-            deliveryExtender.setPosition(EXTENDER_IN);
-        }
-        else if (gamepad2.right_stick_y<-0.5) {
-            deliveryExtender.setPosition(EXTENDER_OUT);
-        }
 
         if (gamepad2.right_bumper == true) {
             deliveryGrabber.setPosition(0);
@@ -508,7 +497,7 @@ public class SkyStoneTeleOp extends OpMode {
     }*/
 
     private void setDeliveryExtender() {
-        /*switch (ExtenderState) {
+        switch (ExtenderState) {
             case extenderOut:
                 // There is no way to code the position of continuous servo...
                 extenderTime.reset();
@@ -549,8 +538,7 @@ public class SkyStoneTeleOp extends OpMode {
                 }
                 break;
 
-        }*/
-
+        }
     }
 
     private void setDeliveryRotation() {
