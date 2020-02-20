@@ -26,8 +26,7 @@ import java.util.concurrent.TimeoutException;
  */
 
 public class SSDriveObject extends Object{
-    Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, cameraServo, leftFoundation, rightFoundation, blockSweeper, capServo;
-    CRServo deliveryExtender;
+    Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, cameraServo, leftFoundation, rightFoundation, blockSweeper, capServo, deliveryExtender;
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller;
     LinearOpMode opmode;
     Encoder myLeft, myRight, myCenter;
@@ -131,7 +130,7 @@ public class SSDriveObject extends Object{
         capServo = opmode.hardwareMap.servo.get("capServo");
         cameraServo = opmode.hardwareMap.servo.get("cameraServo");
 
-        deliveryExtender = opmode.hardwareMap.crservo.get("deliveryExtender");
+        deliveryExtender = opmode.hardwareMap.servo.get("deliveryExtender");
 
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -142,7 +141,7 @@ public class SSDriveObject extends Object{
         rightRoller.setDirection(DcMotor.Direction.FORWARD);
         leftRoller.setDirection(DcMotor.Direction.REVERSE);
 
-        deliveryExtender.setDirection(CRServo.Direction.FORWARD);
+        deliveryExtender.setDirection(Servo.Direction.FORWARD);
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -353,18 +352,18 @@ public class SSDriveObject extends Object{
 
     public void deliverSkystone (boolean side) {
 //        setDeliveryExtender(true);
-        deliveryExtender.setPower(-1);
+        /*deliveryExtender.setPower(-1);
         opmode.sleep(1875);
         deliveryExtender.setPower(0);
-        setRollerMotors(true, 1);
+        */setRollerMotors(true, 1);
         opmode.sleep(100);
         stopRollerMotors();
         setDeliveryRotation(true);
         opmode.sleep(800);
-        deliveryExtender.setPower(1);
+        /*deliveryExtender.setPower(1);
         opmode.sleep(300);
         deliveryExtender.setPower(0);
-        setDeliveryGrabber(false);
+        */setDeliveryGrabber(false);
         opmode.sleep(500);
         strafeDistance(.5,-1);
         opmode.idle();
@@ -746,7 +745,7 @@ public class SSDriveObject extends Object{
 
     }
 
-    public void runWhileExtending (double powerLimit, double distance, boolean direction) {
+    /*public void runWhileExtending (double powerLimit, double distance, boolean direction) {
         //true = in
         //false = out
 
@@ -830,7 +829,7 @@ public class SSDriveObject extends Object{
         }
         stopDriving();
     }
-    
+    */
     //set chassis motors
 
     public void setModeAll(DcMotor.RunMode mode) {
@@ -969,11 +968,10 @@ public class SSDriveObject extends Object{
 
         while(extenderTimeout.milliseconds() < EXTEND_OPMODETIMEOUT) {
             if (direction)
-                deliveryExtender.setPower(-1);
+                deliveryExtender.setPosition(1);
             else if (!direction)
-                deliveryExtender.setPower(1);
+                deliveryExtender.setPosition(0);
         }
-        deliveryExtender.setPower(0);
     }
 
     public void setDeliveryRotation (boolean rotate) {

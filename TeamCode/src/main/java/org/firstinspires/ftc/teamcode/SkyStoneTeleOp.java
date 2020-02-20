@@ -159,7 +159,7 @@ public class SkyStoneTeleOp extends OpMode {
         leftFoundation.setPosition(0.1);
         rightFoundation.setPosition(0.8);
 
-        deliveryGrabber.setPosition(0);
+        deliveryGrabber.setPosition(0.1);
         deliveryExtender.setPosition(1);
 
         blockSweeper.setPosition(BLOCKSWEEPER_INIT);
@@ -312,8 +312,8 @@ public class SkyStoneTeleOp extends OpMode {
     }
 
     private void setDeliveryMotors() {
-        final double ROTATIONHALF = 0.5;
-        final double ROTATIONOUT = 1;
+        final double ROTATIONHALF = 0.45;
+        final double ROTATIONOUT = .9;
 
         if (gamepad2.right_stick_y >= .7) {
             deliveryExtender.setPosition(1);
@@ -332,7 +332,7 @@ public class SkyStoneTeleOp extends OpMode {
         }
 
         if (gamepad2.right_bumper == true) {
-            deliveryGrabber.setPosition(0);
+            deliveryGrabber.setPosition(0.1);
         }
 
         if (gamepad2.left_bumper == true) {
