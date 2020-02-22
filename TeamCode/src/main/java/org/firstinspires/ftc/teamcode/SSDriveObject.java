@@ -378,18 +378,20 @@ public class SSDriveObject extends Object{
         opmode.sleep(500);
         driveDistance(.8, 25);
         opmode.idle();
-        turnToDegree(.6, -90);
-        opmode.sleep(200);
-        //encoderArray.resetAll();
-        encoderArray.updateAll();
 
         if (side == BLUE) {
+            turnToDegree(.6, 0);
+            opmode.sleep(100);
+            encoderArray.updateAll();
             while(encoderArray.getDeltaTheta() <= 90.0) {
                 setSelectPowerAll(.8, -.8, 0, 0);
                 encoderArray.readEncoderValue();
                 Log.i("ANGLE", String.format("before move foundation: \t%f\n", encoderArray.getDeltaTheta()));
             }
         } else if (side == RED) {
+            turnToDegree(.6, -90);
+            opmode.sleep(200);
+            encoderArray.updateAll();
             while(encoderArray.getDeltaTheta() >= -90.0) {
                 setSelectPowerAll(-.8, .8, 0, 0);
                 encoderArray.readEncoderValue();
@@ -414,19 +416,19 @@ public class SSDriveObject extends Object{
 
         if(state == WALL) {
             if (side == BLUE) {
-                strafeDistance(.8, 12.5 );
+                strafeDistance(.8, 23);
             } else if (side == RED) {
-                strafeDistance(.8, -11);
+                strafeDistance(.8, -26);
             }
         } else if (state == BRIDGE) {
             if (side == BLUE) {
-                strafeDistance(.8, -9.5);
+                strafeDistance(.8, 1);
             } else if (side == RED) {
                 strafeDistance(.8, -2);
             }
         }
         opmode.idle();
-        driveDistance(.8,35);
+        driveDistance(.8,40);
         opmode.idle();
     }
 
