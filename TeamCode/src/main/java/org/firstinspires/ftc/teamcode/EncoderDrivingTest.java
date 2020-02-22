@@ -34,11 +34,12 @@ public class EncoderDrivingTest extends LinearOpMode {
 //        Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
 
 
-        drive.setFoundation(drive.FDOWN);
+       /* drive.setFoundation(drive.FDOWN);
         sleep(500);
         drive.turnArc(drive.LEFT,.7,92);
-        sleep(500);
-        drive.driveDistance(.8, -10);
+        sleep(500);*/
+//        drive.driveDistance(.8, -50);
+        drive.strafeDistance(.8,50);
         drive.encoderArray.readEncoderValue();
         Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
 

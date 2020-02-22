@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="EncoderDrivingTest2", group = "Blue")
-//@Disabled
 
 public class EncoderDrivingTest2 extends LinearOpMode {
     SSDriveObject drive;
@@ -16,16 +15,64 @@ public class EncoderDrivingTest2 extends LinearOpMode {
     public void initialize() {
         drive = new SSDriveObject(this);
         drive.initialize();
+        telemetry.addLine("initialized");
+        telemetry.update();
     }
 
     public void runOpMode() {
         initialize();
-        /*drive.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        drive.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        drive.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        drive.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);*/
         waitForStart();
-        driveDistanceConstantComp(.8,70);
+
+        waitForStart();
+
+        telemetry.addLine("start driving");
+        telemetry.update();
+        sleep(500);
+
+//        drive.turnDegree(1,115);
+//        sleep(500);
+//        drive.encoderArray.readEncoderValue();
+//        Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
+
+
+       /* drive.setFoundation(drive.FDOWN);
+        sleep(500);
+        drive.turnArc(drive.LEFT,.7,92);
+        sleep(500);*/
+//        drive.driveDistance(.8, -50);
+        drive.strafeDistance(.8,-50);
+        drive.encoderArray.readEncoderValue();
+        Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
+
+        drive.encoderArray.resetAll();
+        Log.i("FINALTHETA",String.format("FinalTheta: %f", (drive.encoderArray.theta)));
+
+//        drive.encoderArray.resetAll();
+        Log.i("FINAL POSITION",drive.getFinalPosition());
+
+//        drive.turnDegree(.67,90-drive.encoderArray.theta);
+
+
+//        drive.strafeDistance(.8,-30);
+//        sleep(500);
+//        drive.encoderArray.readEncoderValue();
+//        drive.encoderArray.resetAll();
+//        Log.i("FINAL POSITION",drive.getFinalPosition());
+
+        telemetry.addLine("final delta read");
+
+/*
+        telemetry.addLine("initial delta");
+        drive.telemetryEncoderArray();
+        sleep(8000);
+        drive.encoderArray.updateAll();
+        drive.encoderArray.resetAll();
+        drive.encoderArray.readEncoderValue();
+        telemetry.addLine("final delta");
+*/
+        drive.telemetryEncoderArray();
+        sleep(4000);
+        stop();
 
         stop();
     }

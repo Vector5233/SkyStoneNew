@@ -81,9 +81,9 @@ public class SkyStoneTeleOp extends OpMode {
     ElapsedTime extenderTime = new ElapsedTime();
     final int EXTENDERTIMEOUT = 1875;
 
-    final double BLOCKSWEEPER_IN = 1;
-    final double BLOCKSWEEPER_OUT = 0.733;
-    final double BLOCKSWEEPER_INIT = 0.733;
+    final double BLOCKSWEEPER_IN = 0.18;
+    final double BLOCKSWEEPER_OUT = .8;
+    final double BLOCKSWEEPER_INIT = 0.18;
 
     final double EXTENDER_IN = 1.0;
     final double EXTENDER_OUT = 0.0;
@@ -151,15 +151,11 @@ public class SkyStoneTeleOp extends OpMode {
         RotationState = rotationMovingIn;
 
         deliveryRotation.setPosition(0);
-        blockSweeper.setPosition(0.95);
+
 
         deliveryExtender.setPosition(EXTENDER_IN);
 
-
-        leftFoundation.setPosition(0.1);
-        rightFoundation.setPosition(0.8);
-
-        deliveryGrabber.setPosition(0.1);
+        deliveryGrabber.setPosition(0);
         deliveryExtender.setPosition(1);
 
         blockSweeper.setPosition(BLOCKSWEEPER_INIT);
@@ -204,10 +200,10 @@ public class SkyStoneTeleOp extends OpMode {
         telemetry.addData("r3", radii[2]);*/
         telemetry.addData("deltaX", encoderArray.getDeltaX());
         telemetry.addData("deltaY", encoderArray.getDeltaY());
-        telemetry.addData("deltaTheta(degrees)", encoderArray.getDeltaTheta()*180/Math.PI);
+        telemetry.addData("deltaTheta(degrees)", encoderArray.getDeltaTheta());
         telemetry.addData("X", encoderArray.X);
         telemetry.addData("Y", encoderArray.Y);
-        telemetry.addData("theta", encoderArray.theta*180/Math.PI);
+        telemetry.addData("theta", encoderArray.theta);
 //        telemetry.addData("gyro", gyro.getIntegratedZValue());
         telemetry.update();
     }
@@ -287,7 +283,7 @@ public class SkyStoneTeleOp extends OpMode {
     }
 
     private void setLiftMotors() {
-        final double UPPOWER = 0.8;
+        final double UPPOWER = 1;
         final double DOWNPOWER = 0.3;
         final double THRESHOLD = 0.5;
         // TODO consider carefully what actions could harm the lift and how to avoid doing those things
@@ -332,7 +328,7 @@ public class SkyStoneTeleOp extends OpMode {
         }
 
         if (gamepad2.right_bumper == true) {
-            deliveryGrabber.setPosition(0.1);
+            deliveryGrabber.setPosition(0);
         }
 
         if (gamepad2.left_bumper == true) {
@@ -386,7 +382,7 @@ public class SkyStoneTeleOp extends OpMode {
 
         if (!if_pressedGp1Y) {
             if (gamepad1.y && (hookVrt.getPosition() >= 0.75 && hookVrt.getPosition() <= 1)) {
-                hookVrt.setPosition(0.4);
+                hookVrt.setP osition(0.4);
                 if_pressedGp1Y = true;
             } else if (gamepad1.y && (hookVrt.getPosition() >= 0 && hookVrt.getPosition() <= 0.75)) {
                 hookVrt.setPosition(0.9);
