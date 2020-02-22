@@ -416,7 +416,7 @@ public class SSDriveObject extends Object{
 
         if(state == WALL) {
             if (side == BLUE) {
-                strafeDistance(.8, 23);
+                strafeDistance(.8, 19);
             } else if (side == RED) {
                 strafeDistance(.8, -26);
             }
