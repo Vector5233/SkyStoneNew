@@ -72,6 +72,9 @@ public class SSDriveObject extends Object{
     final int CENTER_SS = 1;
     final int RIGHT_SS = 2;
 
+    final int BS_OUT = 1;
+    final int BS_IN = 2;
+
     //final double TOLERANCE = ??;
     //final double ROOT2 = 1.414;
     final int DETECT_STRAFE = -21;
@@ -182,9 +185,10 @@ public class SSDriveObject extends Object{
         capServo.setPosition(CAP_INIT_POS);
         setFoundation(false);
         setDeliveryExtender(true);
-        setBlockSweeper(1);
+        setBlockSweeper(BS_OUT);
         setDeliveryGrabber(false);
         setCameraServo(CAM_INIT_POS);
+        setDeliveryRotation(false);
         
         opmode.telemetry.addLine("initialized");
         opmode.telemetry.update();
@@ -192,7 +196,7 @@ public class SSDriveObject extends Object{
 
     public void goToDetectPosition() {
         strafeDistance(POWER_MAX,DETECT_STRAFE);
-        Log.i("OPMODETIME", String.format("goToDetectPosition: \t%f\n",opModeTime.milliseconds()));
+        Log.i("ACTIONTIME", String.format("goToDetectPosition: \t%f\n",opModeTime.milliseconds()));
     }
 
     public int detectStonesStatic(boolean side){
@@ -206,7 +210,7 @@ public class SSDriveObject extends Object{
                     switch (updatedRecognitions.size()) {
                         case 1:
                             numberOfStones = 1;
-                            Log.i("OPMODETIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
+                            Log.i("ACTIONTIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
                             return CENTER_SS;
                         case 2:
                             for (Recognition recognition : updatedRecognitions) {
@@ -218,26 +222,26 @@ public class SSDriveObject extends Object{
                                 numberOfStones = 2;
                                 if (recognition.getLabel().equals("Skystone")) {
                                     if (recognition.getRight() > 485) {
-                                        Log.i("OPMODETIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
+                                        Log.i("ACTIONTIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
                                         return RIGHT_SS;
                                     } else if (recognition.getLeft() < 25){
-                                        Log.i("OPMODETIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
+                                        Log.i("ACTIONTIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
                                         return CENTER_SS;
                                     }
                                 }
                             }
-                            Log.i("OPMODETIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
+                            Log.i("ACTIONTIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
                             return LEFT_SS;
                         default:
                             numberOfStones = 100;
-                            Log.i("OPMODETIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
+                            Log.i("ACTIONTIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
                             return CENTER_SS;
                     }
                 } else {
                     switch (updatedRecognitions.size()) {
                         case 1:
                             numberOfStones = 1;
-                            Log.i("OPMODETIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
+                            Log.i("ACTIONTIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
                             return CENTER_SS;
                         case 2:
                             numberOfStones = 2;
@@ -249,30 +253,30 @@ public class SSDriveObject extends Object{
 
                                 if (recognition.getLabel().equals("Skystone")) {
                                     if (recognition.getLeft() < 200) {
-                                        Log.i("OPMODETIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
+                                        Log.i("ACTIONTIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
                                         return LEFT_SS;
                                     } else if(recognition.getRight() > 750){
-                                        Log.i("OPMODETIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
+                                        Log.i("ACTIONTIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
                                         return CENTER_SS;
                                     }
                                 }
                             }
-                            Log.i("OPMODETIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
+                            Log.i("ACTIONTIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
                             return RIGHT_SS;
                         default:
                             numberOfStones = 100;
-                            Log.i("OPMODETIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
+                            Log.i("ACTIONTIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
                             return CENTER_SS;
                     }
                 }
             } else {
                 opmode.telemetry.addLine("0 objects detected");
-                Log.i("OPMODETIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
+                Log.i("ACTIONTIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
                 return CENTER_SS;
             }
         } else {
             opmode.telemetry.addLine("tfod fail");
-            Log.i("OPMODETIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
+            Log.i("ACTIONTIME", String.format("detectStonesStatic: \t%f\n",opModeTime.milliseconds()));
             return CENTER_SS;
         }
     }
@@ -286,7 +290,7 @@ public class SSDriveObject extends Object{
                     collection(side);
                     driveDistance(1,82);
                     opmode.idle();
-                    Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
+                    Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case CENTER_SS:
                     driveDistance(.8,-15);
@@ -294,7 +298,7 @@ public class SSDriveObject extends Object{
                     collection(side);
                     driveDistance(1,74);
                     opmode.idle();
-                    Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
+                    Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case RIGHT_SS:
                     driveDistance(.8,-7.5);
@@ -302,7 +306,7 @@ public class SSDriveObject extends Object{
                     collection(side);
                     driveDistance(1,66);
                     opmode.idle();
-                    Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
+                    Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
             }
         } else if (side == RED) {
@@ -313,7 +317,7 @@ public class SSDriveObject extends Object{
                     collection(side);
                     driveDistance(POWER_MAX,106);
                     opmode.idle();
-                    Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
+                    Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case CENTER_SS:
                     driveDistance(.5,-14.5);
@@ -321,7 +325,7 @@ public class SSDriveObject extends Object{
                     collection(side);
                     driveDistance(1,98);
                     opmode.idle();
-                    Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
+                    Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case RIGHT_SS:
                     driveDistance(.5,-6.5);
@@ -329,7 +333,7 @@ public class SSDriveObject extends Object{
                     collection(side);
                     driveDistance(1,90);
                     opmode.idle();
-                    Log.i("OPMODETIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
+                    Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
             }
         }
@@ -345,7 +349,7 @@ public class SSDriveObject extends Object{
         opmode.idle();
         driveDistance(.3, -12.5);
         opmode.idle();
-        Log.i("OPMODETIME", String.format("moveToFoundation: \t%f\n",opModeTime.milliseconds()));
+        Log.i("ACTIONTIME", String.format("moveToFoundation: \t%f\n",opModeTime.milliseconds()));
     }
 
     public void deliverSkystone (boolean side) {
@@ -370,7 +374,7 @@ public class SSDriveObject extends Object{
         opmode.sleep(100);
         setDeliveryExtender(true );
         opmode.idle();
-        Log.i("OPMODETIME", String.format("deliverSkystone: \t%f\n",opModeTime.milliseconds()));
+        Log.i("ACTIONTIME", String.format("deliverSkystone: \t%f\n",opModeTime.milliseconds()));
     }
     
     public void moveFoundation (boolean side) {
@@ -402,6 +406,7 @@ public class SSDriveObject extends Object{
         stopDriving();
         opmode.idle();
         driveDistance(.8, -6);
+        Log.i("ACTIONTIME", String.format("moveFoundation: \t%f\n",opModeTime.milliseconds()));
     }
 
     public void park (boolean side, boolean state) {
@@ -430,6 +435,7 @@ public class SSDriveObject extends Object{
         opmode.idle();
         driveDistance(.8,40);
         opmode.idle();
+        Log.i("ACTIONTIME", String.format("park: \t%f\n",opModeTime.milliseconds()));
     }
 
     //detection
@@ -953,19 +959,19 @@ public class SSDriveObject extends Object{
             rightFoundation.setPosition(FOUND_RIGHT_INIT);
         }
     }
+    
+
 
     public void setBlockSweeper (int state) {
         //kick true = blockSweeper up
         //kick false = blockSweeper down
 
-        if (state == 1) {
+        if (state == BS_OUT) {
             blockSweeper.setPosition(0.8);
 
-        } else if (state == 2){
-            blockSweeper.setPosition(.3);
+        } else if (state == BS_IN){
+            blockSweeper.setPosition(.2);
 
-        } else{
-            blockSweeper.setPosition(0);
         }
         Log.i("OPMODETIME", String.format("setBlockSweeper: \t%f\n",opModeTime.milliseconds()));
         
@@ -1034,10 +1040,10 @@ public class SSDriveObject extends Object{
             opmode.idle();
             driveDistance(.5, -15);
             opmode.sleep(400);
-            setBlockSweeper(2);
+            setBlockSweeper(BS_IN);
             opmode.idle();
             stopRollerMotors();
-            setBlockSweeper(3);
+             
             turnDegree(.67, 155);
             setDeliveryGrabber(true);
             opmode.idle();
@@ -1051,10 +1057,10 @@ public class SSDriveObject extends Object{
             driveDistance(.5, 15);
             opmode.idle();
             driveDistance(.5, -15);
-            setBlockSweeper(2);
+            setBlockSweeper(BS_IN);
             opmode.idle();
             stopRollerMotors();
-            setBlockSweeper(3);
+             
             turnToDegree(.67, 0);
             setDeliveryGrabber(true);
             opmode.idle();

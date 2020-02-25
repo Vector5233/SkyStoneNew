@@ -18,7 +18,7 @@ public class Red1SkyFoundPark extends LinearOpMode {
     public void runOpMode(){
         initialize();
         waitForStart();
-        //drive.opModeTime.reset();
+        drive.opModeTime.reset();
         //Log.i("OPMODETIME", String.format("OpModeStart: \t%f\n",drive.opModeTime.milliseconds()));
 
         drive.goToDetectPosition();
@@ -31,7 +31,7 @@ public class Red1SkyFoundPark extends LinearOpMode {
         drive.collectSkyStone(drive.RED,skystone);
         drive.moveToFoundation(drive.RED);
 
-        drive.deliverSkystone(drive.RED);
+//        drive.deliverSkystone(drive.RED);
         //Log.i("OPMODETIME", String.format("OpModeStop: \t%f\n",drive.opModeTime.milliseconds()));
         idle();
         drive.moveFoundation(drive.RED);

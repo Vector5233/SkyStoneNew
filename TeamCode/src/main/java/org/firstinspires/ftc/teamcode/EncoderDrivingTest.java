@@ -34,12 +34,22 @@ public class EncoderDrivingTest extends LinearOpMode {
 //        Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
 
 
-       /* drive.setFoundation(drive.FDOWN);
+        drive.setFoundation(drive.FDOWN);
         sleep(500);
-        drive.turnArc(drive.LEFT,.7,92);
-        sleep(500);*/
+        drive.encoderArray.updateAll();
+        while(drive.encoderArray.getDeltaTheta() >= -90.0) {
+            if (drive.encoderArray.getDeltaTheta() >= -45) {
+                drive.setDeliveryRotation(false);
+            }
+            drive.setSelectPowerAll(-1, 1, -.3, .3);
+            drive.encoderArray.readEncoderValue();
+            Log.i("ANGLE", String.format("before move foundation: \t%f\n", drive.encoderArray.getDeltaTheta()));
+        }
+        drive.stopDriving();
+//        drive.turnArc(drive.RIGHT,.7,-92);
+        sleep(500);
 //        drive.driveDistance(.8, -50);
-        drive.strafeDistance(.8,50);
+        /*drive.strafeDistance(.8,50);
         drive.encoderArray.readEncoderValue();
         Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
 
@@ -47,7 +57,7 @@ public class EncoderDrivingTest extends LinearOpMode {
         Log.i("FINALTHETA",String.format("FinalTheta: %f", (drive.encoderArray.theta)));
 
 //        drive.encoderArray.resetAll();
-        Log.i("FINAL POSITION",drive.getFinalPosition());
+        Log.i("FINAL POSITION",drive.getFinalPosition());*/
 
 //        drive.turnDegree(.67,90-drive.encoderArray.theta);
 
