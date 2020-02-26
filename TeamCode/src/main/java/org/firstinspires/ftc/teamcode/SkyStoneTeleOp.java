@@ -284,7 +284,7 @@ public class SkyStoneTeleOp extends OpMode {
 
     private void setLiftMotors() {
         final double UPPOWER = 1;
-        final double DOWNPOWER = 0.3;
+        final double DOWNPOWER = 0.4;
         final double THRESHOLD = 0.5;
         // TODO consider carefully what actions could harm the lift and how to avoid doing those things
         //if(minLift <= leftLift.getCurrentPosition() &&leftLift.getCurrentPosition() <= maxLift) {
