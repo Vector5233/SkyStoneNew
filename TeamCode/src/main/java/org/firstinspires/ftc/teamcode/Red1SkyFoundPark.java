@@ -21,8 +21,8 @@ public class Red1SkyFoundPark extends LinearOpMode {
         drive.opModeTime.reset();
         //Log.i("OPMODETIME", String.format("OpModeStart: \t%f\n",drive.opModeTime.milliseconds()));
 
+
         drive.goToDetectPosition();
-        //Log.i("FINAL POSITION",drive.getFinalPosition());
         int skystone = drive.detectStonesStatic(drive.RED);
         telemetry.addLine(drive.skystoneString(skystone));
         telemetry.update();
@@ -31,11 +31,13 @@ public class Red1SkyFoundPark extends LinearOpMode {
         drive.collectSkyStone(drive.RED,skystone);
         drive.moveToFoundation(drive.RED);
 
-//        drive.deliverSkystone(drive.RED);
-        //Log.i("OPMODETIME", String.format("OpModeStop: \t%f\n",drive.opModeTime.milliseconds()));
+        drive.deliverSkystone(drive.RED);
         idle();
         drive.moveFoundation(drive.RED);
-        idle();
-        drive.park(drive.RED, drive.BRIDGE);
+        sleep(1000);
+        drive.encoderArray.readEncoderValue();
+        drive.encoderArray.resetAll();
+        Log.i("FINALTHETA",String.format("Theta: %f", drive.encoderArray.theta));
+//        drive.park(drive.RED, drive.BRIDGE);
     }
 }

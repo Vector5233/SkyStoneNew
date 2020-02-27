@@ -26,47 +26,17 @@ public class EncoderDrivingTest extends LinearOpMode {
 
         telemetry.addLine("start driving");
         telemetry.update();
-        sleep(500);
-
-//        drive.turnDegree(1,115);
-//        sleep(500);
-//        drive.encoderArray.readEncoderValue();
-//        Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
-
-
-        drive.setFoundation(drive.FDOWN);
-        sleep(500);
-        drive.encoderArray.updateAll();
-        while(drive.encoderArray.getDeltaTheta() >= -90.0) {
-            if (drive.encoderArray.getDeltaTheta() >= -45) {
-                drive.setDeliveryRotation(false);
-            }
-            drive.setSelectPowerAll(-1, 1, -.3, .3);
-            drive.encoderArray.readEncoderValue();
-            Log.i("ANGLE", String.format("before move foundation: \t%f\n", drive.encoderArray.getDeltaTheta()));
-        }
-        drive.stopDriving();
-//        drive.turnArc(drive.RIGHT,.7,-92);
-        sleep(500);
-//        drive.driveDistance(.8, -50);
-        /*drive.strafeDistance(.8,50);
+        drive.deliverSkystone(drive.RED);
+        sleep(3000);
         drive.encoderArray.readEncoderValue();
         Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
 
         drive.encoderArray.resetAll();
         Log.i("FINALTHETA",String.format("FinalTheta: %f", (drive.encoderArray.theta)));
 
-//        drive.encoderArray.resetAll();
-        Log.i("FINAL POSITION",drive.getFinalPosition());*/
-
-//        drive.turnDegree(.67,90-drive.encoderArray.theta);
+        Log.i("FINAL POSITION",drive.getFinalPosition());
 
 
-//        drive.strafeDistance(.8,-30);
-//        sleep(500);
-//        drive.encoderArray.readEncoderValue();
-//        drive.encoderArray.resetAll();
-//        Log.i("FINAL POSITION",drive.getFinalPosition());
 
         telemetry.addLine("final delta read");
 
@@ -80,7 +50,7 @@ public class EncoderDrivingTest extends LinearOpMode {
         telemetry.addLine("final delta");
 */
         drive.telemetryEncoderArray();
-        sleep(4000);
+        sleep(1000);
         stop();
     }
 

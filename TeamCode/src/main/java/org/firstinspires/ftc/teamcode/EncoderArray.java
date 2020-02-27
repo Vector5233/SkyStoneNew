@@ -45,7 +45,7 @@ public class EncoderArray {
         return radii;
     }
 
-    void resetAll () {
+    void resetAll() {
 //        X += getDeltaX()*Math.cos(theta)+getDeltaY()*Math.sin(theta);
 //        Y += getDeltaY()*Math.cos(theta)-getDeltaX()*Math.sin(theta);
         theta += getDeltaTheta();
