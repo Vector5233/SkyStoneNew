@@ -89,8 +89,8 @@ public class SSDriveObject extends Object{
     double BRpower = 1;
     double BLpower = 1;
 
-    final double DRIVE_COMP_CONST_LEFT = 0;
-    final double DRIVE_COMP_CONST_RIGHT = 0;
+    final double DRIVE_COMP_CONST_LEFT = 0.02;
+    final double DRIVE_COMP_CONST_RIGHT = 0.02;
 
     final double FOUND_LEFT_INIT = 0;
     final double FOUND_RIGHT_INIT = 0.5;
@@ -410,7 +410,7 @@ public class SSDriveObject extends Object{
             strafeDistance(.5,4);
             opmode.sleep(100);
             setDeliveryRotation(false);
-            turnArc(RIGHT,1,-75);
+            turnArc(RIGHT,1,-80);
             setDeliveryExtender(true);
         }
 
@@ -584,7 +584,8 @@ public class SSDriveObject extends Object{
                 setSelectPowerAll(drivePower - DRIVE_COMP_CONST_LEFT*deltaTheta, drivePower + DRIVE_COMP_CONST_LEFT*deltaTheta, drivePower -DRIVE_COMP_CONST_LEFT*deltaTheta, drivePower + DRIVE_COMP_CONST_LEFT*deltaTheta);
 //                opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
 //                setDrivePowerAll(drivePower);
-                Log.i("POWER",String.format("Delta Theta: &f\tDelta Y: %f\tPower: %f\t Compensation: %f\n", deltaTheta,deltaY, drivePower,DRIVE_COMP_CONST_LEFT*deltaTheta ));
+                Log.i("POWER",String.format("Delta Theta: %f\tDelta Y: %f\tPower: %f\t Compensation: %f\n", deltaTheta,deltaY, drivePower,DRIVE_COMP_CONST_LEFT*deltaTheta ));
+                Log.i("INDIVIDUAL ENCODERS",String.format("Left Encoder: %f\tRight Encoder: %f\tCenter Encoder: %f\n", encoderArray.getLeftPosition,encoderArray.getRightPosition, encoderArray.getCenterPosition));
 //                opmode.telemetry.update();
             }
         }
