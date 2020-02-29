@@ -585,6 +585,8 @@ public class SSDriveObject extends Object{
 //                opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
 //                setDrivePowerAll(drivePower);
                 Log.i("POWER",String.format("Delta Theta: &f\tDelta Y: %f\tPower: %f\t Compensation: %f\n", deltaTheta,deltaY, drivePower,DRIVE_COMP_CONST_LEFT*deltaTheta ));
+                Log.i("INDIVIDUAL ENCODERS",String.format("Left Encoder: %f\tRight Encoder: %f\tCenter Encoder: %f\n", encoderArray.getLeftPosition,encoderArray.getRightPosition, encoderArray.getCenterPosition));
+
 //                opmode.telemetry.update();
             }
         }
