@@ -27,8 +27,10 @@ public class TurnDrivingTest extends LinearOpMode {
         telemetry.addLine("start driving");
         telemetry.update();
 
-        drive.turnToDegree(.67, -90);
-        drive.turnDegree(.67, -90);
+//        drive.turnToDegree(.67, -90);
+//        idle();
+        drive.encoderArray.theta = 35;
+        drive.turnToDegree(.67, -180);
     }
 
     public void getPositionTelemetry() {

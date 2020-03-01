@@ -14,7 +14,10 @@ public class EncoderDrivingTest extends LinearOpMode {
 
     public void initialize() {
         drive = new SSDriveObject(this);
-        drive.initialize();
+//        drive.initialize();
+        drive.setDeliveryExtender(drive.IN);
+        drive.setDeliveryRotation(drive.IN);
+        drive.setDeliveryGrabber(drive.IN);
         telemetry.addLine("initialized");
         telemetry.update();
     }
@@ -26,29 +29,30 @@ public class EncoderDrivingTest extends LinearOpMode {
 
         telemetry.addLine("start driving");
         telemetry.update();
+        drive.setDeliveryExtender(drive.OUT);
+        sleep(750);
         drive.deliverSkystone(drive.RED);
-        sleep(3000);
-        drive.encoderArray.readEncoderValue();
-        Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
+
+
+
+
+
+
+
+        //        drive.encoderArray.readEncoderValue();
+
+
+        /*Log.i("DELTATHETA",String.format("DeltaTheta: %f", (drive.encoderArray.getDeltaTheta())));
 
         drive.encoderArray.resetAll();
         Log.i("FINALTHETA",String.format("FinalTheta: %f", (drive.encoderArray.theta)));
 
-        Log.i("FINAL POSITION",drive.getFinalPosition());
+        Log.i("FINAL POSITION",drive.getFinalPosition());*/
 
 
 
         telemetry.addLine("final delta read");
 
-/*
-        telemetry.addLine("initial delta");
-        drive.telemetryEncoderArray();
-        sleep(8000);
-        drive.encoderArray.updateAll();
-        drive.encoderArray.resetAll();
-        drive.encoderArray.readEncoderValue();
-        telemetry.addLine("final delta");
-*/
         drive.telemetryEncoderArray();
         sleep(1000);
         stop();

@@ -68,6 +68,10 @@ public class EncoderArray {
         return (180/Math.PI)*(getLeftPosition+getRightPosition)/(r1+r2);
     }
 
+    void trashStrafeAngleBeforeReset() {
+        theta-=getDeltaTheta();
+    }
+
     double getDeltaThetaRad(){
         return (getLeftPosition+getRightPosition)/(r1+r2);
     }

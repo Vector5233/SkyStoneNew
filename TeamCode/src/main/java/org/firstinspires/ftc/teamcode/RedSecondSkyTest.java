@@ -5,9 +5,9 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Red1SkyFoundPark", group="Red")
+@Autonomous(name="RedSecondSkyTest", group="Red")
 
-public class Red1SkyFoundPark extends LinearOpMode {
+public class RedSecondSkyTest extends LinearOpMode {
     SSDriveObject drive;
 
     public void initialize(){
@@ -19,12 +19,8 @@ public class Red1SkyFoundPark extends LinearOpMode {
         initialize();
         waitForStart();
         drive.opModeTime.reset();
-        drive.collectSkyStone(drive.RED,drive.skystone);
-        drive.moveToFoundation(drive.RED);
-        idle();
-        drive.moveFoundation(drive.RED);
-        drive.moveToSecondSS(drive.RED, drive.BRIDGE);
+        //Log.i("OPMODETIME", String.format("OpModeStart: \t%f\n",drive.opModeTime.milliseconds()));
+
         drive.collectSecondSkyStone(drive.RED);
-        drive.park(drive.RED, drive.BRIDGE);
     }
 }

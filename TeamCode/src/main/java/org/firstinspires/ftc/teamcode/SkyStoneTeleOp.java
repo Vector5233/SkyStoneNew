@@ -193,14 +193,18 @@ public class SkyStoneTeleOp extends OpMode {
         resetEncoder();
         setCameraServo();
         //calibrateEncoderArray();
+        encoderArray.readEncoderValue();
         encoderArray.updateAll();
         telemetry.addData("driveSpeed", driveSpeed);
         /*telemetry.addData("r1", radii[0]);
         telemetry.addData("r2", radii[1]);
         telemetry.addData("r3", radii[2]);*/
-        telemetry.addData("deltaX", encoderArray.getDeltaX());
+        telemetry.addData("getLeftPosition", encoderArray.getLeftPosition);
+        telemetry.addData("getRightPosition", encoderArray.getRightPosition);
+        telemetry.addData("getCenterPosition",encoderArray.getCenterPosition);
+        /*telemetry.addData("deltaX", encoderArray.getDeltaX());
         telemetry.addData("deltaY", encoderArray.getDeltaY());
-        telemetry.addData("deltaTheta(degrees)", encoderArray.getDeltaTheta());
+        telemetry.addData("deltaTheta(degrees)", encoderArray.getDeltaTheta());*/
         telemetry.addData("X", encoderArray.X);
         telemetry.addData("Y", encoderArray.Y);
         telemetry.addData("theta", encoderArray.theta);
@@ -248,15 +252,8 @@ public class SkyStoneTeleOp extends OpMode {
 
         if (gamepad1.dpad_up) {
             if (!if_pressedDpadUp) {
-                if (leftFoundation.getPosition() == .5) {
-
-                    driveSpeed = SLOWSPEED;
-                    if_pressedDpadUp = true;
-                } else {
-                    driveSpeed = FASTSPEED;
-                    if_pressedDpadUp = true;
-
-                }
+                driveSpeed = FASTSPEED;
+                if_pressedDpadUp = true;
             }
         } else {
             if_pressedDpadUp = false;
