@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name="EncoderDrivingTest", group = "Blue")
+@Autonomous(name="EncoderDrivingTest", group = "Test")
 
 public class EncoderDrivingTest extends LinearOpMode {
     SSDriveObject drive;

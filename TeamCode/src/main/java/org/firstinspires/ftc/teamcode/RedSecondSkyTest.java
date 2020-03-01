@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous(name="RedSecondSkyTest", group="Red")
+@Disabled
 
 public class RedSecondSkyTest extends LinearOpMode {
     SSDriveObject drive;

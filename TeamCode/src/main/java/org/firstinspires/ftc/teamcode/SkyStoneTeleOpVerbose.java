@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -23,6 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 @TeleOp(name="SkyStoneTeleOpVerbose", group="TeamCode")
+@Disabled
 
 public class SkyStoneTeleOpVerbose extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller, rightLift, leftLift;

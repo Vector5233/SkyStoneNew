@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous(name="ExtenderAutoOp", group="Blue")
+@Disabled
 
 public class ExtenderAutoOp extends LinearOpMode {
     SSDriveObject drive;

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="TurnDrivingTest", group = "Blue")
+@Disabled
 
 public class TurnDrivingTest extends LinearOpMode {
     SSDriveObject drive;
