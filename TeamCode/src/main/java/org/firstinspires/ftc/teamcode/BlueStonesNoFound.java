@@ -8,10 +8,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name="BlueStonesNoFound", group="Blue")
 
 public class BlueStonesNoFound extends LinearOpMode {
-    SSDriveObject drive;
+    SSDriveObject game;
+    BaseDriveObject drive;
 
     public void initialize(){
-        drive = new SSDriveObject(this);
+        game = new SSDriveObject(this, drive);
 
         drive.initialize();
     }
@@ -19,12 +20,12 @@ public class BlueStonesNoFound extends LinearOpMode {
         initialize();
         waitForStart();
         drive.opModeTime.reset();
-        drive.collectSkyStone(drive.BLUE,drive.skystone);
-        /*drive.moveToFoundation(drive.RED);
+        game.collectSkyStone(game.BLUE,game.skystone);
+        /*game.moveToFoundation(game.RED);
         idle();
-        drive.moveFoundation(drive.RED);*/
-        drive.moveToSecondSS(drive.BLUE, drive.BRIDGE);
-        drive.collectSecondSkyStone(drive.BLUE);
-        drive.park(drive.BLUE, drive.BRIDGE);
+        game.moveFoundation(game.RED);*/
+        game.moveToSecondSS(game.BLUE, game.BRIDGE);
+        game.collectSecondSkyStone(game.BLUE);
+        game.park(game.BLUE, game.BRIDGE);
     }
 }

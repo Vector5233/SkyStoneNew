@@ -8,25 +8,26 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name="Blue1SkyFoundPark", group="Blue")
 
 public class Blue1SkyFoundPark extends LinearOpMode {
-    SSDriveObject drive;
+    SSDriveObject game;
+    BaseDriveObject drive;
 
     public void initialize(){//lll
-        drive = new SSDriveObject(this);
+        game = new SSDriveObject(this, drive);
 
-        drive.initialize();
+        game.initialize();
     }
     public void runOpMode(){
         initialize();
         waitForStart();
-        drive.collectSkyStone(drive.BLUE, drive.skystone);
-        drive.moveToFoundation(drive.BLUE);
+        game.collectSkyStone(game.BLUE, game.skystone);
+        game.moveToFoundation(game.BLUE);
 
-        drive.moveFoundation(drive.BLUE);
+        game.moveFoundation(game.BLUE);
         idle();
-        drive.moveToSecondSS(drive.BLUE,drive.BRIDGE);
-        drive.collectSecondSkyStone(drive.BLUE);
+        game.moveToSecondSS(game.BLUE,game.BRIDGE);
+        game.collectSecondSkyStone(game.BLUE);
 
-        drive.park(drive.BLUE, drive.BRIDGE);
+        game.park(game.BLUE, game.BRIDGE);
         Log.i("FINALTHETA",String.format("FinalTheta: \t%f\n", (drive.encoderArray.theta)));
 
     }

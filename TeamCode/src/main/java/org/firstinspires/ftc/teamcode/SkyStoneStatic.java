@@ -20,10 +20,11 @@ import java.util.List;
 @Disabled
 
 public class SkyStoneStatic extends LinearOpMode {
-    SSDriveObject drive;
+    SSDriveObject game;
+    BaseDriveObject drive;
 
     public void initialize(){
-        drive = new SSDriveObject(this);
+        game = new SSDriveObject(this, drive);
 
         drive.initialize();
     }
@@ -31,24 +32,24 @@ public class SkyStoneStatic extends LinearOpMode {
         initialize();
         waitForStart();
 
-        int skystone = drive.detectStonesStatic(drive.BLUE);
-        Log.i("STATIC DETECTION", String.format("Number of Stones Detected: %f",drive.numberOfStones));
+        int skystone = game.detectStonesStatic(game.BLUE);
+        Log.i("STATIC DETECTION", String.format("Number of Stones Detected: %f",game.numberOfStones));
         Log.i("STATIC DETECTION","SkyStone Pos: " + skystoneString(skystone));
 
-//        drive.detectStonesDynamic();
-//        telemetry.addData("  SS left", "%.03f", drive.SS_leftPixel);
-//        telemetry.addData("  SS right", "%.03f", drive.SS_rightPixel);
+//        game.detectStonesDynamic();
+//        telemetry.addData("  SS left", "%.03f", game.SS_leftPixel);
+//        telemetry.addData("  SS right", "%.03f", game.SS_rightPixel);
 //        telemetry.update();
 //        sleep(1000);
 
-//        drive.getDisplacement();
-//        telemetry.addData("displacement", "%.03f", drive.displacement);
+//        game.getDisplacement();
+//        telemetry.addData("displacement", "%.03f", game.displacement);
 //        telemetry.update();
 //        sleep(1000);
 
-//        drive.collectSkyStone();
+//        game.collectSkyStone();
 
-        //drive.moveToFoundation(drive.RED);
+        //game.moveToFoundation(game.RED);
     }
     public String skystoneString(int skystone){
         switch(skystone) {

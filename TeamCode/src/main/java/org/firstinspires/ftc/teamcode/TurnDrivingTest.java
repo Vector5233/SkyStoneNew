@@ -11,10 +11,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Disabled
 
 public class TurnDrivingTest extends LinearOpMode {
-    SSDriveObject drive;
+    SSDriveObject game;
+    BaseDriveObject drive;
 
     public void initialize() {
-        drive = new SSDriveObject(this);
+        game = new SSDriveObject(this, drive);
         drive.initialize();
         telemetry.addLine("initialized");
         telemetry.update();

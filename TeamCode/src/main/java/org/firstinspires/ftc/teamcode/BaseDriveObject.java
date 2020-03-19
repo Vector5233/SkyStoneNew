@@ -34,9 +34,7 @@ public class BaseDriveObject extends Object{
     ElapsedTime elapsedTime;
     OpenCvCamera webcam;
 
-    public static final String TFOD_MODEL_ASSET = "Skystone.tflite";
-    public static final String LABEL_FIRST_ELEMENT = "Stone";
-    public static final String LABEL_SECOND_ELEMENT = "Skystone";
+
 
     final double ROBOT_RADIUS = 13.5;
     final double TICKS_PER_INCH_STRAIGHT = (383.6*2) / (4 * 3.14159265358979323846264);
@@ -82,15 +80,6 @@ public class BaseDriveObject extends Object{
 
     final double ROLLER_POWER = .7;
 
-    double numberOfStones;
-
-    double SS_leftPixel;
-    double SS_rightPixel;
-
-    double displacement;
-    double secondDisplacement = displacement - 24;
-
-    boolean isVirtual = false;
 
     VuforiaLocalizer vuforia;
     TFObjectDetector tfod;
@@ -776,11 +765,5 @@ public class BaseDriveObject extends Object{
 
 
 
-    public void initTfod(){
-        int tfodMonitorViewId = opmode.hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", opmode.hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.6;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
-    }
+
 }

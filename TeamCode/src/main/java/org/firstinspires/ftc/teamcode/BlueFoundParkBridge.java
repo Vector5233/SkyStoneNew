@@ -6,10 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name="BlueFoundParkBridge", group="Blue")
 
 public class BlueFoundParkBridge extends LinearOpMode {
-    SSDriveObject drive;
+    SSDriveObject game;
+    BaseDriveObject drive;
 
     public void initialize(){
-        drive = new SSDriveObject(this);
+        game = new SSDriveObject(this, drive);
         drive.initialize();
     }
     public void runOpMode(){
@@ -20,13 +21,13 @@ public class BlueFoundParkBridge extends LinearOpMode {
         idle();
         drive.driveDistance(.5, -35);
         idle();
-        drive.moveFoundation(drive.BLUE);
+        game.moveFoundation(game.BLUE);
         telemetry.addLine("FoundationMoved");
         telemetry.update();
         idle();
         drive.turnToDegree(.3,90);
         idle();
-        drive.park(drive.BLUE, drive.BRIDGE);
+        game.park(game.BLUE, game.BRIDGE);
     }
 }
 

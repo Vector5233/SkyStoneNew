@@ -94,7 +94,7 @@ public class SkyStoneTeleOp extends OpMode {
         backRight = hardwareMap.dcMotor.get("backRight");
         backLeft = hardwareMap.dcMotor.get("backLeft");
 
-        rightRoller = hardwareMap.dcMotor.get("rightRoller");
+        /*rightRoller = hardwareMap.dcMotor.get("rightRoller");
         leftRoller = hardwareMap.dcMotor.get("leftRoller");
 
         rightLift = hardwareMap.dcMotor.get("rightLift");
@@ -116,7 +116,7 @@ public class SkyStoneTeleOp extends OpMode {
 
         cameraServo = hardwareMap.servo.get("cameraServo");
 
-        deliveryExtender = hardwareMap.servo.get("deliveryExtender");
+        deliveryExtender = hardwareMap.servo.get("deliveryExtender");*/
 
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -194,7 +194,7 @@ public class SkyStoneTeleOp extends OpMode {
         setCameraServo();
         //calibrateEncoderArray();
         encoderArray.readEncoderValue();
-        encoderArray.updateAll();
+
         telemetry.addData("driveSpeed", driveSpeed);
         /*telemetry.addData("r1", radii[0]);
         telemetry.addData("r2", radii[1]);

@@ -182,7 +182,7 @@ public class FileControllerAuto extends OpMode {
         resetEncoder();
         setCameraServo();
         //calibrateEncoderArray();
-        encoderArray.updateAll();
+
         telemetry.addData("driveSpeed", driveSpeed);
         /*telemetry.addData("r1", radii[0]);
         telemetry.addData("r2", radii[1]);

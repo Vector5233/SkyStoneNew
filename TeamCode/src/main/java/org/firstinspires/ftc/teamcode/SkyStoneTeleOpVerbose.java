@@ -203,7 +203,7 @@ public class SkyStoneTeleOpVerbose extends OpMode {
         resetEncoder();
         setCameraServo();
         //calibrateEncoderArray();
-        encoderArray.updateAll();
+
         telemetry.addData("gamepad1", encodeJoystick(gamepad1));
         telemetry.addData("gamepad2", encodeJoystick(gamepad2));
         s = encodeJoystick(gamepad1);

@@ -6,10 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name="RedPark", group="Red")
 
 public class RedPark extends LinearOpMode {
-    SSDriveObject drive;
+    SSDriveObject game;
+    BaseDriveObject drive;
 
     public void initialize(){
-        drive = new SSDriveObject(this);
+        game = new SSDriveObject(this, drive);
 
         drive.initialize();
     }

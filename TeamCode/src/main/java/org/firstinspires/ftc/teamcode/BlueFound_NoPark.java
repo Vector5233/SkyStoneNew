@@ -6,12 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name="BlueFound_NoPark", group="Blue")
 
 public class BlueFound_NoPark extends LinearOpMode {
-    SSDriveObject drive;
+    SSDriveObject game;
+    BaseDriveObject drive;
 
     public void initialize(){
-        drive = new SSDriveObject(this);
+        game = new SSDriveObject(this, drive);
 
-        drive.initialize();
+        game.initialize();
     }
     public void runOpMode(){
         initialize();
@@ -21,7 +22,7 @@ public class BlueFound_NoPark extends LinearOpMode {
         idle();
         drive.driveDistance(.5, -35);
         idle();
-        drive.moveFoundation(drive.BLUE);
+        game.moveFoundation(game.BLUE);
         telemetry.addLine("FoundationMoved");
         telemetry.update();
         sleep(500);

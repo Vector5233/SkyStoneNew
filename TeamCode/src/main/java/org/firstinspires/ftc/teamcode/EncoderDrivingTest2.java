@@ -11,10 +11,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Disabled
 
 public class EncoderDrivingTest2 extends LinearOpMode {
-    SSDriveObject drive;
+    BaseDriveObject drive;
 
     public void initialize() {
-        drive = new SSDriveObject(this);
+        drive = new BaseDriveObject(this);
         drive.initialize();
         telemetry.addLine("initialized");
         telemetry.update();
@@ -73,7 +73,6 @@ public class EncoderDrivingTest2 extends LinearOpMode {
 
 
         drive.encoderArray.readEncoderValue();
-        drive.encoderArray.updateAll();
         drive.encoderArray.resetAll();
         if (distance > 0) {
             if (powerLimit == .8) {

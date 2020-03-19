@@ -8,23 +8,24 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name="Red1SkyFoundPark", group="Red")
 
 public class Red1SkyFoundPark extends LinearOpMode {
-    SSDriveObject drive;
+    SSDriveObject game;
+    BaseDriveObject drive;
 
     public void initialize(){
-        drive = new SSDriveObject(this);
+        game = new SSDriveObject(this, drive);
 
-        drive.initialize();
+        game.initialize();
     }
     public void runOpMode(){
         initialize();
         waitForStart();
-        drive.opModeTime.reset();
-        drive.collectSkyStone(drive.RED,drive.skystone);
-        drive.moveToFoundation(drive.RED);
+        game.opModeTime.reset();
+        game.collectSkyStone(game.RED,game.skystone);
+        game.moveToFoundation(game.RED);
         idle();
-        drive.moveFoundation(drive.RED);
-        drive.moveToSecondSS(drive.RED, drive.BRIDGE);
-        drive.collectSecondSkyStone(drive.RED);
-        drive.park(drive.RED, drive.BRIDGE);
+        game.moveFoundation(game.RED);
+        game.moveToSecondSS(game.RED, game.BRIDGE);
+        game.collectSecondSkyStone(game.RED);
+        game.park(game.RED, game.BRIDGE);
     }
 }
