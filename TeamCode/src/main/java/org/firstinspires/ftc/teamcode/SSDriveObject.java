@@ -24,18 +24,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeoutException;
 
-/* TODO
-  Possibly revert Code to 1/22
-*/
 
 public class SSDriveObject extends Object{
-    Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, cameraServo, leftFoundation, rightFoundation, blockSweeper, capServo, deliveryExtender;
+    /*Servo hookHrz, hookVrt, deliveryGrabber, deliveryRotation, cameraServo, leftFoundation, rightFoundation, blockSweeper, capServo, deliveryExtender;
     DcMotor frontRight, frontLeft, backRight, backLeft, rightRoller, leftRoller;
-    LinearOpMode opmode;
+    
     Encoder myLeft, myRight, myCenter;
-    EncoderArray encoderArray;
+    EncoderArray drive.encoderArray;
     ElapsedTime elapsedTime;
-    OpenCvCamera webcam;
+    OpenCvCamera webcam;*/
+    LinearOpMode opmode;
+    BaseDriveObject drive;
     private SkyStoneDetector detector = new SkyStoneDetector();
     private String position;
 
@@ -126,58 +125,11 @@ public class SSDriveObject extends Object{
 
     ElapsedTime opModeTime = new ElapsedTime();
 
-    public SSDriveObject(LinearOpMode parent){
+    public SSDriveObject(LinearOpMode parent, BaseDriveObject d){
+        drive = d;
         opmode = parent;
 
-        frontRight = opmode.hardwareMap.dcMotor.get("frontRight");
-        frontLeft = opmode.hardwareMap.dcMotor.get("frontLeft");
-        backRight = opmode.hardwareMap.dcMotor.get("backRight");
-        backLeft = opmode.hardwareMap.dcMotor.get("backLeft");
-
-        rightRoller = opmode.hardwareMap.dcMotor.get("rightRoller");
-        leftRoller = opmode.hardwareMap.dcMotor.get("leftRoller");
-
-        hookHrz = opmode.hardwareMap.servo.get("hookHrz");
-        hookVrt = opmode.hardwareMap.servo.get("hookVrt");
-
-        deliveryGrabber = opmode.hardwareMap.servo.get("deliveryGrabber");
-        deliveryRotation = opmode.hardwareMap.servo.get("deliveryRotation");
-
-        leftFoundation = opmode.hardwareMap.servo.get("leftFoundation");
-        rightFoundation = opmode.hardwareMap.servo.get("rightFoundation");
-
-        blockSweeper = opmode.hardwareMap.servo.get("blockSweeper");
-        capServo = opmode.hardwareMap.servo.get("capServo");
-        cameraServo = opmode.hardwareMap.servo.get("cameraServo");
-
-        deliveryExtender = opmode.hardwareMap.servo.get("deliveryExtender");
-
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-
-        backRight.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
-
-        rightRoller.setDirection(DcMotor.Direction.FORWARD);
-        leftRoller.setDirection(DcMotor.Direction.REVERSE);
-
-        deliveryExtender.setDirection(Servo.Direction.FORWARD);
-
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        rightRoller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftRoller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setModeAll(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        myLeft = new Encoder(frontLeft);
-        myRight = new Encoder(frontRight);
-        myCenter = new Encoder(backRight);
-        encoderArray = new EncoderArray(myLeft, myRight, myCenter, r1, r2, r3);
+        
 
         //vuforia tfod init
 
@@ -193,19 +145,20 @@ public class SSDriveObject extends Object{
     }
 
     public void initialize(){
-        capServo.setPosition(CAP_INIT_POS);
-        setFoundation(FUP);
-        setDeliveryExtender(IN);
-        setBlockSweeper(OUT);
-        setDeliveryGrabber(OUT);
-        setCameraServo(CAM_INIT_POS);
-        setDeliveryRotation(IN);
-        setBlockSweeper(IN);
+
+        drive.capServo.setPosition(CAP_INIT_POS);
+        drive.setFoundation(FUP);
+        drive.setDeliveryExtender(IN);
+        drive.setBlockSweeper(OUT);
+        drive.setDeliveryGrabber(OUT);
+        drive.setCameraServo(CAM_INIT_POS);
+        drive.setDeliveryRotation(IN);
+        drive.setBlockSweeper(IN);
 
         skystone = detectStonesStatic(RED);
         opmode.telemetry.addLine(skystoneString(skystone));
 
-        encoderArray.resetAll();
+        drive.encoderArray.resetAll();
 
         opmode.telemetry.addLine("initialized");
         opmode.telemetry.update();
@@ -213,17 +166,17 @@ public class SSDriveObject extends Object{
 
     public int detectStonesStatic(boolean side){
         int cameraMonitorViewId = opmode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opmode.hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(opmode.hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        webcam.openCameraDevice();
-        webcam.setPipeline(detector);
-        webcam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+        drive.webcam = OpenCvCameraFactory.getInstance().createWebcam(opmode.hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        drive.webcam.openCameraDevice();
+        drive.webcam.setPipeline(detector);
+        drive.webcam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
         opmode.telemetry.addData("is started", opmode.isStarted());
 
         while (!opmode.isStarted()) {
             position = detector.position;
             opmode.telemetry.addData("position", position);
             opmode.telemetry.update();
-            Log.i("OPENCV", String.format("driveDistance: \t%s\n",position));
+            Log.i("OPENCV", String.format("drive.driveDistance: \t%s\n",position));
         }
 
             if (position.equals("LEFT")) {
@@ -237,85 +190,85 @@ public class SSDriveObject extends Object{
     }
 
     public void collectionBlueLeft() {
-        turnDegree(.67, 65);
+        drive.turnDegree(.67, 65);
 
 
-        setRollerMotors(IN, .6);
-        driveDistance(.8, 15);
+        drive.setRollerMotors(IN, .6);
+        drive.driveDistance(.8, 15);
 
 
-        driveDistance(.8, -15);
+        drive.driveDistance(.8, -15);
 
-        setBlockSweeper(IN);
-        stopRollerMotors();
-        turnToDegree(.67, 0);
-        setDeliveryGrabber(IN);
-        setBlockSweeper(OUT);
-        Log.i("FINALTHETA",String.format("FinalTheta after turn back: %f", (encoderArray.theta)));
+        drive.setBlockSweeper(IN);
+        drive.stopRollerMotors();
+        drive.turnToDegree(.67, 0);
+        drive.setDeliveryGrabber(IN);
+        drive.setBlockSweeper(OUT);
+        Log.i("FINALTHETA",String.format("FinalTheta after turn back: %f", (drive.encoderArray.theta)));
     }
 
     public void collectSkyStone(boolean side, int skystone){
-        setBlockSweeper(OUT);
+        drive.setBlockSweeper(OUT);
         if(side == BLUE) {
-            strafeDistance(POWER_MAX,DETECT_STRAFE);
+            drive.strafeDistance(POWER_MAX,DETECT_STRAFE);
             switch (skystone) {
                 case LEFT_SS:
-                    driveDistance(.8, BLOCK_LENGTH-1);
+                    drive.driveDistance(.8, BLOCK_LENGTH-1);
                     opmode.idle();
                     collectionBlueLeft();
                     opmode.idle();
-                    turnDegree(.3,.01);
-                    encoderArray.theta=0;
-                    driveDistance(1, - (92));
+                    drive.turnDegree(.3,.01);
+                    drive.encoderArray.theta=0;
+                    drive.driveDistance(1, - (92));
                     Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case CENTER_SS:
-                    driveDistance(.8, -(7 + BLOCK_LENGTH));
+                    drive.driveDistance(.8, -(7 + BLOCK_LENGTH));
                     opmode.idle();
                     collection(side);
 
                     Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
-                    turnDegree(.3, -.1);
-                    encoderArray.theta = 0;
-                    driveDistance(1, - (60 + BLOCK_LENGTH));
+
+                    drive.encoderArray.theta = 0;
+                    drive.driveDistance(1, - (60 + BLOCK_LENGTH));
                     break;
                 case RIGHT_SS:
-                    driveDistance(.8,-7);
+                    drive.driveDistance(.8,-7);
                     opmode.idle();
                     collection(side);
-                    turnDegree(.3, -1);
-                    driveDistance(1,-(60 + BLOCK_LENGTH*2));
+
+                    drive.driveDistance(1,-(60 + BLOCK_LENGTH*2));
                     opmode.idle();
                     Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
 
                     break;
             }
         } else if (side == RED) {
-            strafeDistance(POWER_MAX,DETECT_STRAFE);
-            Log.i("FINALTHETA",String.format("FinalTheta after strafe: %f", (encoderArray.theta)));
+            drive.strafeDistance(POWER_MAX,DETECT_STRAFE);
+            Log.i("FINALTHETA",String.format("FinalTheta after strafe: %f", (drive.encoderArray.theta)));
             switch (skystone) {
                 case LEFT_SS:
-                    driveDistance(1,-22.5);
+                    drive.driveDistance(1,-22.5);
                     opmode.idle();
                     collection(side);
-                    driveDistance(1,90 + BLOCK_LENGTH*2);
+                    drive.driveDistance(1,90 + BLOCK_LENGTH*2);
                     opmode.idle();
                     Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case CENTER_SS:
-                    driveDistance(1,-13);//.5 -> 1
-                    Log.i("FINALTHETA",String.format("FinalTheta after very first drive to collect: %f", (encoderArray.theta)));
+                    drive.driveDistance(1,-13);//.5 -> 1
+                    Log.i("FINALTHETA",String.format("FinalTheta after very first drive to collect: %f", (drive.encoderArray.theta)));
                     opmode.idle();
                     collection(side);
-                    driveDistance(1,90 + BLOCK_LENGTH);
+                    drive.driveDistance(1,90 + BLOCK_LENGTH);
                     opmode.idle();
                     Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case RIGHT_SS:
-                    driveDistance(1,-7);
+                    drive.driveDistance(1,-7);
                     opmode.idle();
                     collectionRightRed();
-                    driveDistance(1,90);
+                    drive.driveDistance(1,90);
                     opmode.idle();
                     Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
@@ -325,79 +278,81 @@ public class SSDriveObject extends Object{
 
     public void moveToFoundation(boolean side){
         if (side == BLUE) {
-            turnDegree(.67, -88);
+            drive.turnDegree(.67, -88);
         } else if (side == RED){
-            turnDegree(.67,-92);
+            drive.turnDegree(.67,-92);
         }
 
-//        turnToDegree(.67, -90);
-        Log.i("THETA", String.format("delta theta: \t%f\n", encoderArray.getDeltaTheta()));
-        Log.i("THETA", String.format("theta: \t%f\n", encoderArray.theta));
+//        drive.turnToDegree(.67, -90);
+        Log.i("THETA", String.format("delta theta: \t%f\n", drive.encoderArray.getDeltaTheta()));
+        Log.i("THETA", String.format("theta: \t%f\n", drive.encoderArray.theta));
 
-        driveDistance(.5, -7.5);
+        drive.driveDistance(.5, -7.5);
         //Log.i("ACTIONTIME", String.format("moveToFoundation: \t%f\n",opModeTime.milliseconds()));
     }
 
     public void moveFoundation (boolean side) {
-//        turnDegree(.3,-0.1);
-        setFoundation(FDOWN);
+//        drive.turnDegree(.3,-0.1);
+        drive.setFoundation(FDOWN);
         opmode.sleep(400);//500 -> 300
-        driveDistance(1, 22.5);
-        setRollerMotors(OUT,1);
+        drive.driveDistance(1, 22.5);
+        drive.setRollerMotors(OUT,1);
         arcWhileExtending(.67, side);
-        stopRollerMotors();
+        drive.stopRollerMotors();
         opmode.idle();
-        driveDistance(1, -12);
+        drive.driveDistanceWithTime(1, -13,2000);
         opmode.sleep(200);
-        setDeliveryGrabber(OUT);
+        drive.setDeliveryGrabber(OUT);
+
         //Log.i("ACTIONTIME", String.format("moveFoundation: \t%f\n",opModeTime.milliseconds()));
     }
 
     public void moveToSecondSS(boolean side, boolean state){
-        setFoundation(FUP);
-        setBlockSweeper(OUT);
+        drive.setFoundation(FUP);
+        drive.setBlockSweeper(OUT);
 
-        setDeliveryRotation(IN);
+        drive.setDeliveryRotation(IN);
         if(state == WALL) {
             if (side == BLUE) {
-                strafeDistance(.8, 19);
+                drive.strafeDistance(.8, 19);
             } else if (side == RED) {
-                strafeDistance(.8, -26);
+                drive.strafeDistance(.8, -26);
             }
         } else if (state == BRIDGE) {
             if (side == BLUE) {
-//                strafeDistance(.8, -2);
+                drive.strafeDistance(.8, -2);
+                drive.turnDegree(.3,.1);
             } else if (side == RED) {
-                strafeDistance(.8, -2);
+                drive.strafeDistance(.8, -2);
             }
         }
     }
 
     public void collectSecondSkyStone(boolean side){
-        setDeliveryExtender(IN);
+        drive.setDeliveryExtender(IN);
         if(side == BLUE) {
             switch (skystone) {
                 case LEFT_SS:
-                    driveDistance(1,62);
+                    drive.driveDistance(1,62);
                     opmode.idle();
                     collectionBlueLeft();
-                    driveDistance(1,-(62));
+                    drive.driveDistance(1,-(62));
                     opmode.idle();
                     Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case CENTER_SS:
-                    driveDistance(1,80 + BLOCK_LENGTH);
+                    drive.driveDistance(1,80 + BLOCK_LENGTH);
                     opmode.idle();
                     collection2(side);
-                    driveDistance(1,-(80 + BLOCK_LENGTH));
+                    drive.driveDistance(1,-(80 + BLOCK_LENGTH));
                     opmode.idle();
                     Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case RIGHT_SS:
-                    driveDistance(1,80 + BLOCK_LENGTH*2);
+                    drive.driveDistance(1,80 + BLOCK_LENGTH*2);
                     opmode.idle();
                     collection2(side);
-                    driveDistance(1,-(80+ BLOCK_LENGTH*2));
+                    drive.driveDistance(1,-(80+ BLOCK_LENGTH*2));
                     opmode.idle();
                     Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
@@ -405,31 +360,31 @@ public class SSDriveObject extends Object{
         } else if (side == RED) {
             switch (skystone) {
                 case LEFT_SS:
-                    driveDistance(1,79 + BLOCK_LENGTH*2);
+                    drive.driveDistance(1,79 + BLOCK_LENGTH*2);
                     opmode.idle();
                     collection2(side);
-                    driveDistance(POWER_MAX,52 + BLOCK_LENGTH*2);
-                    setRollerMotors(OUT, 1);
+                    drive.driveDistance(POWER_MAX,52 + BLOCK_LENGTH*2);
+                    drive.setRollerMotors(OUT, 1);
                     opmode.idle();
                     Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case CENTER_SS:
-                    driveDistance(1,80 + BLOCK_LENGTH);
-                    Log.i("FINALTHETA",String.format("FinalTheta after very first drive to collect: %f", (encoderArray.theta)));
+                    drive.driveDistance(1,80 + BLOCK_LENGTH);
+                    Log.i("FINALTHETA",String.format("FinalTheta after very first drive to collect: %f", (drive.encoderArray.theta)));
                     opmode.idle();
                     collection2(side);
-                    //driveDistance(1,-88);
-                    driveDistance(1,52 + BLOCK_LENGTH);
-                    setRollerMotors(OUT, 1);
+                    //drive.driveDistance(1,-88);
+                    drive.driveDistance(1,52 + BLOCK_LENGTH);
+                    drive.setRollerMotors(OUT, 1);
                     opmode.idle();
                     Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
                 case RIGHT_SS:
-                    driveDistance(1,78);
+                    drive.driveDistance(1,78);
                     opmode.idle();
                     collection2(side);
-                    driveDistance(1,52);
-                    setRollerMotors(OUT, 1);
+                    drive.driveDistance(1,52);
+                    drive.setRollerMotors(OUT, 1);
                     opmode.idle();
                     Log.i("ACTIONTIME", String.format("collectSkystone: \t%f\n",opModeTime.milliseconds()));
                     break;
@@ -438,26 +393,26 @@ public class SSDriveObject extends Object{
     }
 
     public void deliverSkystone (boolean side) {
-        setDeliveryRotation(OUT);
+        drive.setDeliveryRotation(OUT);
         opmode.sleep(300);
-        setDeliveryGrabber(OUT);
+        drive.setDeliveryGrabber(OUT);
     }
 
     public void park (boolean side, boolean state) {
         if (side == RED) {
-        setRollerMotors(OUT,0);
-        setBlockSweeper(IN);
-        driveDistance(.8,-15);
+        drive.setRollerMotors(OUT,0);
+        drive.setBlockSweeper(IN);
+        drive.driveDistance(.8,-15);
         } else if (side == BLUE) {
-            setDeliveryExtender(OUT);
+            drive.setDeliveryExtender(OUT);
             opmode.sleep(750);
             deliverSkystone(BLUE);
-            strafeDistance(.5,-.1);
-            driveDistance(1,35);
+            drive.strafeDistance(.5,-.1);
+            drive.driveDistance(1,35);
 
         }
-        setDeliveryRotation(IN);
-        setDeliveryExtender(IN);
+        drive.setDeliveryRotation(IN);
+        drive.setDeliveryExtender(IN);
         opmode.sleep(1000);
 
 
@@ -506,336 +461,7 @@ public class SSDriveObject extends Object{
 
     //drive chassis motor
 
-    public double calculatePowerStraight(double powerLimit, double distance, double deltaY) {
-        distance = Math.abs(distance);
-        deltaY = Math.abs(deltaY);
-        if (distance != 0) {
-//            return ((0.44 - 4 * powerLimit) / (distance * distance)) * deltaY * deltaY + ((4 * powerLimit - 0.66) / distance) * deltaY + POWER_MIN;
-            return ((-16 * (powerLimit-POWER_MIN)) / (distance * distance * distance * distance)) * (deltaY - distance / 2) * (deltaY - distance / 2) * (deltaY - distance / 2) * (deltaY - distance / 2) + powerLimit;
-        } else {
-            return 0;
-        }
-    }
-
-    public double calculatePowerStrafe(double powerLimit, double distance, double deltaX){
-        distance = Math.abs(distance);
-        deltaX = Math.abs(deltaX);
-
-        if(distance != 0){
-            return ((-16 * (powerLimit-POWER_MIN)) / (distance * distance * distance * distance)) * (deltaX - distance / 2) * (deltaX - distance / 2) * (deltaX - distance / 2) * (deltaX - distance / 2) + powerLimit;
-//            return ((0.44 - 4 * powerLimit) / (distance * distance)) * deltaX * deltaX + ((4 * powerLimit - 0.66) / distance) * deltaX + POWER_MIN;
-        } else {
-            return 0;
-        }
-    }
-
-    public double calculatePowerTurn(double powerLimit, double degrees, double deltaTheta) {
-        degrees = Math.abs(degrees);
-        deltaTheta = Math.abs(deltaTheta);
-        if (degrees != 0) {
-            return ((0.44 - 4 * powerLimit) / (degrees * degrees)) * deltaTheta * deltaTheta + ((4 * powerLimit - 0.66) / degrees) * deltaTheta + POWER_MIN;
-        } else {
-            return 0;
-        }
-    }
-
-    public void driveDistance(double powerLimit, double distance) {
-        double deltaY = 0;
-        double powerMin = POWER_MIN;
-        double deltaTheta = 0;
-
-        encoderArray.readEncoderValue();
-        encoderArray.updateAll();
-        encoderArray.resetAll();
-        if (distance > 0) {
-            if (powerLimit == .8) {
-                distance -= 2.24;
-            } else if (powerLimit ==.5) {
-                distance -= .71;
-            } else {
-                distance -= 3.39;
-            }
-        } else if (distance < 0) {
-            if (powerLimit == .8) {
-                distance += 2.24;
-            } else if (powerLimit ==.5) {
-                distance += .71;
-            } else {
-                distance += 3.39;
-            }
-        }
-
-        if (distance > 0) {
-//            direction = FORWARD;
-            while(opmode.opModeIsActive()) {
-                encoderArray.readEncoderValue();
-                deltaY = encoderArray.getDeltaY();
-                deltaTheta = encoderArray.getDeltaTheta();
-                if (deltaY >= distance)
-                    break;
-
-                double drivePower = Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
-                setSelectPowerAll(drivePower - DRIVE_COMP_CONST_LEFT*deltaTheta, drivePower + DRIVE_COMP_CONST_LEFT*deltaTheta, drivePower -DRIVE_COMP_CONST_LEFT*deltaTheta, drivePower + DRIVE_COMP_CONST_LEFT*deltaTheta);
-//                setDrivePowerAll(drivePower);
-                Log.i("POWER",String.format("Delta Theta: %f\tDelta Y: %f\tPower: %f\t Compensation: %f\n", deltaTheta,deltaY, drivePower,DRIVE_COMP_CONST_LEFT*deltaTheta ));
-                Log.i("INDIVIDUAL ENCODERS",String.format("Left Encoder: %f\tRight Encoder: %f\tCenter Encoder: %f\n", encoderArray.getLeftPosition,encoderArray.getRightPosition, encoderArray.getCenterPosition));
-
-
-//                telemetryEncoderArray();
-                opmode.telemetry.addData("deltaY: ", deltaY);
-                opmode.telemetry.update();
-//                telemetryWheelPower();
-//                debugString.concat(String.format("Y: %f\tpower: %f\n", encoderArray.getDeltaY(), calculatePowerStraight(powerLimit,distance)));
-            }
-        } else if (distance < 0) {
-
-            while(opmode.opModeIsActive()) {
-                encoderArray.readEncoderValue();
-                deltaY = encoderArray.getDeltaY();
-                deltaTheta = encoderArray.getDeltaTheta();
-                if (deltaY <= distance)
-                    break;
-
-                double drivePower = -Math.max(.22,calculatePowerStraight(powerLimit, distance, deltaY));
-                setSelectPowerAll(drivePower - DRIVE_COMP_CONST_LEFT*deltaTheta, drivePower + DRIVE_COMP_CONST_LEFT*deltaTheta, drivePower -DRIVE_COMP_CONST_LEFT*deltaTheta, drivePower + DRIVE_COMP_CONST_LEFT*deltaTheta);
-//                opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
-//                setDrivePowerAll(drivePower);
-                Log.i("POWER",String.format("Delta Theta: %f\tDelta Y: %f\tPower: %f\t Compensation: %f\n", deltaTheta,deltaY, drivePower,DRIVE_COMP_CONST_LEFT*deltaTheta ));
-                Log.i("INDIVIDUAL ENCODERS",String.format("Left Encoder: %f\tRight Encoder: %f\tCenter Encoder: %f\n", encoderArray.getLeftPosition,encoderArray.getRightPosition, encoderArray.getCenterPosition));
-
-//                opmode.telemetry.update();
-            }
-        }
-        stopDriving();
-        opmode.telemetry.addLine("motors stopped");
-        opmode.telemetry.update();
-        //Log.i("OPMODETIME", String.format("driveDistance: \t%f\n",opModeTime.milliseconds()));
-
-//        System.out.println(debugString);
-//        debugString="";
-//        opmode.sleep(500);
-        encoderArray.readEncoderValue();
-        encoderArray.updateAll();
-        encoderArray.resetAll();
-    }
-
-    final double STRAFE_RIGHT_COMP_CONST = 0.03;
-    final double STRAFE_LEFT_COMP_CONST = 0;
-    public void strafeDistance(double powerLimit, double distance) {
-        double deltaX = 0;
-        double deltaTheta = 0;
-        double strafePower;
-
-        if (distance > 0) {
-            // specific distance compensations for various power levels.  Should be separate method!
-            if (powerLimit == POWER_MAX) {
-                distance -= .23;
-            } else if (powerLimit ==.5) {
-                distance -= .24;
-            } else {
-                distance -= .68;
-            }
-        } else if (distance < 0) {
-            if (powerLimit == POWER_MAX) {
-                distance += .23;
-            } else if (powerLimit ==.5) {
-                distance += .24;
-            } else {
-                distance += .68;
-            }
-        }
-
-        encoderArray.readEncoderValue();
-        encoderArray.updateAll();
-        encoderArray.resetAll();
-
-        if (distance > 0) {   //strafe right
-            while((deltaX <= distance) && opmode.opModeIsActive()) {
-                encoderArray.readEncoderValue();
-                deltaX = encoderArray.getDeltaX();
-                deltaTheta = encoderArray.getDeltaTheta();
-                strafePower = Math.max(.22,calculatePowerStrafe(powerLimit, distance, deltaX));
-//                setStrafePowerAll(strafePower);
-                // manual compensation to account for weight imbalance.  Better if done based on theta
-                setSelectPowerAll(-strafePower +STRAFE_RIGHT_COMP_CONST, strafePower - STRAFE_RIGHT_COMP_CONST, strafePower,-strafePower);
-                Log.i("INDIVIDUAL ENCODERS",String.format("Left Encoder: %f\tRight Encoder: %f\tCenter Encoder: %f\n", encoderArray.getLeftPosition,encoderArray.getRightPosition, encoderArray.getCenterPosition));
-
-                Log.i("POWER",String.format("Delta Theta: %f\tDelta X: %f\tPower: %f\t Compensation: %f\n", deltaTheta, deltaX, strafePower,.22*deltaTheta ));
-//                telemetryEncoderArray();
-//                opmode.telemetry.addData("deltaX: ", encoderArray.getDeltaX());
-//                telemetryWheelPower();
-            }
-        } else if (distance < 0) {  //strafe left
-
-            while((deltaX >= distance) && opmode.opModeIsActive()) {
-                encoderArray.readEncoderValue();
-                deltaX = encoderArray.getDeltaX();
-                deltaTheta = encoderArray.getDeltaTheta();
-                strafePower = Math.max(.22,calculatePowerStrafe(powerLimit, distance, deltaX));
-//                setStrafePowerAll(-strafePower);
-                setSelectPowerAll(strafePower + STRAFE_RIGHT_COMP_CONST, -strafePower - STRAFE_LEFT_COMP_CONST, -strafePower, strafePower);
-                Log.i("INDIVIDUAL ENCODERS",String.format("Left Encoder: %f\tRight Encoder: %f\tCenter Encoder: %f\n", encoderArray.getLeftPosition,encoderArray.getRightPosition, encoderArray.getCenterPosition));
-                Log.i("POWER",String.format("Delta Theta: %f\tDelta X: %f\tPower: %f\t Compensation: %f\n", deltaTheta, deltaX, strafePower,.22*deltaTheta ));//                opmode.telemetry.addData("deltaY", deltaX);
-//                opmode.telemetry.update();
-            }
-        }
-        stopDriving();
-        encoderArray.trashStrafeAngleBeforeReset();
-
-        opmode.telemetry.addLine("motors stopped");
-        opmode.telemetry.update();
-        encoderArray.readEncoderValue();
-        Log.i("INDIVIDUAL ENCODERS",String.format("Left Encoder: %f\tRight Encoder: %f\tCenter Encoder: %f\n", encoderArray.getLeftPosition,encoderArray.getRightPosition, encoderArray.getCenterPosition));
-        Log.i("STRAFE",String.format("Delta Theta: %f\tDelta X: %f\tDelta Y: %f\n", encoderArray.getDeltaTheta(),encoderArray.getDeltaX(),encoderArray.getDeltaY()));
-        //Log.i("OPMODETIME", String.format("strafeDistance: \t%f\n",opModeTime.milliseconds()));
-//        opmode.sleep(500);
-
-        encoderArray.readEncoderValue();
-        encoderArray.updateAll();
-        encoderArray.resetAll();
-    }
-
-    public double degreesToRadians(double degrees){
-        return degrees*=Math.PI/180;
-    }
-
-    public void turnArc(boolean direction, double power, double degrees) {
-
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        encoderArray.readEncoderValue();
-        encoderArray.updateAll();
-        encoderArray.resetAll();
-
-        double radians = degreesToRadians(degrees);
-        double deltaTheta = 0;
-/*
-       There is no need to enter a negative power. All functionality is based as if the robot was moving around a circle.
-       Starting at east when going LEFT, west when going RIGHT.
-*/
-        power = Math.abs(power);
-
-
-        if (direction == LEFT) {
-            if (radians > 0) {
-                while ((Math.abs(deltaTheta) <= Math.abs(radians)) && opmode.opModeIsActive()) {
-                    encoderArray.readEncoderValue();
-                    deltaTheta = encoderArray.getDeltaThetaRad();
-                    setArcPowerAll(direction, power);
-                    Log.i("POWER",String.format("Delta Theta: %f\tPower: %f\n", deltaTheta, power));
-                }
-            } else if (radians < 0) {
-                while ((Math.abs(deltaTheta) <= Math.abs(radians)) && opmode.opModeIsActive()) {
-                    encoderArray.readEncoderValue();
-                    deltaTheta = encoderArray.getDeltaThetaRad();
-                    setArcPowerAll(direction, -power);
-                    Log.i("POWER",String.format("Delta Theta: %f\tPower: %f\n", deltaTheta, -power));
-                }
-            }
-        } else if (direction == RIGHT) {
-            if (radians > 0) {
-                while ((Math.abs(deltaTheta) <= Math.abs(radians)) && opmode.opModeIsActive()) {
-                    encoderArray.readEncoderValue();
-                    deltaTheta = encoderArray.getDeltaThetaRad();
-                    setArcPowerAll(direction, -power);
-                    Log.i("POWER",String.format("Delta Theta: %f\tPower: %f\n", deltaTheta*180/Math.PI, -power));
-                }
-            } else if (radians < 0) {
-                while ((Math.abs(deltaTheta) <= Math.abs(radians)) && opmode.opModeIsActive()) {
-                    encoderArray.readEncoderValue();
-                    deltaTheta = encoderArray.getDeltaThetaRad();
-                    setArcPowerAll(direction, power);
-                    Log.i("POWER",String.format("Delta Theta: %f\tPower: %f\n", deltaTheta*180/Math.PI, power));
-                }
-            }
-        }
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        stopDriving();
-
-        //Log.i("OPMODETIME", String.format("turnArc: \t%f\n",opModeTime.milliseconds()));
-        encoderArray.readEncoderValue();
-        encoderArray.updateAll();
-        encoderArray.resetAll();
-    }
-
-
-
-    public void turnToDegree(double powerLimit, double targetDegrees) {
-        //This needs work
-        encoderArray.readEncoderValue();
-        encoderArray.updateAll();
-        encoderArray.resetAll();
-
-        //Log.i("TOTALTHETA", String.format("theta: \t%f\n",encoderArray.theta));
-
-        double initialTheta = encoderArray.theta;
-        double deltaTheta = targetDegrees - initialTheta;
-        //Log.i("RELATIVETHETA",String.format("theta: \t%f\n",deltaTheta));
-
-        if (Math.abs(deltaTheta) < Math.abs(55)){
-            opmode.telemetry.addLine("Power reduced on turnToDegree");
-            opmode.telemetry.update();
-            Log.i("TURNTODEGREE","Power reduced.");
-            powerLimit = .4;
-        } else if (Math.abs(deltaTheta) < Math.abs(45)) {
-            opmode.telemetry.addLine("Power reduced on turnToDegree");
-            opmode.telemetry.update();
-            Log.i("TURNTODEGREE","Power reduced.");
-            powerLimit = .31;
-        }
-
-        turnDegree(powerLimit, deltaTheta);
-        stopDriving();
-
-        //Log.i("OPMODETIME", String.format("turnDegree: \t%f\n",opModeTime.milliseconds()));
-//        getAngleTelemetry("TURN END");
-    }
-
-    public void turnDegree(double powerLimit, double degrees) {
-        // distance in inches
-        //conjecture instead of moving 12", wheels will go 12"*cos(45)= 8.5"
-        encoderArray.readEncoderValue();
-        encoderArray.updateAll();
-        encoderArray.resetAll();
-
-        double deltaTheta = 0;
-
-        if (degrees > 0) {
-            // positive (CCW) turn => left motor goes in (-) direction
-            while ((deltaTheta <= degrees) && opmode.opModeIsActive()) {
-                encoderArray.readEncoderValue();
-                deltaTheta = encoderArray.getDeltaTheta();
-                double turnPower = Math.max(.17,calculatePowerTurn(powerLimit, degrees, deltaTheta));
-                setTurnPowerAll(turnPower);
-                Log.i("POWER",String.format("Delta Theta: %f\tPower: %f\n", deltaTheta, turnPower));
-
-            }
-        } else if (degrees < 0) {
-            while ((deltaTheta >= degrees) && opmode.opModeIsActive()) {
-                encoderArray.readEncoderValue();
-                deltaTheta = encoderArray.getDeltaTheta();
-                double turnPower = Math.max(.17,calculatePowerTurn(powerLimit, degrees, deltaTheta));
-                setTurnPowerAll(-turnPower);
-                Log.i("POWER",String.format("Delta Theta: %f\tPower: %f\n", deltaTheta, -turnPower));
-//                opmode.telemetry.addData("frontLeft", frontLeft.getCurrentPosition());
-//                opmode.telemetry.update();
-            }
-        }
-
-        stopDriving();
-        //Log.i("OPMODETIME", String.format("turnDegree: \t%f\n",opModeTime.milliseconds()));
-//        getAngleTelemetry("TURN END");
-        encoderArray.readEncoderValue();
-        encoderArray.updateAll();
-        encoderArray.resetAll();
-    }
+    
 
     public void arcWhileExtending (double powerLimit, boolean side) {
        //true = in
@@ -844,313 +470,135 @@ public class SSDriveObject extends Object{
        double deltaY = 0;
        double deltaTheta = 0;
 
-       encoderArray.readEncoderValue();
-       encoderArray.updateAll();
-       encoderArray.resetAll();
+       drive.encoderArray.readEncoderValue();
+       
+       drive.encoderArray.resetAll();
 
-       setDeliveryExtender(OUT);
+       drive.setDeliveryExtender(OUT);
 
        if (side == RED) {
            while(opmode.opModeIsActive()) {
-               encoderArray.readEncoderValue();
-               deltaTheta = encoderArray.getDeltaTheta();
+               drive.encoderArray.readEncoderValue();
+               deltaTheta = drive.encoderArray.getDeltaTheta();
 
                if (deltaTheta <= -90)
                    break;
 
-               setSelectPowerAll(-1, 1, 0, 0);
+               drive.setSelectPowerAll(-1, 1, 0, 0);
                //Log.i("POWER",String.format("Delta Y: %f\tPower: %f\n", deltaY, calculatePowerStraight(powerLimit,distance,deltaY)));
 //                telemetryEncoderArray();
            }
        } else {
            while(opmode.opModeIsActive()) {
-               encoderArray.readEncoderValue();
-               deltaY = encoderArray.getDeltaY();
-               deltaTheta = encoderArray.getDeltaTheta();
+               drive.encoderArray.readEncoderValue();
+               deltaY = drive.encoderArray.getDeltaY();
+               deltaTheta = drive.encoderArray.getDeltaTheta();
                if (deltaTheta >= 90)
                    break;
 
-               setSelectPowerAll(1, -1, 0, 0);
+               drive.setSelectPowerAll(1, -1, 0, 0);
            }
        }
-       setDeliveryRotation(OUT);
-       stopDriving();
+       drive.setDeliveryRotation(OUT);
+       drive.stopDriving();
    }
 
     //set chassis motors
 
-    public void setModeAll(DcMotor.RunMode mode) {
-        frontLeft.setMode(mode);
-        frontRight.setMode(mode);
-        backLeft.setMode(mode);
-        backRight.setMode(mode);
-    }
-
-    public void stopDriving() {
-        frontLeft.setPower(0.0);
-        frontRight.setPower(0.0);
-        backLeft.setPower(0.0);
-        backRight.setPower(0.0);
-    }
-
-    public void setDrivePowerAll(double power) {
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backRight.setPower(power);
-        backLeft.setPower(power);
-    }
-
-    public void setStrafePowerAll(double power) {
-        frontLeft.setPower(FLpower*power);
-        frontRight.setPower(-FRpower*power);
-        backLeft.setPower(-BLpower*power);
-        backRight.setPower(BRpower*power);
-    }
-
-    public void setTurnPowerAll(double power) {
-        frontLeft.setPower(-power);
-        frontRight.setPower(power);
-        backLeft.setPower(-power);
-        backRight.setPower(power);
-    }
-
-    public void setArcPowerAll(boolean direction, double power) {
-        if (direction == LEFT) {
-            frontLeft.setPower(0);
-            frontRight.setPower(power);
-            backLeft.setPower(0);
-            backRight.setPower(power);
-        } else if (direction == RIGHT) {
-            frontLeft.setPower(power);
-            frontRight.setPower(0);
-            backLeft.setPower(power);
-            backRight.setPower(0);
-        }
-    }
-
-    public void setSelectPowerAll(double FRpower, double FLpower, double BRpower, double BLpower){
-        frontRight.setPower(FRpower);
-        frontLeft.setPower(FLpower);
-        backRight.setPower(BRpower);
-        backLeft.setPower(BLpower);
-    }
-
-    //set other motors
-    public void stopRollerMotors () {
-        leftRoller.setPower(0.0);
-        rightRoller.setPower(0.0);
-        //Log.i("OPMODETIME", String.format("setRollerMotors: \t%f\n",opModeTime.milliseconds()));
-    }
-
-    public void setRollerMotors (boolean direction, double power) {
-        //direction true = outward
-        //direction false = inward
-       /*rollerTimeout = new ElapsedTime();
-       final int ROLLER_OPMODETIMEOUT = time;*/
-
-        if(direction == OUT){
-            leftRoller.setDirection(DcMotorSimple.Direction.FORWARD);
-            rightRoller.setDirection(DcMotorSimple.Direction.REVERSE);
-        } else if(direction == IN){
-            leftRoller.setDirection(DcMotorSimple.Direction.REVERSE);
-            rightRoller.setDirection(DcMotorSimple.Direction.FORWARD);
-        }
-        //Log.i("OPMODETIME", String.format("setRollerMotors: \t%f\n",opModeTime.milliseconds()));
-
-        leftRoller.setPower(ROLLER_POWER);
-        rightRoller.setPower(ROLLER_POWER);
-
-
-
-       /*while ((rightRoller.isBusy() || leftRoller.isBusy()) && opmode.opModeIsActive()){
-           if (rollerTimeout.milliseconds() > ROLLER_OPMODETIMEOUT)
-               break;
-       }*/
-    }
-
-    public void setCameraServo (double position) {
-        cameraServo.setPosition(position);
-    }
-
-    public void setFoundation (boolean position) {
-        //launch true = grabber down
-        //launch false = grabber up
-        if (position == FDOWN) {
-            leftFoundation.setPosition(FOUND_LEFT_LAUNCH);
-            rightFoundation.setPosition(FOUND_RIGHT_LAUNCH);
-        } else if (position == FUP) {
-            leftFoundation.setPosition(FOUND_LEFT_INIT);
-            rightFoundation.setPosition(FOUND_RIGHT_INIT);
-        }
-    }
-
-
-
-    public void setBlockSweeper (boolean state) {
-        //kick true = blockSweeper up
-        //kick false = blockSweeper down
-
-        if (state == OUT) {
-            blockSweeper.setPosition(0.8);
-
-        } else if (state == IN){
-            blockSweeper.setPosition(.2);
-
-        }
-        //Log.i("OPMODETIME", String.format("setBlockSweeper: \t%f\n",opModeTime.milliseconds()));
-
-
-    }
-
-    public void setDeliveryGrabber (boolean grab) {
-        if(grab == IN){
-            deliveryGrabber.setPosition(.5);
-        } else if (grab == OUT){
-            deliveryGrabber.setPosition(0);
-        }
-    }
-
-    public void setDeliveryExtender (boolean direction) {
-        //true = in
-        //false = out
-        if (direction == IN)
-            deliveryExtender.setPosition(1);
-        else if (direction == OUT)
-            deliveryExtender.setPosition(0);
-    }
-
-    public void setDeliveryRotation (boolean rotate) {
-
-
-        if (rotate == OUT) {
-            deliveryRotation.setPosition(0.5);
-        } else if (rotate == IN) {
-            deliveryRotation.setPosition(0);
-        }
-    }
-
-    //telemetry
-
-    public void telemetryEncoderArray (){
-        opmode.telemetry.addData("deltaX", encoderArray.getDeltaX());
-        opmode.telemetry.addData("deltaY", encoderArray.getDeltaY());
-        opmode.telemetry.addData("deltaTheta(degrees)", encoderArray.getDeltaTheta());
-        opmode.telemetry.update();
-    }
-
-    public void telemetryRawEncoders() {
-        opmode.telemetry.addData("left", encoderArray.getLeftPosition);
-        opmode.telemetry.addData("right",encoderArray.getRightPosition);
-        opmode.telemetry.addData("center",encoderArray.getCenterPosition);
-        opmode.telemetry.update();
-    }
-
-    public void telemetryChassisPower(){
-        opmode.telemetry.addData("FR", frontRight.getPower());
-        opmode.telemetry.addData("FL", frontLeft.getPower());
-        opmode.telemetry.addData("BR", backRight.getPower());
-        opmode.telemetry.addData("BL", backLeft.getPower());
-        opmode.telemetry.update();
-    }
-
-    public String getFinalPosition() {
-        String finalPos = String.format("X: %f\tY: %f\tTheta: %f",encoderArray.X,encoderArray.Y,encoderArray.theta);
-        return finalPos;
-    }
 
     public void collectionRightRed() {
-        turnToDegree(.67, 45);
-        Log.i("FINALTHETA",String.format("FinalTheta after turn in: %f", (encoderArray.theta)));
+        drive.turnToDegree(.67, 45);
+        Log.i("FINALTHETA",String.format("FinalTheta after turn in: %f", (drive.encoderArray.theta)));
 
-        setRollerMotors(IN, .6);
-        driveDistance(1, 20);
-        Log.i("FINALTHETA",String.format("FinalTheta after drive forward: %f", (encoderArray.theta)));
+        drive.setRollerMotors(IN, .6);
+        drive.driveDistance(1, 20);
+        Log.i("FINALTHETA",String.format("FinalTheta after drive forward: %f", (drive.encoderArray.theta)));
 
-        driveDistance(1, -20);
-        Log.i("FINALTHETA",String.format("FinalTheta after drive back: %f", (encoderArray.theta)));
-        setBlockSweeper(IN);
+        drive.driveDistance(1, -20);
+        Log.i("FINALTHETA",String.format("FinalTheta after drive back: %f", (drive.encoderArray.theta)));
+        drive.setBlockSweeper(IN);
 
-        stopRollerMotors();
+        drive.stopRollerMotors();
 
 
-        turnToDegree(.67, 0);
-        setBlockSweeper(OUT);
-        Log.i("FINALTHETA",String.format("FinalTheta after turn back: %f", (encoderArray.theta)));
-        setDeliveryGrabber(IN);
+        drive.turnToDegree(.67, 0);
+        drive.setBlockSweeper(OUT);
+        Log.i("FINALTHETA",String.format("FinalTheta after turn back: %f", (drive.encoderArray.theta)));
+        drive.setDeliveryGrabber(IN);
     }
 
     public void collection(boolean side){
         if(side == BLUE) {
-            /*turnDegree(.67, 45);
-            setRollerMotors(IN, .6);
-            driveDistance(1, 15);
-            driveDistance(1, -15);
-            setBlockSweeper(IN);
-            stopRollerMotors();
-            turnToDegree(.67, 0);
-            setBlockSweeper(OUT);
-            setDeliveryGrabber(IN);*/
-            strafeDistance(.8, -12.5);
-            setRollerMotors(IN, .6);
-            driveDistance(.5, 5);
-            driveDistance(.5, -5);
+            /*drive.turnDegree(.67, 45);
+            drive.setRollerMotors(IN, .6);
+            drive.driveDistance(1, 15);
+            drive.driveDistance(1, -15);
+            drive.setBlockSweeper(IN);
+            drive.stopRollerMotors();
+            drive.turnToDegree(.67, 0);
+            drive.setBlockSweeper(OUT);
+            drive.setDeliveryGrabber(IN);*/
+            drive.strafeDistance(.8, -11);
+            drive.setRollerMotors(IN, .6);
+            drive.driveDistance(.5, 5);
+            drive.driveDistance(.5, -5);
             opmode.idle();
-            setBlockSweeper(IN);
-            strafeDistance(.8, 13);
-            setDeliveryGrabber(IN);
-            setBlockSweeper(OUT);
+            drive.setBlockSweeper(IN);
+            drive.strafeDistance(.8, 11.5);
+            drive.setDeliveryGrabber(IN);
+            drive.setBlockSweeper(OUT);
 
         } else if(side == RED) {
-//            strafeDistance(.3, -5);
+//            drive.strafeDistance(.3, -5);
 
-            turnDegree(.67, 45);
-            Log.i("FINALTHETA",String.format("FinalTheta after turn in: %f", (encoderArray.theta)));
+            drive.turnDegree(.67, 45);
+            Log.i("FINALTHETA",String.format("FinalTheta after turn in: %f", (drive.encoderArray.theta)));
 
-            setRollerMotors(IN, .6);
-            driveDistance(1, 15);
-            Log.i("FINALTHETA",String.format("FinalTheta after drive forward: %f", (encoderArray.theta)));
+            drive.setRollerMotors(IN, .6);
+            drive.driveDistance(1, 15);
+            Log.i("FINALTHETA",String.format("FinalTheta after drive forward: %f", (drive.encoderArray.theta)));
 
-            driveDistance(1, -15);
-            Log.i("FINALTHETA",String.format("FinalTheta after drive back: %f", (encoderArray.theta)));
-            setBlockSweeper(IN);
-            stopRollerMotors();
-            turnToDegree(.67, 0);
-            setDeliveryGrabber(IN);
-            setBlockSweeper(OUT);
-            Log.i("FINALTHETA",String.format("FinalTheta after turn back: %f", (encoderArray.theta)));
+            drive.driveDistance(1, -15);
+            Log.i("FINALTHETA",String.format("FinalTheta after drive back: %f", (drive.encoderArray.theta)));
+            drive.setBlockSweeper(IN);
+            drive.stopRollerMotors();
+            drive.turnToDegree(.67, 0);
+            drive.setDeliveryGrabber(IN);
+            drive.setBlockSweeper(OUT);
+            Log.i("FINALTHETA",String.format("FinalTheta after turn back: %f", (drive.encoderArray.theta)));
 
         }
     }
 
     public void collection2 (boolean side){
         if(side == BLUE) {
-            strafeDistance(.8, -11);
-            setRollerMotors(IN, .6);
-            driveDistance(.5, 5);
-            driveDistance(.5, -5);
+            drive.strafeDistance(.8, -14);
+            drive.setRollerMotors(IN, .6);
+            drive.driveDistance(.5, 5);
+            drive.driveDistance(.5, -5);
             opmode.idle();
-            setBlockSweeper(IN);
-            strafeDistance(.8, 11);
-            setDeliveryGrabber(IN);
-            setBlockSweeper(OUT);
+            drive.setBlockSweeper(IN);
+            drive.strafeDistance(.8, 14);
+            drive.setDeliveryGrabber(IN);
+            drive.setBlockSweeper(OUT);
         } else if(side == RED) {
-//            strafeDistance(.3, -5);
-            turnDegree(.67, -45);
-            Log.i("FINALTHETA",String.format("FinalTheta after turn in: %f", (encoderArray.theta)));
+//            drive.strafeDistance(.3, -5);
+            drive.turnDegree(.67, -45);
+            Log.i("FINALTHETA",String.format("FinalTheta after turn in: %f", (drive.encoderArray.theta)));
 
-            setRollerMotors(IN, .6);
-            driveDistance(1, 15);
-            Log.i("FINALTHETA",String.format("FinalTheta after drive forward: %f", (encoderArray.theta)));
+            drive.setRollerMotors(IN, .6);
+            drive.driveDistance(1, 15);
+            Log.i("FINALTHETA",String.format("FinalTheta after drive forward: %f", (drive.encoderArray.theta)));
 
-            driveDistance(1, -15);
-            Log.i("FINALTHETA",String.format("FinalTheta after drive back: %f", (encoderArray.theta)));
+            drive.driveDistance(1, -15);
+            Log.i("FINALTHETA",String.format("FinalTheta after drive back: %f", (drive.encoderArray.theta)));
 
-            //setBlockSweeper(IN);
-            stopRollerMotors();
-            turnDegree(.67, -135);
-            Log.i("FINALTHETA",String.format("FinalTheta after turn back: %f", (encoderArray.theta)));
-            //setDeliveryGrabber(true);
-            //setDeliveryExtender(OUT);
+            //drive.setBlockSweeper(IN);
+            drive.stopRollerMotors();
+            drive.turnDegree(.67, -135);
+            Log.i("FINALTHETA",String.format("FinalTheta after turn back: %f", (drive.encoderArray.theta)));
+            //drive.setDeliveryGrabber(true);
+            //drive.setDeliveryExtender(OUT);
         }
     }
 

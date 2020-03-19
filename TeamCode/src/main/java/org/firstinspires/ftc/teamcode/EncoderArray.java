@@ -76,6 +76,16 @@ public class EncoderArray {
         return (getLeftPosition+getRightPosition)/(r1+r2);
     }
 
+    void readEncoderValue(){
+        getLeftPosition = left.getPosition();
+        getRightPosition = right.getPosition();
+        getCenterPosition = center.getPosition();
+        /*getLeftDisplacement = left.getDiff();
+        getRightDisplacement = right.getDiff();
+        getCenterDisplacement = center.getDiff();*/
+    }
+}
+
     /*double getDx(){
         return -getCenterDisplacement+r3*(getLeftDisplacement+getRightDisplacement)/(r1+r2);
     }
@@ -88,23 +98,14 @@ public class EncoderArray {
         return (getLeftDisplacement+getRightDisplacement)/(r1+r2);
     }
 */
-    void updateAll(){
-        /*accumulatedX += getDx()*Math.cos(getDTheta())+getDy()*Math.sin(getDTheta());
+    /*void updateAll(){
+        accumulatedX += getDx()*Math.cos(getDTheta())+getDy()*Math.sin(getDTheta());
         accumulatedY += getDy()*Math.cos(getDTheta())-getDx()*Math.sin(getDTheta());
         accumulatedTheta += getDTheta();
         relativeY += getDy();
-        relativeX += getDx();*/
+        relativeX += getDx();
         left.update();
         right.update();
         center.update();
-    }
+    }*/
 
-    void readEncoderValue(){
-        getLeftPosition = left.getPosition();
-        getRightPosition = right.getPosition();
-        getCenterPosition = center.getPosition();
-        /*getLeftDisplacement = left.getDiff();
-        getRightDisplacement = right.getDiff();
-        getCenterDisplacement = center.getDiff();*/
-    }
-}
